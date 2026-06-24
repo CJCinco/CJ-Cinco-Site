@@ -1,8 +1,22 @@
 # CJ Cinco Website
 
-Local Next.js preview for `cjcinco.com`.
+Next.js personal-brand site for `cjcinco.com`.
 
-This project is separate from the live Vero Tech Care, Green Bodyworks, Aligned Harmonics, and Altered States sites. Those sites were used only as local/reference context. Do not deploy this site or alter those sites until CJ approves the preview.
+This project is separate from the live Vero Tech Care, Green Bodyworks, Aligned Harmonics, and Altered States sites. Those sites were used only as local/reference context and should not be merged into this project without a deliberate future change.
+
+## Live URLs
+
+```text
+https://cjcinco.com
+https://www.cjcinco.com
+https://cj-cinco-site.pages.dev
+```
+
+GitHub repository:
+
+```text
+https://github.com/CJCinco/CJ-Cinco-Site
+```
 
 ## Run Locally
 
@@ -70,13 +84,25 @@ Build output directory: out
 Production branch: main
 ```
 
-After CJ approves the local preview:
+Current Cloudflare Pages project:
 
-1. Initialize Git if needed.
-2. Commit the approved local version.
-3. Push to GitHub, expected repo: `CJCinco/CJ-Cinco-Site`.
-4. Connect that GitHub repo to Cloudflare Pages.
-5. Add `cjcinco.com` and `www.cjcinco.com` as custom domains in Cloudflare Pages.
-6. Keep iCloud mail DNS records intact when adding or changing web records.
+```text
+cj-cinco-site
+```
+
+Current production setup:
+
+1. GitHub repo: `CJCinco/CJ-Cinco-Site`
+2. Cloudflare Pages project: `cj-cinco-site`
+3. Production branch: `main`
+4. Build command: `npm run build`
+5. Build output directory: `out`
+6. Custom domains: `cjcinco.com`, `www.cjcinco.com`
+
+Keep iCloud mail DNS records intact when adding or changing web records.
+
+## Email DNS
+
+`cjcinco.com` is configured in iCloud Custom Email Domain DNS through Cloudflare. Keep the iCloud MX, SPF TXT, Apple verification TXT, and DKIM CNAME records intact.
 
 Do not commit secrets, private credentials, API keys, `.env` files, or unrelated local files.
