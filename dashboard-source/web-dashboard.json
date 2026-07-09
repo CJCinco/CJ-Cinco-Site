@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "route": "/dashboard",
+  "updated": "2026-07-09",
+  "summary": "Private CJ Cinco operator view for the public brand hub, site surface, and near-term public-safe work.",
+  "status": {
+    "label": "Private route",
+    "value": "Cloudflare Access gate required",
+    "detail": "The website does not implement login code. Cloudflare Access should protect this route before use."
+  },
+  "metrics": [
+    {
+      "label": "Site",
+      "value": "cjcinco.com",
+      "detail": "Same Cloudflare Pages project and public domain."
+    },
+    {
+      "label": "Route",
+      "value": "/dashboard",
+      "detail": "Not linked from the public homepage, nav, or footer."
+    },
+    {
+      "label": "Generator",
+      "value": "Online-safe",
+      "detail": "Built from a curated source file, separate from the local dashboard."
+    },
+    {
+      "label": "Indexing",
+      "value": "Noindex",
+      "detail": "Route metadata and Cloudflare Pages headers block indexing without advertising the path."
+    }
+  ],
+  "sections": [
+    {
+      "title": "Current Focus",
+      "kicker": "CJ Cinco",
+      "items": [
+        "Keep the public hub simple: music, healing, ventures, and contact.",
+        "Use this page as a private operator view, not a public content machine.",
+        "Finish profile/link direction before activating any posting cadence."
+      ]
+    },
+    {
+      "title": "Website Surface",
+      "kicker": "Cloudflare Pages",
+      "items": [
+        "Primary site stays at cjcinco.com and www.cjcinco.com.",
+        "Private dashboard stays inside the same static export and deployment.",
+        "No app database, worker login, or custom auth layer is used in the site code."
+      ]
+    },
+    {
+      "title": "Public-Safe Boundaries",
+      "kicker": "Filter",
+      "items": [
+        "Show only curated brand and site-operating summaries.",
+        "Do not publish internal task lists, raw strategy notes, personal records, or private service details.",
+        "Regenerate from the web-dashboard source file, not from the local operator dashboard output."
+      ]
+    },
+    {
+      "title": "Next Moves",
+      "kicker": "Sequence",
+      "items": [
+        "Verify the route builds locally and appears in the static export.",
+        "Deploy the same Cloudflare Pages project.",
+        "Confirm unauthenticated visitors see the Cloudflare Access login gate before content."
+      ]
+    }
+  ],
+  "accessPlan": [
+    "Create or update Cloudflare Access rules for the dashboard route and nested dashboard paths.",
+    "Use One-Time PIN as the identity provider.",
+    "Add an Allow policy for CJ's approved email address only.",
+    "Confirm custom domains and the Pages hostname cannot bypass the Access gate."
+  ],
+  "sourceContract": [
+    "The local dashboard remains the local operator view.",
+    "The web dashboard is generated from dashboard-source/web-dashboard.json.",
+    "The generator rejects private-domain terms before writing the website data module.",
+    "The route must remain absent from public nav, footer, and contact links."
+  ]
+}

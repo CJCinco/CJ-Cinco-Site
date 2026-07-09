@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate:dashboard": "node scripts/generate-web-dashboard.mjs",
+    "verify:dashboard": "node scripts/generate-web-dashboard.mjs --verify",
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run generate:dashboard && next build",
     "start": "next start",
     "lint": "eslint"
   },

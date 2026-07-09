@@ -17,7 +17,7 @@ export const siteContent = {
     "Building a creative and healing-centered life through sound, service, and practical support.",
   email: "hello@cjcinco.com",
   bio:
-    "CJ Cinco is the public creative identity of CJ Watson: a new dad, music producer, Reiki practitioner, entrepreneur, and founder behind Vero Tech Care and Green Body Works. This hub brings the public threads together without merging the businesses: music, healing work, practical service, and the long-game creative ecosystem behind Aligned Harmonics.",
+    "CJ Cinco is the public creative identity of CJ Watson: a new dad, music producer, Reiki practitioner, entrepreneur, and founder behind Vero Tech Care and Green Bodyworks. This hub brings the public threads together without merging the businesses: music, healing work, practical service, and the long-game creative ecosystem behind Aligned Harmonics.",
 };
 
 export const navItems = [
@@ -80,7 +80,7 @@ export const ventures = [
     href: "https://verotechcare.com/",
   },
   {
-    title: "Green Body Works",
+    title: "Green Bodyworks",
     type: "Healing lane",
     text: "Reiki, craniosacral-inspired bodywork, Lucia Light support, and calm session work kept as its own healing identity.",
     href: "https://greenbodyworks.com/",

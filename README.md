@@ -59,6 +59,40 @@ Global styles live in:
 src/app/globals.css
 ```
 
+## Private Dashboard
+
+The private CJ Cinco web dashboard lives at:
+
+```text
+/dashboard
+```
+
+It is intentionally not linked from the public homepage, nav, or footer. The route is built into the same static Cloudflare Pages deployment, but it should be protected in Cloudflare Zero Trust / Access with One-Time PIN for CJ's approved email before use.
+
+Generate the online-safe dashboard data:
+
+```bash
+npm run generate:dashboard
+```
+
+Verify the generated data is current:
+
+```bash
+npm run verify:dashboard
+```
+
+Source and generated files:
+
+```text
+dashboard-source/web-dashboard.json
+src/app/dashboard/generated-dashboard.ts
+src/app/dashboard/page.tsx
+public/_headers
+docs/private-dashboard-cloudflare-access.md
+```
+
+This web dashboard generator is separate from the local Aligned OS dashboard. Do not pipe local dashboard output, private AOS records, raw source files, private service details, communication data, money data, or internal execution state into the website dashboard source.
+
 The original local hero visual is:
 
 ```text

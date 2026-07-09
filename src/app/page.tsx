@@ -237,14 +237,14 @@ export default function Home() {
       >
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1fr_1fr] lg:items-center">
           <Reveal>
-            <p className="text-sm text-[#6b7e43]">Healing / Green Body Works</p>
+            <p className="text-sm text-[#6b7e43]">Healing / Green Bodyworks</p>
             <h2 className="mt-4 font-display text-5xl leading-none md:text-7xl">
               Calm sessions for grounding, reset, and reconnection.
             </h2>
           </Reveal>
           <Reveal>
             <p className="text-xl leading-9 text-[#393227]">
-              Green Body Works is the healing lane for Reiki, bodywork, Lucia
+              Green Bodyworks is the healing lane for Reiki, bodywork, Lucia
               Light support, and grounded session work. The tone stays calm,
               practical, and human: less performance, more presence.
             </p>
