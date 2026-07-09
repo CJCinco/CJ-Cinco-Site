@@ -53,7 +53,7 @@ Run:
 npm run generate:dashboard
 ```
 
-The generator reads only:
+The generator reads this repo config:
 
 ```text
 dashboard-source/web-dashboard.json
@@ -65,12 +65,15 @@ and writes:
 src/app/dashboard/generated-dashboard.ts
 ```
 
-This is intentionally separate from the local Aligned OS dashboard generator. The web dashboard source must stay curated and online-safe; do not pipe local dashboard output, raw source files, records, exports, communication data, or internal execution state into the website.
+The generator is a redacted export adapter, not a raw mirror. It reads only bounded AOS summary sources: the generated local AOS dashboard JSON, CJ Cinco / Aligned Harmonics summary surfaces, and approved Wealth dashboard/budget totals. It exports status, structure, queue counts, coaching signals, freshness, and approved summary metrics only.
+
+Do not copy raw local dashboard HTML, raw source files, contact records, communication bodies, account details, credentials, exports, private evidence, or row-level service records into the website.
 
 Verify before deploy:
 
 ```sh
 npm run verify:dashboard
+npm run verify:dashboard:privacy
 npm run build
 ```
 

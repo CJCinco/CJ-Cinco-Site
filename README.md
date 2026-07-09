@@ -69,7 +69,7 @@ The private CJ Cinco web dashboard lives at:
 
 It is intentionally not linked from the public homepage, nav, or footer. The route is built into the same static Cloudflare Pages deployment, but it should be protected in Cloudflare Zero Trust / Access with One-Time PIN for CJ's approved email before use.
 
-Generate the online-safe dashboard data:
+Generate the redacted AOS-to-web dashboard snapshot:
 
 ```bash
 npm run generate:dashboard
@@ -79,6 +79,12 @@ Verify the generated data is current:
 
 ```bash
 npm run verify:dashboard
+```
+
+Run the named privacy gate:
+
+```bash
+npm run verify:dashboard:privacy
 ```
 
 Source and generated files:
@@ -91,7 +97,7 @@ public/_headers
 docs/private-dashboard-cloudflare-access.md
 ```
 
-This web dashboard generator is separate from the local Aligned OS dashboard. Do not pipe local dashboard output, private AOS records, raw source files, private service details, communication data, money data, or internal execution state into the website dashboard source.
+This web dashboard generator is a hard redaction/export layer over bounded AOS summary sources. It reads only the generated local AOS dashboard summary, CJ Cinco lane summaries, and approved Wealth dashboard/budget totals. It must not copy raw dashboard HTML, raw source files, records, exports, communication data, contact details, credentials, or row-level private evidence into the website dashboard source.
 
 The original local hero visual is:
 

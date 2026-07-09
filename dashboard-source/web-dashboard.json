@@ -1,83 +1,29 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "route": "/dashboard",
+  "title": "Private AOS Mirror Max",
   "updated": "2026-07-09",
-  "summary": "Private CJ Cinco operator view for the public brand hub, site surface, and near-term public-safe work.",
-  "status": {
-    "label": "Private route",
-    "value": "Cloudflare Access gated",
-    "detail": "The website does not implement login code. Cloudflare Access protects this route before content loads."
-  },
-  "metrics": [
-    {
-      "label": "Site",
-      "value": "cjcinco.com",
-      "detail": "Same Cloudflare Pages project and public domain."
-    },
-    {
-      "label": "Route",
-      "value": "/dashboard",
-      "detail": "Not linked from the public homepage, nav, or footer."
-    },
-    {
-      "label": "Generator",
-      "value": "Online-safe",
-      "detail": "Built from a curated source file, separate from the local dashboard."
-    },
-    {
-      "label": "Indexing",
-      "value": "Noindex",
-      "detail": "Route metadata and Cloudflare Pages headers block indexing without advertising the path."
-    }
-  ],
-  "sections": [
-    {
-      "title": "Current Focus",
-      "kicker": "CJ Cinco",
-      "items": [
-        "Keep the public hub simple: music, healing, ventures, and contact.",
-        "Use this page as a private operator view, not a public content machine.",
-        "Finish profile/link direction before activating any posting cadence."
-      ]
-    },
-    {
-      "title": "Website Surface",
-      "kicker": "Cloudflare Pages",
-      "items": [
-        "Primary site stays at cjcinco.com and www.cjcinco.com.",
-        "Private dashboard stays inside the same static export and deployment.",
-        "No app database, worker login, or custom auth layer is used in the site code."
-      ]
-    },
-    {
-      "title": "Public-Safe Boundaries",
-      "kicker": "Filter",
-      "items": [
-        "Show only curated brand and site-operating summaries.",
-        "Do not publish internal task lists, raw strategy notes, personal records, or private service details.",
-        "Regenerate from the web-dashboard source file, not from the local operator dashboard output."
-      ]
-    },
-    {
-      "title": "Next Moves",
-      "kicker": "Sequence",
-      "items": [
-        "Keep the route out of public navigation and sitemap output.",
-        "Regenerate the online-safe data module before each dashboard deploy.",
-        "Run the live verifier after Access or hostname changes."
-      ]
-    }
-  ],
+  "summary": "A Cloudflare Access-gated CJ Cinco mirror of the local Aligned OS command dashboard, exported through a redacted snapshot layer.",
   "accessPlan": [
-    "Cloudflare Access protects the dashboard route and nested dashboard paths.",
-    "Cloudflare-native Access login is the identity provider.",
-    "The Allow policy is limited to the approved CJ account email.",
-    "Custom domains and the Pages hostname are gated so direct hostnames cannot bypass Access."
+    "Cloudflare Access protects the dashboard route and nested dashboard paths before static content loads.",
+    "The dashboard stays on the existing CJ Cinco Cloudflare Pages project.",
+    "The route remains absent from the public homepage, nav, footer, robots file, and sitemap.",
+    "The Next.js app does not implement a separate login system."
   ],
   "sourceContract": [
-    "The local dashboard remains the local operator view.",
-    "The web dashboard is generated from dashboard-source/web-dashboard.json.",
-    "The generator rejects private-domain terms before writing the website data module.",
-    "The route must remain absent from public nav, footer, and contact links."
+    "Read only the bounded AOS generated dashboard snapshot, root command summaries, CJ Cinco lane summaries, and approved Wealth dashboard summary.",
+    "Export AOS structure, goals, pressure, support gaps, coaching, queue counts, projection freshness, and summary metrics.",
+    "Do not export raw communications, contact records, local source paths, account details, credentials, private records, or raw evidence.",
+    "Fail the build if deterministic leak checks find contact patterns, local paths, long account-like numbers, raw communication markers, or credential markers."
+  ],
+  "pageOrder": [
+    "overview",
+    "cj-cinco",
+    "areas",
+    "wealth",
+    "vtc",
+    "content",
+    "coaching",
+    "system"
   ]
 }
