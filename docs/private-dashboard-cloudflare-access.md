@@ -44,6 +44,7 @@ Cloudflare Access is the authentication system. The Next.js app does not impleme
 - `public/_headers` adds `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet` plus no-store and basic hardening headers.
 - The public homepage does not link to `/dashboard`.
 - No `robots.txt` entry advertises the private route. Route-level metadata and HTTP headers carry indexing control.
+- `functions/_middleware.js` blocks `/dashboard`, `/dashboard/*`, and `/dashboard.html` on unapproved Pages preview hostnames. This prevents unique deployment preview URLs from serving the private static dashboard outside the Access-covered hostnames.
 
 ## Generator Contract
 
@@ -84,3 +85,5 @@ npm run verify:dashboard:live
 ```
 
 Expected unauthenticated result after Access is active: every dashboard hostname is intercepted by Cloudflare Access login/redirect/denial, not dashboard HTML. The live verifier intentionally fails while the route is still publicly readable.
+
+When checking a Cloudflare preview deployment URL such as `https://<deployment>.cj-cinco-site.pages.dev/dashboard`, the expected result is a `404` with `x-cj-cinco-dashboard-guard: preview-blocked`.
