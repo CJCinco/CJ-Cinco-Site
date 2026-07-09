@@ -127,7 +127,7 @@ export const dashboardData = {
     "readout": {
       "posture": "Loaded but workable.",
       "movement": "VTC remains the live revenue driver; Health has Apple Health/device export infrastructure and a weekly shortcut/processor path; Wealth ledger/dashboard truth is fresher than the p...",
-      "exposure": "Medium-high until active VTC service relationships/follow-up loops, benefit application review-marker cleanup, the first Health weekly export proof, and the next Home room reset a..."
+      "exposure": "Medium-high until active VTC service relationships/follow-up loops, support paperwork review-marker cleanup, the first Health weekly export proof, and the next Home room reset are..."
     }
   },
   "areas": [
@@ -145,14 +145,14 @@ export const dashboardData = {
       },
       "oneThing": {
         "owner": "Health",
-        "current": "Keep using the same-day Obsidian daily checklist as the 10 / 10 / 10 Health baseline proof while protecting post-hospitalization professional-care continuity and monitor...",
+        "current": "Keep using the same-day Obsidian daily checklist as the 10 / 10 / 10 Health baseline proof while protecting professional-care professional-care continuity and monitoring...",
         "supports": "MAP Health / Mind 1-Year Goals #1-3: body composition, race readiness, and reading as mind-development proof.",
         "doneWhen": "today's Body, Mind, and Soul baseline checks are visible in the daily checklist, real training details are logged separately when they happen, and the first scheduled we..."
       },
       "supportGaps": [
         "Keep using the Obsidian daily checklist for the 10 / 10 / 10 baseline.",
         "Confirm professional-care continuity and follow-up questions with qualified professionals.",
-        "Ask qualified professionals whether recent health-marker flags need follow-up."
+        "Ask qualified professionals whether recent wellbeing signals need follow-up."
       ],
       "queue": {
         "open": 0,
@@ -169,18 +169,18 @@ export const dashboardData = {
         "grade": "C+",
         "momentum": "Low to medium",
         "risk": "Medium",
-        "upgrade": "use the new relationship move template in a real family relationship block and trim it if it feels too heavy."
+        "upgrade": "use the new relationship move template in a real relationship lane block and trim it if it feels too heavy."
       },
       "oneThing": {
         "owner": "The People",
         "current": "Keep People work focused on live Linear items and relationship repair practice; do not carry the private touchpoint.",
-        "supports": "MAP 1-Year Goals #4-5 for marriage stability, family presence, relationship repair, homeschool rhythm, and kid-friendly family-business exposure.",
-        "doneWhen": "the current People Linear item has a clear next proof, and private relationship context remains in AOS."
+        "supports": "MAP 1-Year Goals #4-5 for relationship stability, household presence, relationship repair, homeschool rhythm, and kid-friendly age-appropriate business exposure.",
+        "doneWhen": "the current People Linear item has a clear next proof, and private context remains in AOS."
       },
       "supportGaps": [
         "Use source note in three real trigger moments this week, including the timeout script before escalation when possible.",
         "Use source note to return and choose one clean repair/teamwork line after regulation.",
-        "Use source note as a behavior prompt only, especially for the next family relationship repair/teamwork block."
+        "Use source note as a behavior prompt only, especially for the next relationship lane repair/teamwork block."
       ],
       "queue": {
         "open": 0,
@@ -225,7 +225,7 @@ export const dashboardData = {
         "grade": "B",
         "momentum": "Medium",
         "risk": "Medium.",
-        "upgrade": "review the regenerated Wealth dashboard after the 2026-07-03 recent service correction, then keep S corp cleanup and benefit application work separated in Linear."
+        "upgrade": "review the regenerated Wealth dashboard after the 2026-07-03 recent service correction, then keep S corp cleanup and support paperwork application work separated in Line..."
       },
       "oneThing": {
         "owner": "Wealth",
@@ -235,7 +235,7 @@ export const dashboardData = {
       },
       "supportGaps": [
         "Build the first S corp cleanup decision packet from the selected Gary Keller sequence.",
-        "Choose one benefit application issue in Linear project Wealth to move next: professional-care/support follow-through or review-marker cleanup; for re...",
+        "Choose one support paperwork issue in Linear project Wealth to move next: professional-care/support follow-through or review-marker cleanup; for revi...",
         "Review the regenerated Wealth dashboard after the approved 2026-06-23 comprehensive apply."
       ],
       "queue": {
@@ -621,7 +621,7 @@ export const dashboardData = {
             {
               "label": "Exposure",
               "value": "Watch",
-              "detail": "Medium-high until active VTC service relationships/follow-up loops, benefit application review-marker cleanup, the first Health weekly export proof, and the next Home room reset a...",
+              "detail": "Medium-high until active VTC service relationships/follow-up loops, support paperwork review-marker cleanup, the first Health weekly export proof, and the next Home room reset are...",
               "tone": "alert"
             }
           ]
@@ -737,7 +737,7 @@ export const dashboardData = {
             {
               "label": "The People",
               "value": "C+ - Yellow",
-              "detail": "use the new relationship move template in a real family relationship block and trim it if it feels too heavy.",
+              "detail": "use the new relationship move template in a real relationship lane block and trim it if it feels too heavy.",
               "tone": "watch"
             },
             {
@@ -749,7 +749,7 @@ export const dashboardData = {
             {
               "label": "Wealth",
               "value": "B - Yellow",
-              "detail": "review the regenerated Wealth dashboard after the 2026-07-03 recent service correction, then keep S corp cleanup and benefit application work separated in Linear.",
+              "detail": "review the regenerated Wealth dashboard after the 2026-07-03 recent service correction, then keep S corp cleanup and support paperwork application work separated in Line...",
               "tone": "watch"
             },
             {
@@ -1036,7 +1036,7 @@ export const dashboardData = {
             {
               "label": "The People",
               "value": "Medium",
-              "detail": "use the new relationship move template in a real family relationship block and trim it if it feels too heavy.",
+              "detail": "use the new relationship move template in a real relationship lane block and trim it if it feels too heavy.",
               "tone": "watch"
             },
             {
@@ -1048,7 +1048,7 @@ export const dashboardData = {
             {
               "label": "Wealth",
               "value": "Medium.",
-              "detail": "review the regenerated Wealth dashboard after the 2026-07-03 recent service correction, then keep S corp cleanup and benefit application work separated in Linear.",
+              "detail": "review the regenerated Wealth dashboard after the 2026-07-03 recent service correction, then keep S corp cleanup and support paperwork application work separated in Line...",
               "tone": "watch"
             },
             {
