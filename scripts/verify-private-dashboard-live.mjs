@@ -53,6 +53,7 @@ async function checkTarget(url) {
   const accessLoginBody = textMatches(accessSignatures, body) && (body.includes("/cdn-cgi/access") || body.includes("cloudflareaccess.com"));
   const deniedByGate = [401, 403].includes(status);
   const blockedByPreviewGuard = previewPagesHost && [404, 410].includes(status) && dashboardGuard === "preview-blocked";
+  const unavailablePreviewHost = previewPagesHost && [404, 410].includes(status);
   const leakedDashboard = textMatches(dashboardSignatures, body);
 
   if (leakedDashboard) {
@@ -67,7 +68,7 @@ async function checkTarget(url) {
     };
   }
 
-  if (redirectedToAccess || accessLoginBody || deniedByGate || blockedByPreviewGuard) {
+  if (redirectedToAccess || accessLoginBody || deniedByGate || blockedByPreviewGuard || unavailablePreviewHost) {
     return {
       url,
       ok: true,
@@ -78,9 +79,11 @@ async function checkTarget(url) {
       wwwAuthenticate,
       reason: blockedByPreviewGuard
         ? "blocked by preview dashboard guard"
-        : redirectedToAccess
-          ? "redirected to Cloudflare Access"
-          : "blocked by an access gate"
+        : unavailablePreviewHost
+          ? "preview hostname does not serve dashboard"
+          : redirectedToAccess
+            ? "redirected to Cloudflare Access"
+            : "blocked by an access gate"
     };
   }
 
