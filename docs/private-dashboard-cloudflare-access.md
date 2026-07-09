@@ -68,7 +68,7 @@ npm run build
 After deploy, verify:
 
 ```sh
-curl -I https://cjcinco.com/dashboard
+npm run verify:dashboard:live
 ```
 
-Expected unauthenticated result after Access is active: Cloudflare Access login/redirect headers or an Access login page, not dashboard HTML.
+Expected unauthenticated result after Access is active: every dashboard hostname is intercepted by Cloudflare Access login/redirect/denial, not dashboard HTML. The live verifier intentionally fails while the route is still publicly readable.

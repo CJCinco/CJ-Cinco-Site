@@ -5,6 +5,7 @@
   "scripts": {
     "generate:dashboard": "node scripts/generate-web-dashboard.mjs",
     "verify:dashboard": "node scripts/generate-web-dashboard.mjs --verify",
+    "verify:dashboard:live": "node scripts/verify-private-dashboard-live.mjs",
     "dev": "next dev",
     "build": "npm run generate:dashboard && next build",
     "start": "next start",
