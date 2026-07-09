@@ -5,8 +5,8 @@
   "summary": "Private CJ Cinco operator view for the public brand hub, site surface, and near-term public-safe work.",
   "status": {
     "label": "Private route",
-    "value": "Cloudflare Access gate required",
-    "detail": "The website does not implement login code. Cloudflare Access should protect this route before use."
+    "value": "Cloudflare Access gated",
+    "detail": "The website does not implement login code. Cloudflare Access protects this route before content loads."
   },
   "metrics": [
     {
@@ -62,17 +62,17 @@
       "title": "Next Moves",
       "kicker": "Sequence",
       "items": [
-        "Verify the route builds locally and appears in the static export.",
-        "Deploy the same Cloudflare Pages project.",
-        "Confirm unauthenticated visitors see the Cloudflare Access login gate before content."
+        "Keep the route out of public navigation and sitemap output.",
+        "Regenerate the online-safe data module before each dashboard deploy.",
+        "Run the live verifier after Access or hostname changes."
       ]
     }
   ],
   "accessPlan": [
-    "Create or update Cloudflare Access rules for the dashboard route and nested dashboard paths.",
-    "Use One-Time PIN as the identity provider.",
-    "Add an Allow policy for CJ's approved email address only.",
-    "Confirm custom domains and the Pages hostname cannot bypass the Access gate."
+    "Cloudflare Access protects the dashboard route and nested dashboard paths.",
+    "Cloudflare-native Access login is the identity provider.",
+    "The Allow policy is limited to the approved CJ account email.",
+    "Custom domains and the Pages hostname are gated so direct hostnames cannot bypass Access."
   ],
   "sourceContract": [
     "The local dashboard remains the local operator view.",

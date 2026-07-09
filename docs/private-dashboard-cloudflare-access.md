@@ -18,14 +18,23 @@ Use Cloudflare Zero Trust / Access as the login wall.
 2. Create or update a Self-hosted and private application.
 3. Add public hostname:
    - Domain: `cjcinco.com`
-   - Path: `/dashboard`
+   - Path: `dashboard`
 4. Add a second protected path:
    - Domain: `cjcinco.com`
-   - Path: `/dashboard/*`
-5. Repeat the same protection for `www.cjcinco.com` and the `cj-cinco-site.pages.dev` hostname, or make sure those hostnames cannot bypass the protected custom-domain route.
-6. Add an Allow policy for CJ's approved email address only.
-7. Enable One-Time PIN as the identity provider.
-8. Leave the app deny-by-default for every other email or unauthenticated request.
+   - Path: `dashboard/*`
+5. Repeat the same protection for `www.cjcinco.com`.
+6. Add `cj-cinco-site.pages.dev` as a custom public hostname, with no path, so the direct Pages hostname cannot bypass the protected custom-domain route.
+7. Add an Allow policy for CJ's approved email address only.
+8. Use the Cloudflare-native Access login provider, or One-Time PIN if that provider is explicitly enabled later.
+9. Leave the app deny-by-default for every other email or unauthenticated request.
+
+Current live configuration:
+
+- Plan: Zero Trust Free.
+- Application: `CJ Cinco Dashboard`.
+- Custom domains: `cjcinco.com/dashboard`, `cjcinco.com/dashboard/*`, `www.cjcinco.com/dashboard`, `www.cjcinco.com/dashboard/*`.
+- Direct Pages hostname: `cj-cinco-site.pages.dev` gated as a whole hostname.
+- Policy: `Allow CJ only`, limited to `Watson9186@gmail.com`.
 
 Cloudflare Access is the authentication system. The Next.js app does not implement passwords, sessions, or custom auth code.
 
