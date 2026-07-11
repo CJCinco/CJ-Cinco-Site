@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="theme-color" content="#01030a">
+  <title>AOS Dashboard</title>
+  <link rel="stylesheet" href="assets/dashboard.css?refresh=2026-07-10T17%3A52%3A10">
+</head>
+<body>
+  <script>window.AOS_DASHBOARD_DATA = {"meta":{"title":"AOS Dashboard","version":"0.9.0","builtAt":"2026-07-10T17:52:10","today":"2026-07-10","shutdownHour":17,"codexSessionsEnabled":false,"sourceRoot":"[local source hidden]","sourceSystem":"00 Master Command/dashboard-system"}};</script>
+  <!-- Data chunks intentionally load before deferred dashboard.js for file:// compatibility. -->
+  <script src="assets/data/cockpit-core.js?refresh=2026-07-10T17%3A52%3A10"></script>
+  <div class="app-shell">
+    <nav class="war-nav" aria-label="AOS Dashboard pages"><a class="active" href="index.html?refresh=2026-07-10T17%3A52%3A10">AOS Dashboard</a><a href="captain.html?refresh=2026-07-10T17%3A52%3A10">Captain</a><a href="xo-comms.html?refresh=2026-07-10T17%3A52%3A10">XO Comms</a><a href="vtc-sales-floor.html?refresh=2026-07-10T17%3A52%3A10">VTC</a><a href="social-media.html?refresh=2026-07-10T17%3A52%3A10">Social Media</a><a href="purchases.html?refresh=2026-07-10T17%3A52%3A10">Purchases</a><a href="areas.html?refresh=2026-07-10T17%3A52%3A10">Area State</a><a href="wealth.html?refresh=2026-07-10T17%3A52%3A10">Wealth</a></nav>
+    <header class="command-bar">
+      <div class="brand-block">
+        <p class="eyebrow">Aligned OS</p>
+        <h1>AOS Dashboard</h1>
+        <p class="refresh-stamp">Built 2026-07-10 17:52:10</p>
+      </div>
+      <div class="timer-block" aria-label="Shutdown timer">
+        <span class="timer-label">Shutdown</span>
+        <strong id="shutdownTimer">--:--:--</strong>
+        <span class="timer-note">1700 hard stop</span>
+      </div>
+      <div class="status-chip" id="paceStatusChip">Loading</div>
+    </header>
+
+    <main>
+      
+      <section class="mission-grid" aria-label="Goal control">
+        <article class="mission-panel one-thing-panel">
+          <div class="panel-kicker">Captain One Thing</div>
+          <h2 id="captainOneThing"></h2>
+          <p id="definitionDone"></p>
+          <div class="proof-strip">
+            <span>Done when</span>
+            <strong id="nextProof"></strong>
+          </div>
+        </article>
+
+        
+      <section class="chart-section pace-card" aria-label="One Thing pace chart">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Pace Chart</p>
+            <h2>Planned One Thing pace vs all completed One Things</h2>
+          </div>
+          <div class="segmented pace-segmented" role="group" aria-label="Chart zoom">
+            <button type="button" data-range="7">7</button>
+            <button type="button" data-range="30" class="active">30</button>
+            <button type="button" data-range="90">90</button>
+            <button type="button" data-range="ytd">YTD</button>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <svg id="paceChart" viewBox="0 0 980 360" role="img" aria-label="One Thing pace chart"></svg>
+        </div>
+        <div class="chart-readout">
+          <span id="plannedReadout"></span>
+          <span id="actualReadout"></span>
+          <strong id="gapReadout"></strong>
+        </div>
+      </section>
+    
+      </section>
+
+      
+      <article class="mission-panel leverage-now-panel">
+        <div class="leverage-primary">
+          <div class="panel-kicker">Leverage Now</div>
+          <span>Captain</span>
+          <h2>[private operational detail]</h2>
+          <p>[private operational detail]</p>
+          <div class="leverage-proof-strip">
+            <span>Next proof</span>
+            <strong>[private operational detail]</strong>
+            <small>[private operational detail]</small>
+          </div>
+        </div>
+        <div class="leverage-detail-grid">
+          <div class="leverage-order">
+            <span>Move order</span>
+            <ol class="leverage-move-list"><li><b>2</b><div><span>VTC</span><strong>[private operational detail]</strong><p>[private operational detail]</p><small>[private operational detail]</small></div></li><li><b>3</b><div><span>Wealth</span><strong>[private operational detail]</strong><p>[private operational detail]</p><small>[private operational detail]</small></div></li><li><b>4</b><div><span>The People</span><strong>[private operational detail]</strong><p>[private operational detail]</p><small>[private operational detail]</small></div></li></ol>
+          </div>
+          <div class="leverage-pressure">
+            <span>Pressure flags</span>
+            <div class="leverage-flag-list"><div><span>Captain inbox</span><strong>1 current</strong></div><div><span>Exposure</span><strong>Medium-high until active VTC client/follow-up...</strong></div><div><span>Home</span><strong>1 queued</strong></div><div><span>Wealth</span><strong>8 queued</strong></div><div><span>VTC</span><strong>4 queued</strong></div></div>
+            <small>Computed from Captain One Thing, area handoffs, active Captain cards, and queue pressure. Read-only view.</small>
+          </div>
+        </div>
+      </article>
+    
+
+      
+          <article class="mission-panel production-meter-panel production-meter-wide baseline">
+            <div class="production-meter-main">
+              <div class="production-meter-top">
+                <div>
+                  <div class="panel-kicker">Past 24h Production Meter</div>
+                  <h3>0%</h3>
+                  <span>Codex signal disabled</span>
+                </div>
+                <div class="production-meter-meta">
+                  <strong>0 min</strong>
+                  <span>0 sessions</span>
+                </div>
+              </div>
+              <div class="production-track" aria-label="Producing, helping produce, and not producing split">
+                <span class="production-segment production-empty" style="width: 100%"></span>
+              </div>
+              <div class="production-buckets">
+                <div class="production-bucket"><span>Producing</span><strong>0.0%</strong><small>0 min</small></div><div class="production-bucket"><span>Helping Produce</span><strong>0.0%</strong><small>0 min</small></div><div class="production-bucket"><span>Not Producing</span><strong>0.0%</strong><small>0 min</small></div>
+              </div>
+              <p><strong>Raw split:</strong> 0% producing, 0% helping produce, 0% not producing.</p>
+              
+              <div class="production-counting-rules">
+                <span>What is being counted</span>
+                <div>
+                  <div><span>Producing counts</span><p>Direct output in Health, People, Home, Wealth, or VTC: written, updated, sent, published, logged, completed, booked, billed, cleaned, built, or delivered work.</p></div><div><span>Helping Produce counts</span><p>Command, XO, AOS routines, recovery, planning, reading, or setup that supports core work but is not direct output.</p></div><div><span>Not Producing counts</span><p>Parked support-area work, unclassified sessions, unclear-output sessions, and drift.</p></div>
+                </div>
+              </div>
+    
+            </div>
+            <div class="production-feedback-grid">
+              <div class="production-feedback-card action full"><span>Direct production choices</span><strong>Highest leverage first</strong><ol class="production-choice-list"><li><b>1</b><div><span>Captain</span><strong>[private operational detail]</strong><p>[private operational detail]</p></div></li><li><b>2</b><div><span>VTC</span><strong>[private operational detail]</strong><p>[private operational detail]</p></div></li><li><b>3</b><div><span>VTC</span><strong>[private operational detail]</strong><p>[private operational detail]</p></div></li><li><b>4</b><div><span>VTC</span><strong>[private operational detail]</strong><p>[private operational detail]</p></div></li><li><b>5</b><div><span>Wealth</span><strong>[private operational detail]</strong><p></p></div></li><li><b>6</b><div><span>Home</span><strong>[private operational detail]</strong><p></p></div></li><li><b>7</b><div><span>Health</span><strong>[private operational detail]</strong><p></p></div></li><li><b>8</b><div><span>The People</span><strong>[private operational detail]</strong><p></p></div></li></ol></div><div class="production-feedback-card wide"><span>Next correction</span><strong>[private operational detail]</strong></div>
+              <small class="production-formula">Set AOS_DASHBOARD_CODEX_SESSIONS=0 before rebuild only when you need to disable Codex session scanning.</small>
+            </div>
+            <div class="production-session-panel"><div class="production-session-panel-heading"><div><span>Today's work by category</span><strong>No classified work cards yet</strong></div><p>Refresh after a Codex session lands today.</p></div></div>
+          </article>
+    
+
+      <section class="area-section" aria-label="Area risk radar">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Area Risk Radar</p>
+            <h2>Top five fronts</h2>
+          </div>
+        </div>
+        <div class="area-grid" id="areaGrid"></div>
+      </section>
+
+      
+      <section class="unified-section" aria-label="Unified dashboard">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Main Dashboard</p>
+            <h2>Command projection</h2>
+          </div>
+        </div>
+        <div class="unified-grid">
+          <article class="mission-panel wealth-projection">
+            <div class="panel-kicker">Wealth Projection</div>
+            <h3>Jul 2026</h3>
+            <div class="wealth-metrics">
+              <div><span>Income</span><strong>$300</strong></div>
+              <div><span>Expenses</span><strong>$0</strong></div>
+              <div><span>Cash Flow</span><strong>$300</strong></div>
+              <div><span>Net Worth</span><strong>$123,495</strong></div>
+            </div>
+          </article>
+          <article class="mission-panel dashboard-outbox-panel">
+            <div class="queue-panel-heading">
+              <div>
+                <p class="panel-kicker">Legacy Captain Outbox</p>
+                <h2>Source artifacts</h2>
+              </div>
+              <span>12</span>
+            </div>
+            <div class="dashboard-outbox-scroll">
+              
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail] </p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail] </p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+
+          <article class="captain-file-card compact-file-card">
+            <div class="file-card-top">
+              <span>[private operational detail]</span>
+              <small>[private operational detail]</small>
+            </div>
+            <h3>[private operational detail]</h3>
+            <p class="file-summary">[private operational detail]</p>
+            
+            
+          </article>
+            
+            </div>
+          </article>
+          
+          <article class="mission-panel codex-alignment baseline mission-compass unified-compass-panel">
+            <div class="codex-alignment-top">
+              <div>
+                <div class="panel-kicker">Today Codex Compass</div>
+                <h3>0%</h3>
+                <span>Codex signal disabled</span>
+              </div>
+              <div class="codex-alignment-meta">
+                <strong>0 min</strong>
+                <span>0 sessions</span>
+              </div>
+            </div>
+            <div class="alignment-track" aria-label="Codex alignment category split">
+              <span class="alignment-segment alignment-empty" style="width: 100%"></span>
+            </div>
+            <div class="alignment-buckets">
+              <div class="alignment-bucket"><span>1-Month Goal</span><strong>0.0%</strong><small>0 min</small></div><div class="alignment-bucket"><span>Support</span><strong>0.0%</strong><small>0 min</small></div><div class="alignment-bucket"><span>Recovery</span><strong>0.0%</strong><small>0 min</small></div><div class="alignment-bucket"><span>Drift</span><strong>0.0%</strong><small>0 min</small></div>
+            </div>
+            <p><strong>Last aligned:</strong> Codex session scanning was disabled for this dashboard build.</p>
+            <p><strong>Next correction:</strong> Private person 61 the next Codex session with: Private person 62 the active VTC revenue board from Linear, especially Private person 63 / Private person 64 &amp; Private person 65 and current VTC lead-floor follow-through in projec...</p>
+            <small>Set AOS_DASHBOARD_CODEX_SESSIONS=0 before rebuild only when you need to disable local Codex session energy.</small>
+          </article>
+    
+        </div>
+      </section>
+    
+
+      <section class="lower-grid prep-grid" aria-label="Prep radar">
+        <article class="mission-panel events-panel">
+          <div class="panel-kicker">[private operational detail]</div>
+          <div class="prep-visual" id="prepVisual"></div>
+          <div id="eventRadar"></div>
+        </article>
+      </section>
+
+      <section class="source-section" aria-label="AOS Dashboard sources">
+        <details>
+          <summary>[local source hidden]</summary>
+          <ul>      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+    </ul>
+        </details>
+      </section>
+    </main>
+  </div>
+  <script src="assets/dashboard.js?refresh=2026-07-10T17%3A52%3A10" defer></script>
+</body>
+</html>

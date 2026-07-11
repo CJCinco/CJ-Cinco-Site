@@ -54,21 +54,24 @@ Run:
 npm run generate:dashboard
 ```
 
-The generator reads this repo config:
+The generator reads the canonical generated local dashboard package and writes an already-redacted web package:
 
 ```text
-dashboard-source/web-dashboard.json
+00 Master Command/dashboard-system/pages/
+00 Master Command/dashboard-system/assets/
 ```
 
-and writes:
+Generated outputs:
 
 ```text
-src/app/dashboard/generated-dashboard.ts
+dashboard-source/web-dashboard.json (small redaction manifest)
+public/dashboard/*.html
+public/dashboard/assets/
 ```
 
-The generator is a redacted export adapter, not a raw mirror. It reads only bounded AOS summary sources: the generated local AOS dashboard JSON, CJ Cinco / Aligned Harmonics summary surfaces, and approved Wealth dashboard/budget totals. It exports status, structure, queue counts, coaching signals, freshness, and approved summary metrics only.
+The generator is a structural mirror with a field-aware redaction boundary. It keeps the local page set, navigation, DOM, CSS, JavaScript, labels, counts, chart structure, and ordering unchanged. It masks natural-person and record names, contact/account values, local paths, raw communications, private narratives, and row-level private details before writing repository or public artifacts.
 
-Do not copy raw local dashboard HTML, raw source files, contact records, communication bodies, account details, credentials, exports, private evidence, or row-level service records into the website.
+Access, noindex, and privacy controls remain infrastructure only. Do not render website-return links, route banners, access-plan cards, protection-contract cards, or other UI that is not in the canonical local dashboard.
 
 Verify before deploy:
 

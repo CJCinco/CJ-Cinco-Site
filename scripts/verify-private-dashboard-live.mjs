@@ -10,6 +10,10 @@ const urls = process.argv.slice(2).filter((arg) => !arg.startsWith("-"));
 const targets = urls.length > 0 ? urls : defaultUrls;
 
 const dashboardSignatures = [
+  /<title>AOS Dashboard<\/title>/i,
+  /class=["']war-nav["']/i,
+  /id=["']shutdownTimer["']/i,
+  /Captain One Thing/i,
   /Private AOS Mirror Max/i,
   /CJ Cinco Private Dashboard/i,
   /Private CJ Cinco route/i,

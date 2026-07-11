@@ -1,808 +1,532 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 const aosRoot = resolve(repoRoot, "../../../..");
-const sourcePath = resolve(repoRoot, "dashboard-source/web-dashboard.json");
-const outputPath = resolve(repoRoot, "src/app/dashboard/generated-dashboard.ts");
+const localDashboardRoot = resolve(aosRoot, "00 Master Command/dashboard-system");
+const localPagesRoot = resolve(localDashboardRoot, "pages");
+const localAssetsRoot = resolve(localDashboardRoot, "assets");
+const outputRoot = resolve(repoRoot, "public/dashboard");
+const manifestPath = resolve(repoRoot, "dashboard-source/web-dashboard.json");
 const verifyOnly = process.argv.includes("--verify");
-const refreshSource = process.argv.includes("--refresh-source");
 
-const inputs = {
-  aosDashboard: "00 Master Command/dashboard-system/assets/data/dashboard.json",
-  wealthDashboard: "04 Wealth/dashboard.csv",
-  wealthBudget: "04 Wealth/budget-goals.csv",
-  cjCincoHandoff: "06 Aligned Harmonics/CJ Cinco/HANDOFF.md",
-  cjCincoReadme: "06 Aligned Harmonics/CJ Cinco/README.md",
-  alignedHarmonicsHandoff: "06 Aligned Harmonics/HANDOFF.md",
-};
-
-const pageTitles = {
-  overview: "Overview",
-  "cj-cinco": "CJ Cinco",
-  areas: "Area State",
-  wealth: "Wealth",
-  vtc: "VTC",
-  content: "Content / Social",
-  coaching: "Coaching",
-  system: "System",
-};
-
-const toneSet = new Set(["neutral", "good", "watch", "alert", "cyan", "gold", "green", "red"]);
-const pageKeySet = new Set(Object.keys(pageTitles));
-
-const leakRules = [
-  {
-    name: "email address",
-    pattern: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
-  },
-  {
-    name: "phone number",
-    pattern: /(?:\+?1[\s.-]?)?(?:\([2-9]\d{2}\)|[2-9]\d{2})[\s.-]?[2-9]\d{2}[\s.-]?\d{4}\b/,
-  },
-  {
-    name: "street address",
-    pattern: /(?<![-\w])\d{1,6}\s+[A-Z0-9.'-]+(?:\s+[A-Z0-9.'-]+){0,4}\s+(?:ST|STREET|AVE|AVENUE|RD|ROAD|DR|DRIVE|LN|LANE|BLVD|BOULEVARD|CT|COURT|CIR|CIRCLE|WAY|TRL|TRAIL|PKWY|PARKWAY|PL|PLACE)\b/i,
-  },
-  {
-    name: "local user path",
-    pattern: /\/Users\/cjwatts|Library\/Mobile Documents|com~apple~CloudDocs|iCloud~md~obsidian/i,
-  },
-  {
-    name: "raw source folder",
-    pattern: /04 Clients \+ Leads|08 Source Documents|source-files|master-transactions|SSDI App|Contracts\/|Pictures\//i,
-  },
-  {
-    name: "credential marker",
-    pattern: /\b(password|passcode|api[_ -]?key|secret|bearer|cookie|session token|reset link|two[- ]factor|2fa|verification code)\b/i,
-  },
-  {
-    name: "account number marker",
-    pattern: /\b(account number|routing number|ssn|social security|full account|card number)\b/i,
-  },
-  {
-    name: "account-like digit group",
-    pattern: /\b(?:\d[ -]?){13,19}\b/,
-  },
-  {
-    name: "raw message marker",
-    pattern: /\b(raw mail|raw messages|message body|transcript body|voicemail transcript)\b/i,
-  },
-  {
-    name: "private health/legal marker",
-    pattern: /\b(hospitalization|diagnosis|lab results?|medication|psychiatry|therapy|attorney|benefit application)\b/i,
-  },
+const pageFiles = [
+  "index.html",
+  "captain.html",
+  "xo-comms.html",
+  "vtc-sales-floor.html",
+  "social-media.html",
+  "purchases.html",
+  "areas.html",
+  "wealth.html",
 ];
 
+const staticAssetFiles = [
+  "dashboard.css",
+  "dashboard.js",
+  "command-views.css",
+  "wealth.css",
+  "wealth.js",
+];
+
+const safeText = new Set([
+  "AOS Dashboard",
+  "Captain",
+  "XO Comms",
+  "VTC",
+  "Social Media",
+  "Purchases",
+  "Area State",
+  "Wealth",
+  "Health",
+  "The People",
+  "Home",
+  "Vero Tech Care",
+  "Aligned Harmonics",
+  "CJ Cinco",
+  "Green Bodyworks",
+  "Emerald Acres",
+  "Altered States",
+  "Core",
+  "Support",
+  "Past",
+  "Current",
+  "Next",
+  "Status",
+  "Priority",
+  "Owner",
+  "Source",
+  "Sources",
+  "Loading",
+  "Open",
+  "Clear",
+  "Active",
+  "Paused",
+  "Blocked",
+  "Scheduled",
+  "Posted",
+  "Overdue",
+  "Urgent",
+  "High",
+  "Medium",
+  "Low",
+  "Grade",
+  "Risk",
+  "Inbox",
+  "Queue",
+  "Queues",
+  "Today",
+  "Tomorrow",
+  "This Week",
+  "This Month",
+  "Done when",
+  "Captain One Thing",
+  "Captain projection stale",
+  "Leverage Now",
+  "Move order",
+  "Pressure flags",
+  "Next proof",
+  "Next correction",
+  "Direct production choices",
+  "Highest leverage first",
+  "Today's work by category",
+  "No classified work cards yet",
+  "Refresh after a Codex session lands today.",
+  "->",
+  "Prep Radar",
+  "Upcoming Events",
+  "ACTION",
+  "REVIEW",
+  "SEND",
+  "DONE",
+  "Reply / Send",
+  "Schedule",
+  "Wait",
+  "AOS Dashboard sources",
+]);
+
+const safeCapitalizedWords = new Set([
+  "AOS", "Captain", "XO", "VTC", "Linear", "Health", "People", "Home", "Wealth",
+  "Vero", "Tech", "Care", "Aligned", "Harmonics", "CJ", "Cinco", "Green", "Bodyworks",
+  "Emerald", "Acres", "Altered", "States", "Social", "Media", "Apple", "Obsidian",
+  "Codex", "MAP", "Maintain", "Advance", "One", "Thing", "Dashboard", "Manager",
+  "Core", "Support", "Private", "Current", "Next", "Past", "Status", "Priority",
+  "Source", "Sources", "Open", "Clear", "Active", "Paused", "Blocked", "Scheduled",
+  "Posted", "Overdue", "Urgent", "High", "Medium", "Low", "Today", "Tomorrow",
+  "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
+  "January", "February", "March", "April", "May", "June", "July", "August",
+  "September", "October", "November", "December",
+]);
+
+const redactionSentinels = {
+  contact: "[hidden]",
+  source: "[local source hidden]",
+  communication: "[private communication hidden]",
+  health: "[private health detail]",
+  family: "[private family detail]",
+  household: "[private household detail]",
+  client: "[private client detail]",
+  finance: "[private financial detail]",
+  social: "[private social content hidden]",
+  operational: "[private operational detail]",
+};
+
+const pseudonymMaps = new Map();
+
 function assert(condition, message) {
-  if (!condition) {
-    throw new Error(message);
+  if (!condition) throw new Error(message);
+}
+
+function read(path) {
+  return readFileSync(path, "utf8");
+}
+
+function write(path, content) {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, content, "utf8");
+}
+
+function hash(value) {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+function pseudonym(category, rawValue) {
+  if (!pseudonymMaps.has(category)) pseudonymMaps.set(category, new Map());
+  const values = pseudonymMaps.get(category);
+  if (!values.has(rawValue)) values.set(rawValue, values.size + 1);
+  const number = String(values.get(rawValue)).padStart(2, "0");
+  const label = category === "person" ? "Private person" : category === "event" ? "Private event" : "Private item";
+  return `${label} ${number}`;
+}
+
+function recordRedaction(_original, sanitized) {
+  return sanitized;
+}
+
+function categoryForArea(areaName) {
+  if (areaName === "Health") return "health";
+  if (areaName === "The People") return "family";
+  if (areaName === "Home") return "household";
+  if (areaName === "Wealth") return "finance";
+  if (areaName === "Vero Tech Care") return "client";
+  return "operational";
+}
+
+function categoryForPath(path, value, root) {
+  const top = String(path[0] ?? "");
+  const key = String(path.at(-1) ?? "");
+  const lowerKey = key.toLowerCase();
+  const parentKeys = path.map(String);
+
+  if (/phone|email|streetaddress|mailingaddress|accountnumber|routingnumber|passcode|password|token|secret/i.test(lowerKey)) {
+    return "contact";
   }
+
+  if (["source", "path", "sourcePath", "projection", "oneThingLog", "actionUrl", "originalPacket", "sourceBasis"].includes(key)) {
+    return "source";
+  }
+
+  if (top === "meta" && key === "sourceRoot") return "source";
+  if (top === "pace" && key === "source") return "source";
+  if (top === "energyFlow" && (key === "source" || parentKeys.includes("activityLog") && typeof value === "string")) return "source";
+  if (top === "alignmentSignal" && ["lastAlignedMove", "nextCorrectingMove", "source"].includes(key)) return "operational";
+
+  if (top === "captain" && ["current", "why", "next_proof", "posture", "movement", "exposure", "reason", "action", "summary"].includes(key)) {
+    return "operational";
+  }
+
+  if (top === "events" || top === "urgentEvent") {
+    if (key === "name") return "event";
+    if (["date", "next_occurrence"].includes(key)) return "operational";
+  }
+
+  if (top === "milestones" && ["name", "title", "detail", "summary", "date"].includes(key)) return key === "name" ? "event" : "operational";
+
+  if (top === "queues") {
+    if (key === "path") return "source";
+    if (parentKeys.includes("items") && typeof value === "string") return "item";
+    if (["id", "title", "detail", "next_step", "hierarchy"].includes(key)) return "item";
+  }
+
+  if (top === "allItems" && parentKeys.includes("items")) {
+    if (["source", "path", "actionUrl"].includes(key)) return "source";
+    if (["id", "title", "detail", "next_step", "hierarchy", "draft", "need"].includes(key)) return "item";
+  }
+
+  if (top === "captainDesk" && ["id", "title", "name", "body", "content", "preview", "previewLines", "fullContent", "summary", "draft", "need"].includes(key)) {
+    return /body|content|preview|draft/i.test(key) ? "communication" : "item";
+  }
+
+  if (top === "xoComms") {
+    const safeXoKeys = new Set(["surfaceLabel", "status", "statusLabel", "action", "urgency", "priority", "platform", "label", "key", "kind", "lane", "date", "today", "checkedAt", "window", "count", "enabled"]);
+    if (typeof value === "string" && !safeXoKeys.has(key)) return /body|content|preview|draft|message|need/i.test(key) ? "communication" : "person";
+  }
+
+  if (top === "leverageNow") {
+    const safeLeverageKeys = new Set(["label", "area", "rank", "status", "count", "window", "kind"]);
+    if (typeof value === "string" && !safeLeverageKeys.has(key)) return "operational";
+  }
+
+  if (top === "projectionStatus") {
+    if (["source", "projection", "reason", "action", "oneThingLog", "summary"].includes(key)) return key === "source" ? "source" : "operational";
+  }
+
+  if (top === "sources" && ["path", "purpose", "name"].includes(key)) return key === "path" ? "source" : "operational";
+
+  if (top === "areas") {
+    const areaIndex = Number(path[1]);
+    const areaName = Number.isInteger(areaIndex) ? root?.areas?.[areaIndex]?.name : "";
+    if (["current", "why", "next_proof", "upgrade", "detail", "summary"].includes(key)) return categoryForArea(areaName);
+    if (key === "risk" && typeof value === "string" && value.length > 40) return categoryForArea(areaName);
+    if (parentKeys.includes("nextMoves") && typeof value === "string") return categoryForArea(areaName);
+  }
+
+  if (top === "unifiedDashboard") {
+    const section = String(path[1] ?? "");
+    if (section === "socialMedia" && /account|copy|preview|draft|packet|notes|verification|title|name/i.test(key)) return "social";
+    if ((section === "vtcRunway" || section === "vtcSalesFloor") && /name|client|lead|contact|phone|email|service|note|detail|title|id|nextmove|next_step|draft|message|actualsent/i.test(key)) return "client";
+    if (section === "wealth" && /description|memo|merchant|ledger|transaction|account|source/i.test(key)) return "finance";
+  }
+
+  return null;
 }
 
-function readAos(relativePath) {
-  return readFileSync(resolve(aosRoot, relativePath), "utf8");
-}
-
-function readJsonAos(relativePath) {
-  return JSON.parse(readAos(relativePath));
-}
-
-function normalizeText(value) {
-  return String(value ?? "")
-    .normalize("NFKD")
-    .replace(/[\u2018\u2019]/g, "'")
-    .replace(/[\u201C\u201D]/g, '"')
-    .replace(/[\u2013\u2014]/g, "-")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function redactText(value, maxLength = 210) {
-  let text = normalizeText(value)
-    .replace(/`([^`]+)`/g, "$1")
-    .replace(/\b0[0-9]\s+(Health|The People|Home|Wealth|Vero Tech Care|Aligned Harmonics|Altered States)\b/g, "$1")
-    .replace(/\b00 Master Command\b/g, "Master Command")
-    .replace(/\b[A-Z]-\d{4}-\d{3}\s*-\s*[^:]+:/g, "Active service handoff:")
-    .replace(/\bCJC-\d+\b/g, "active issue")
-    .replace(/\bAshley\s*\/\s*Rhythm\s*&\s*Soul\b/gi, "the active VTC handoff")
-    .replace(/\bAshley Bille\b/gi, "the active VTC handoff")
-    .replace(/\bRhythm\s*&\s*Soul\b/gi, "the active VTC handoff")
-    .replace(/\bMobile Inventor\b/gi, "the app developer")
-    .replace(/\bSSDI\b/g, "support paperwork")
-    .replace(/\bJoan\b/gi, "recent service correction")
-    .replace(/\bMichele\b/gi, "relationship lane")
-    .replace(/\bEddie\b[^.;]*/gi, "private touchpoint")
-    .replace(/\b09 Knowledge Base\/[^.]+\.md\b/gi, "source note")
-    .replace(/Confirm or recreate needed Apple\/iCloud aliases[^.]+/gi, "Confirm VTC business contact aliases only inside local source systems")
-    .replace(/Watch for the app developer[^.]+/gi, "Watch for active app handoff acceptance and record the proof locally")
-    .replace(/Confirm current therapy[^.]+qualified professionals\./gi, "Confirm professional-care continuity and follow-up questions with qualified professionals.")
-    .replace(/Ask primary care[^.]+context\./gi, "Ask qualified professionals whether recent wellbeing signals need follow-up.")
-    .replace(/\bpost-hospitalization\b|\bhospitalization\b|\bdiagnosis\b|\btherapy\b|\bpsychiatry\b|\bmedication(?:-management)?\b|\brefill\b|\bside effects\b|\bhemoglobin\b|\bhematocrit\b|\bBUN\b|\blipid-panel\b|\blab results?\b|\bclinician\b|\bprimary care\b|\battorney\b/gi, "professional-care")
-    .replace(/\bbenefit application\b/gi, "support paperwork")
-    .replace(/\bhealth-marker flags?\b/gi, "wellbeing signals")
-    .replace(/\bfamily relationship\b/gi, "relationship lane")
-    .replace(/\bprivate relationship context\b/gi, "private context")
-    .replace(/\bmarriage stability\b/gi, "relationship stability")
-    .replace(/\bfamily presence\b/gi, "household presence")
-    .replace(/\bfamily-business exposure\b/gi, "age-appropriate business exposure")
-    .replace(/\bclient\/lead records?\b/gi, "service proof")
-    .replace(/\bclients?\b/gi, "service relationships")
-    .replace(/\bleads?\b/gi, "opportunities")
-    .replace(/\bcontact records?\b/gi, "relationship records")
-    .replace(/\bpictures\/videos\b/gi, "media")
-    .replace(/\b00 Manager\/inbox\/Social Raw\/?\b/gi, "the Social Raw intake lane")
-    .replace(/\b[\w.-]+@/g, "business alias")
-    .replace(/\bMail\/Messages\b/g, "communications")
-    .replace(/\bmail\/messages\b/g, "communications")
-    .replace(/\/Users\/[^\s)]+/g, "local source")
-    .replace(/https?:\/\/\S+/g, "approved public link")
-    .replace(/\S+@\S+\.\S+/g, "approved account");
-
+function sanitizeNarrative(value) {
+  let text = String(value);
   text = text
-    .replace(/\bbenefit application application\b/gi, "benefit application")
-    .replace(/\bopportunities-floor\b/gi, "follow-up floor")
-    .replace(/\bopportunities-follow-up\b/gi, "follow-up")
-    .replace(/\bthe active VTC handoff app handoff\b/gi, "active VTC app handoff")
-    .replace(/\bthe app developer\/app-developer\b/gi, "the app developer")
-    .replace(/\bthe Social Raw intake lane\/\b/gi, "the Social Raw intake lane")
-    .replace(/\bthe Social Raw intake lane\/\./gi, "the Social Raw intake lane.")
-    .replace(/\brecent service correction correction\b/gi, "recent service correction")
-    .replace(/\bfollow-up floor follow-through\b/gi, "follow-up floor")
-    .replace(/Confirm VTC business contact aliases only inside local source systems.*$/i, "Confirm VTC business contact aliases only inside local source systems.")
-    .replace(/\s+/g, " ")
-    .trim();
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, "[hidden]")
+    .replace(/(?:\+?\d{1,3}[\s.-]?)?(?:\(\d{2,4}\)|\d{2,4})[\s.-]?\d{3,4}[\s.-]?\d{4}\b/g, "[hidden]")
+    .replace(/\b\d{1,6}\s+[A-Z0-9.'-]+(?:\s+[A-Z0-9.'-]+){0,4}\s+(?:ST|STREET|AVE|AVENUE|RD|ROAD|DR|DRIVE|LN|LANE|BLVD|BOULEVARD|CT|COURT|CIR|CIRCLE|WAY|TRL|TRAIL|PKWY|PARKWAY|PL|PLACE)\b/gi, "[hidden]")
+    .replace(/\/Users\/[^\s<>'\"]+/g, "[local source hidden]")
+    .replace(/(?:[A-Za-z0-9][A-Za-z0-9 _+.-]*\/)+[A-Za-z0-9][A-Za-z0-9 _+.-]*\.(?:md|csv|json|toml)\b/gi, "[local source hidden]")
+    .replace(/https?:\/\/[^\s<>'\"]+/gi, "[hidden]")
+    .replace(/\b(?:[a-z0-9-]+\.)+(?:com|org|net|io|co)\b/gi, "[hidden]")
+    .replace(/\b(?:\d[ -]?){13,19}\b/g, "[hidden]");
 
-  if (text.length > maxLength) {
-    return `${text.slice(0, maxLength - 1).trim()}...`;
+  if (/\b(client|lead|contact|family|relationship|reply|message|call|text|email|appointment|birthday|especially|with|from|for)\b/i.test(text)) {
+    text = text.replace(/\b[A-Z][a-z]{2,}\b/g, (word, offset, full) => {
+      const sentenceStart = offset === 0 || /[.!?]\s*$/.test(full.slice(0, offset));
+      if (sentenceStart || safeCapitalizedWords.has(word)) return word;
+      return pseudonym("person", word);
+    });
   }
 
   return text;
 }
 
-function titleCase(value) {
-  return normalizeText(value).replace(/\b\w/g, (match) => match.toUpperCase());
-}
-
-function money(value) {
-  if (typeof value === "string" && value.trim().startsWith("$")) {
-    return value.trim();
+function redactString(value, category) {
+  if (category === "person" || category === "item" || category === "event") {
+    return recordRedaction(value, pseudonym(category, value));
   }
-
-  const numeric = Number(value || 0);
-  return numeric.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: Number.isInteger(numeric) ? 0 : 2,
-  });
+  return recordRedaction(value, redactionSentinels[category] ?? redactionSentinels.operational);
 }
 
-function csvParse(text) {
-  const rows = [];
-  let row = [];
-  let field = "";
-  let quoted = false;
+function sanitizeTree(value, path = [], root = value) {
+  if (Array.isArray(value)) return value.map((item, index) => sanitizeTree(item, [...path, index], root));
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, sanitizeTree(item, [...path, key], root)]));
+  }
+  if (typeof value !== "string") return value;
 
-  for (let index = 0; index < text.length; index += 1) {
-    const char = text[index];
-    const next = text[index + 1];
+  const category = categoryForPath(path, value, root);
+  if (category) return redactString(value, category);
+  const sanitized = sanitizeNarrative(value);
+  return recordRedaction(value, sanitized);
+}
 
-    if (quoted) {
-      if (char === '"' && next === '"') {
-        field += '"';
-        index += 1;
-      } else if (char === '"') {
-        quoted = false;
-      } else {
-        field += char;
-      }
+function elementCategory(fileName, classes, parentCategory, tagSource = "") {
+  if (parentCategory) return parentCategory;
+  const classSet = new Set(classes.split(/\s+/).filter(Boolean));
+  const has = (...names) => names.some((name) => classSet.has(name));
+
+  if (has("source-section")) return "source";
+  if (fileName === "index.html" && has("projection-alert", "one-thing-panel", "leverage-primary", "leverage-move-list", "production-choice-list", "production-feedback-card", "production-session-panel", "dashboard-outbox-scroll", "file-summary", "area-grid", "events-panel")) return "operational";
+  if (fileName === "captain.html" && has("captain-file-card", "file-preview", "file-full-content")) return "operational";
+  if (fileName === "xo-comms.html" && has("xo-surface-item", "xo-item-draft", "xo-checkpoint-line")) return "communication";
+  if (fileName === "vtc-sales-floor.html" && has("sales-row", "timeline-row", "basket-item", "sales-source-row")) return "client";
+  if (fileName === "social-media.html" && has("social-row", "packet-draft", "packet-draft-body", "packet-draft-title", "packet-source", "packet-variant")) return "social";
+  if (fileName === "purchases.html" && has("all-item-card", "item-next", "item-field")) return "operational";
+  if (fileName === "areas.html" && has("area-state-card", "score-row", "area-radar-insight", "state-column", "agent-lane-summary", "source-link", "list")) return "operational";
+  if (fileName === "wealth.html" && (has("ledger-description", "ledger-source", "entity-toggle") || /\bdata-ledger-row\b/i.test(tagSource))) return "finance";
+  return null;
+}
+
+function placeholderForText(text, category) {
+  const trimmed = text.trim();
+  if (!trimmed || safeText.has(trimmed) || /^(?:\d+|[A-F][+-]?|yellow|green|red|blue|purple|primary track|supporting front|\d+\s+(?:open|current|queued|scheduled|posted|blocked))$/i.test(trimmed)) return text;
+  const placeholder = category === "item" || category === "event" || category === "person"
+    ? pseudonym(category, trimmed)
+    : redactionSentinels[category] ?? redactionSentinels.operational;
+  const leading = text.match(/^\s*/)?.[0] ?? "";
+  const trailing = text.match(/\s*$/)?.[0] ?? "";
+  return `${leading}${placeholder}${trailing}`;
+}
+
+function sanitizeTag(tag, category) {
+  let output = tag.replace(/(["'])\.\.\/assets\//g, "$1assets/");
+  output = output.replace(/\b(href|src|title|aria-label|data-[\w-]+|value|placeholder)=(["'])(.*?)\2/gi, (match, attr, quote, rawValue) => {
+    let value = rawValue;
+    if (attr.toLowerCase() === "href") {
+      const plain = value.split("?")[0];
+      const safePage = pageFiles.includes(plain);
+      const safeAnchor = value.startsWith("#");
+      if (!safePage && !safeAnchor && (/^(?:https?:|mailto:|tel:)/i.test(value) || value.includes("../") || /\.(?:md|csv|json|toml)(?:$|[?#])/i.test(value))) value = "#";
+      return `${attr}=${quote}${value}${quote}`;
+    }
+    if (attr.toLowerCase() === "src" && value.includes("../")) value = value.replace(/^\.\.\//, "");
+    if (attr.toLowerCase() === "src" || attr.toLowerCase() === "aria-label") return `${attr}=${quote}${sanitizeNarrative(value)}${quote}`;
+    value = category ? placeholderForText(value, category).trim() : sanitizeNarrative(value);
+    return `${attr}=${quote}${value}${quote}`;
+  });
+  return output;
+}
+
+function sanitizeInlineScript(text, sourceRoot) {
+  const match = text.match(/^(\s*window\.AOS_DASHBOARD_DATA\s*=\s*)(\{.*\})(;\s*)$/s);
+  if (!match) return sanitizeNarrative(text);
+  const data = JSON.parse(match[2]);
+  const sanitized = sanitizeTree(data, [], sourceRoot);
+  return `${match[1]}${JSON.stringify(sanitized)}${match[3]}`;
+}
+
+function sanitizeHtml(rawHtml, fileName, sourceRoot) {
+  const tokens = rawHtml.match(/<!--[\s\S]*?-->|<![^>]*>|<\/?[A-Za-z][^>]*>|[^<]+/g) ?? [];
+  const stack = [];
+  let output = "";
+
+  for (const token of tokens) {
+    if (/^<\//.test(token)) {
+      output += token;
+      stack.pop();
+      continue;
+    }
+    if (/^<!/.test(token)) {
+      output += token;
+      continue;
+    }
+    if (/^<[A-Za-z]/.test(token)) {
+      const tagName = token.match(/^<([A-Za-z0-9-]+)/)?.[1]?.toLowerCase() ?? "";
+      const className = token.match(/\bclass=(["'])(.*?)\1/i)?.[2] ?? "";
+      const parentCategory = stack.at(-1)?.category ?? null;
+      const category = elementCategory(fileName, className, parentCategory, token);
+      output += sanitizeTag(token, category);
+      if (!/\/>$/.test(token) && !["meta", "link", "img", "input", "br", "hr", "source"].includes(tagName)) stack.push({ tagName, category });
       continue;
     }
 
-    if (char === '"') {
-      quoted = true;
-    } else if (char === ",") {
-      row.push(field);
-      field = "";
-    } else if (char === "\n") {
-      row.push(field);
-      rows.push(row);
-      row = [];
-      field = "";
-    } else if (char !== "\r") {
-      field += char;
-    }
+    const context = stack.at(-1);
+    if (context?.tagName === "script") output += sanitizeInlineScript(token, sourceRoot);
+    else if (context?.tagName === "style") output += token;
+    else if (context?.category) output += placeholderForText(token, context.category);
+    else output += sanitizeNarrative(token);
   }
 
-  if (field.length > 0 || row.length > 0) {
-    row.push(field);
-    rows.push(row);
-  }
-
-  const [header = [], ...body] = rows.filter((item) => item.some((cell) => cell.trim().length > 0));
-  return body.map((item) => Object.fromEntries(header.map((key, index) => [key, item[index] ?? ""])));
+  return output;
 }
 
-function parseBullets(markdown, heading, limit = 4) {
-  const pattern = new RegExp(`^## ${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*$`, "m");
-  const match = markdown.match(pattern);
-  if (!match) return [];
-
-  const start = match.index + match[0].length;
-  const rest = markdown.slice(start);
-  const nextHeading = rest.search(/^## /m);
-  const section = nextHeading >= 0 ? rest.slice(0, nextHeading) : rest;
-
-  return section
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => /^[-*] |\d+\. /.test(line))
-    .map((line) => line.replace(/^[-*] |\d+\. /, ""))
-    .filter(Boolean)
-    .slice(0, limit)
-    .map((line) => redactText(line, 180));
-}
-
-function parseField(markdown, label) {
-  const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = markdown.match(new RegExp(`^- ${escaped}:\\s*(.+)$`, "mi"));
-  return match ? redactText(match[1], 180) : "";
-}
-
-function parseOneThing(markdown, fallbackOwner) {
+function parseCockpitChunk(source) {
+  const marker = 'window.AOS_DASHBOARD_DATA_CHUNKS["cockpit-core"] = ';
+  const start = source.indexOf(marker);
+  assert(start >= 0, "cockpit-core data marker is missing");
+  const jsonStart = start + marker.length;
+  const jsonEnd = source.lastIndexOf(";");
+  assert(jsonEnd > jsonStart, "cockpit-core data terminator is missing");
   return {
-    owner: fallbackOwner,
-    current: parseField(markdown, "Current") || "Maintain the current lane focus.",
-    supports: parseField(markdown, "Supports") || "AOS structure and current source context.",
-    doneWhen: parseField(markdown, "Done when") || "The next proof is visible in the owning source surface.",
+    prefix: source.slice(0, jsonStart),
+    data: JSON.parse(source.slice(jsonStart, jsonEnd)),
+    suffix: source.slice(jsonEnd),
   };
 }
 
-function parseScorecard(markdown) {
-  return {
-    grade: parseField(markdown, "Grade") || "n/a",
-    momentum: parseField(markdown, "Momentum") || "n/a",
-    risk: parseField(markdown, "Risk") || "n/a",
-    upgrade: parseField(markdown, "Main upgrade needed") || "Keep the source surface clear and current.",
-  };
+function schemaSignature(value) {
+  if (Array.isArray(value)) return ["array", value.length, ...value.map(schemaSignature)];
+  if (value && typeof value === "object") return ["object", ...Object.entries(value).map(([key, item]) => [key, schemaSignature(item)])];
+  return typeof value;
 }
 
-function metric(label, value, detail, tone = "neutral") {
-  return {
-    label,
-    value: String(value),
-    detail: redactText(detail, 180),
-    tone: toneSet.has(tone) ? tone : "neutral",
-  };
+function htmlSignature(value) {
+  return (value.match(/<\/?[A-Za-z][^>]*>/g) ?? []).map((tag) => tag
+    .replace(/\b(href|src|title|aria-label|data-[\w-]+|value|placeholder)=(["']).*?\2/gi, "$1=\"\"")
+    .replace(/\?refresh=[^"']+/g, "?refresh="));
 }
 
-function row(label, value, detail = "", tone = "neutral") {
-  return {
-    label: redactText(label, 80),
-    value: String(value),
-    detail: redactText(detail, 180),
-    tone: toneSet.has(tone) ? tone : "neutral",
-  };
+function navText(value) {
+  const nav = value.match(/<nav class="war-nav"[\s\S]*?<\/nav>/)?.[0] ?? "";
+  return nav.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-function section(title, kicker, items, tone = "neutral") {
-  return {
-    title: redactText(title, 80),
-    kicker: redactText(kicker, 80),
-    tone: toneSet.has(tone) ? tone : "neutral",
-    items,
-  };
-}
+function buildArtifacts() {
+  const localDashboard = JSON.parse(read(resolve(localAssetsRoot, "data/dashboard.json")));
+  const sanitizedDashboard = sanitizeTree(localDashboard, [], localDashboard);
+  assert(JSON.stringify(schemaSignature(localDashboard)) === JSON.stringify(schemaSignature(sanitizedDashboard)), "redaction changed the local dashboard schema");
 
-function buildAreaFromDashboard(area, queue) {
-  return {
-    slug: area.slug,
-    name: area.name,
-    tier: "Core",
-    status: area.status || "yellow",
-    missionLink: redactText(area.missionLink || "primary track", 60),
-    scorecard: {
-      grade: redactText(area.scorecard?.grade || "n/a", 24),
-      momentum: redactText(area.scorecard?.momentum || "n/a", 60),
-      risk: redactText(area.scorecard?.risk || "n/a", 60),
-      upgrade: redactText(area.scorecard?.upgrade || "", 170),
-    },
-    oneThing: {
-      owner: redactText(area.oneThing?.owner || area.name, 40),
-      current: redactText(area.oneThing?.current || "", 170),
-      supports: redactText(area.oneThing?.why || "", 170),
-      doneWhen: redactText(area.oneThing?.next_proof || "", 170),
-    },
-    supportGaps: (area.nextMoves || []).slice(0, 3).map((item) => redactText(item, 150)),
-    queue: {
-      open: queue?.count ?? 0,
-      status: queue?.status || "clear",
-    },
-  };
-}
+  const localChunkSource = read(resolve(localAssetsRoot, "data/cockpit-core.js"));
+  const chunk = parseCockpitChunk(localChunkSource);
+  const sanitizedChunk = sanitizeTree(chunk.data, [], chunk.data);
+  assert(JSON.stringify(schemaSignature(chunk.data)) === JSON.stringify(schemaSignature(sanitizedChunk)), "redaction changed the cockpit data schema");
 
-function buildMarkdownArea(slug, name, tier, markdown, queue) {
-  const scorecard = parseScorecard(markdown);
-  return {
-    slug,
-    name,
-    tier,
-    status: scorecard.risk.toLowerCase().includes("high") ? "red" : "yellow",
-    missionLink: tier === "Support" ? "support lane" : "primary track",
-    scorecard,
-    oneThing: parseOneThing(markdown, name),
-    supportGaps: parseBullets(markdown, "Next Recommended Actions", 3),
-    queue: {
-      open: queue?.count ?? 0,
-      status: queue?.status || "clear",
-    },
-  };
-}
-
-function safeQueueLabel(label) {
-  return redactText(label, 80)
-    .replace(/Legacy Captain outbox/i, "Captain source artifacts")
-    .replace(/\binbox\b/gi, "intake");
-}
-
-function buildQueues(queues) {
-  return queues.map((item) => ({
-    label: safeQueueLabel(item.label),
-    count: Number(item.count || 0),
-    status: item.status === "clear" ? "clear" : "open",
-  }));
-}
-
-function sumOpenQueues(queues) {
-  return queues.filter((item) => item.count > 0).length;
-}
-
-function buildBudgetSummary(rows) {
-  const income = rows
-    .filter((item) => item.goal_type === "inflow")
-    .reduce((sum, item) => sum + Number(item.monthly_target || 0), 0);
-  const outflow = rows
-    .filter((item) => item.goal_type === "outflow")
-    .reduce((sum, item) => sum + Number(item.monthly_target || 0), 0);
-
-  return {
-    incomeTarget: money(income),
-    outflowTarget: money(outflow),
-    targetCashFlow: money(income - outflow),
-    categories: rows.map((item) => ({
-      label: redactText(item.category, 40),
-      value: money(item.monthly_target),
-      type: item.goal_type === "inflow" ? "Income" : "Outflow",
-    })),
-  };
-}
-
-function validateConfig(config) {
-  assert(config && typeof config === "object" && !Array.isArray(config), "dashboard source config must be an object.");
-  assert(config.schemaVersion === 2, "dashboard source config schemaVersion must be 2.");
-  assert(config.route === "/dashboard", "dashboard route must remain /dashboard.");
-  assert(Array.isArray(config.pageOrder), "dashboard pageOrder must be an array.");
-  config.pageOrder.forEach((key) => assert(pageKeySet.has(key), `unknown page key in pageOrder: ${key}`));
-}
-
-function walkStrings(value, path = "root", found = []) {
-  if (typeof value === "string") {
-    found.push([path, value]);
-    return found;
-  }
-  if (Array.isArray(value)) {
-    value.forEach((item, index) => walkStrings(item, `${path}[${index}]`, found));
-    return found;
-  }
-  if (value && typeof value === "object") {
-    Object.entries(value).forEach(([key, item]) => walkStrings(item, `${path}.${key}`, found));
-  }
-  return found;
-}
-
-function walkKeys(value, path = "root", found = []) {
-  if (Array.isArray(value)) {
-    value.forEach((item, index) => walkKeys(item, `${path}[${index}]`, found));
-    return found;
-  }
-  if (value && typeof value === "object") {
-    Object.entries(value).forEach(([key, item]) => {
-      found.push([`${path}.${key}`, key]);
-      walkKeys(item, `${path}.${key}`, found);
-    });
-  }
-  return found;
-}
-
-function validateNoLeaks(data) {
-  const violations = [];
-
-  for (const [path, value] of walkStrings(data)) {
-    for (const rule of leakRules) {
-      if (rule.pattern.test(value)) {
-        violations.push(`${path}: ${rule.name}`);
-      }
-    }
-  }
-
-  for (const [path, key] of walkKeys(data)) {
-    if (/\b(email|phone|address|leadId|messageBody|transcript|sourceRoot|absolutePath|accountNumber)\b/i.test(key)) {
-      violations.push(`${path}: blocked key ${key}`);
-    }
-  }
-
-  assert(violations.length === 0, `private dashboard leak check failed:\n${violations.join("\n")}`);
-}
-
-function validateSnapshot(data) {
-  assert(data.schemaVersion === 2, "generated schemaVersion must be 2.");
-  assert(data.route === "/dashboard", "generated route must be /dashboard.");
-  assert(Array.isArray(data.nav) && data.nav.length >= 5, "nav must contain private dashboard tabs.");
-  assert(Array.isArray(data.pages) && data.pages.length === data.nav.length, "pages must match nav length.");
-  assert(Array.isArray(data.metrics) && data.metrics.length >= 6, "metrics must contain meaningful cards.");
-  assert(Array.isArray(data.areas) && data.areas.length >= 7, "areas must include core and support lanes.");
-  assert(data.privacy && data.privacy.status === "passed", "privacy status must be passed.");
-
-  data.nav.forEach((item) => assert(pageKeySet.has(item.key), `unknown nav key: ${item.key}`));
-  data.pages.forEach((page) => {
-    assert(pageKeySet.has(page.key), `unknown page key: ${page.key}`);
-    assert(Array.isArray(page.sections) && page.sections.length > 0, `${page.key} needs sections.`);
-  });
-
-  validateNoLeaks(data);
-}
-
-function renderDataModule(data) {
-  const json = JSON.stringify(data, null, 2);
-  return `// Generated by scripts/generate-web-dashboard.mjs. Do not edit manually.\n\nexport const dashboardData = ${json} as const;\n\nexport type DashboardData = typeof dashboardData;\n`;
-}
-
-function cloneWithoutSnapshot(config) {
-  const nextConfig = { ...config };
-  delete nextConfig.snapshot;
-  return nextConfig;
-}
-
-function buildDashboardFromSnapshot(config) {
-  validateConfig(config);
-  assert(config.snapshot && typeof config.snapshot === "object" && !Array.isArray(config.snapshot), "dashboard source must include a committed redacted snapshot. Run npm run refresh:dashboard:aos locally.");
-  validateSnapshot(config.snapshot);
-  assert(config.snapshot.route === config.route, "committed dashboard snapshot route must match source route.");
-  assert(config.snapshot.title === config.title, "committed dashboard snapshot title must match source title.");
-  assert(config.snapshot.updated === config.updated, "committed dashboard snapshot updated date must match source updated date.");
-  return config.snapshot;
-}
-
-function buildDashboardFromAos(config) {
-  validateConfig(config);
-
-  const aos = readJsonAos(inputs.aosDashboard);
-  const wealthRows = csvParse(readAos(inputs.wealthDashboard));
-  const budgetRows = csvParse(readAos(inputs.wealthBudget));
-  const cjHandoff = readAos(inputs.cjCincoHandoff);
-  const ahHandoff = readAos(inputs.alignedHarmonicsHandoff);
-  readAos(inputs.cjCincoReadme);
-
-  const latestWealth = wealthRows.at(-1) || {};
-  const budget = buildBudgetSummary(budgetRows);
-  const queues = buildQueues(aos.queues || []);
-  const queueByLabel = new Map((aos.queues || []).map((item) => [item.label, item]));
-  const areas = [
-    ...(aos.areas || []).map((area) => buildAreaFromDashboard(area, queueByLabel.get(`${area.name === "VTC" ? "VTC" : area.name} inbox`))),
-    buildMarkdownArea("aligned-harmonics", "Aligned Harmonics", "Support", ahHandoff, queueByLabel.get("Aligned Harmonics inbox")),
-    buildMarkdownArea("cj-cinco", "CJ Cinco", "Support", cjHandoff, queueByLabel.get("CJ Cinco inbox")),
-    {
-      slug: "altered-states",
-      name: "Altered States",
-      tier: "Support",
-      status: "yellow",
-      missionLink: "support lane",
-      scorecard: {
-        grade: "B",
-        momentum: "Low by design",
-        risk: "Medium",
-        upgrade: "Keep parked support light and approval-gated.",
-      },
-      oneThing: {
-        owner: "Altered States",
-        current: "Process new support items in light mode only.",
-        supports: "MAP service-count proof path and owner-approved support boundaries.",
-        doneWhen: "The next item is routed, logged, or held for approval without activating a larger system.",
-      },
-      supportGaps: ["Keep broad expansion parked unless explicitly activated."],
-      queue: {
-        open: queueByLabel.get("Altered States inbox")?.count ?? 0,
-        status: queueByLabel.get("Altered States inbox")?.status || "clear",
-      },
-    },
-  ];
-
-  const projectionCount = Number(aos.projectionStatus?.count ?? aos.captain?.projection?.count ?? 0);
-  const projectionStatus = redactText(aos.projectionStatus?.status || aos.captain?.projection?.status || "unknown", 40);
-  const vtcRunway = aos.unifiedDashboard?.vtcRunway || {};
-  const vtcSales = aos.unifiedDashboard?.vtcSalesFloor || {};
-  const social = aos.unifiedDashboard?.socialMedia || {};
-
-  const captainOneThing = {
-    owner: "Captain",
-    current: redactText(aos.captain?.oneThing?.current || "Work the highest-leverage AOS proof.", 170),
-    supports: redactText(aos.captain?.oneThing?.why || "Current AOS priority stack.", 170),
-    doneWhen: redactText(aos.captain?.oneThing?.next_proof || "A visible proof is logged in the owning source.", 170),
-  };
-
-  const vtcSafeNextMove = "Move the highest-priority VTC service handoff or follow-up proof, then update the owning record locally.";
-  const nav = config.pageOrder.map((key) => ({ key, title: pageTitles[key] }));
-  const builtAt = aos.meta?.builtAt
-    ? `${aos.meta.builtAt}${String(aos.meta.builtAt).includes("T") ? "" : "T00:00:00"}`
-    : `${config.updated}T00:00:00`;
-
-  const snapshot = {
-    schemaVersion: 2,
+  const artifacts = new Map();
+  artifacts.set(manifestPath, `${JSON.stringify({
+    schemaVersion: 3,
     route: "/dashboard",
-    title: config.title,
-    updated: config.updated,
-    generatedAt: builtAt,
-    dataDate: redactText(aos.meta?.today || config.updated, 40),
-    summary: redactText(config.summary, 220),
-    access: {
-      label: "Cloudflare Access",
-      value: "Existing gate",
-      detail: "Static dashboard content is protected by the existing CJ Cinco Access application before the route loads.",
-    },
-    privacy: {
-      status: "passed",
-      label: "Redacted export",
-      detail: "Only whitelisted dashboard summaries, counts, status labels, and approved Wealth totals are rendered.",
-      checks: [
-        "No contact-pattern strings",
-        "No local source paths",
-        "No raw communication text",
-        "No account-like identifiers",
-        "No row-level private evidence",
-      ],
-    },
-    freshness: {
-      status: projectionStatus,
-      label: projectionCount > 0 ? `${projectionCount} freshness item(s)` : "Fresh",
-      checkedAt: redactText(aos.projectionStatus?.checkedAt || aos.meta?.builtAt || builtAt, 60),
-      detail: projectionCount > 0
-        ? "Captain projection needs a sync pass before treating every current surface as fresh."
-        : "Captain projection reports fresh at the latest local dashboard build.",
-    },
-    nav,
-    metrics: [
-      metric("Access", "Gated", "Cloudflare Access remains the authentication boundary.", "green"),
-      metric("Freshness", projectionCount > 0 ? `${projectionCount} sync` : "Fresh", "Projection freshness from the local AOS dashboard.", projectionCount > 0 ? "watch" : "good"),
-      metric("Pace", redactText(aos.pace?.statusLabel || "n/a", 40), "One Thing pace from the generated local dashboard summary.", aos.pace?.status === "behind" ? "alert" : "good"),
-      metric("Areas", `${areas.length}`, "Core and support lanes mirrored as redacted status cards.", "cyan"),
-      metric("Open Queues", `${sumOpenQueues(queues)}`, "Queue counts only; item names and raw files are not exported.", sumOpenQueues(queues) > 0 ? "watch" : "good"),
-      metric("Net Worth", money(latestWealth.net_worth), `Latest approved Wealth dashboard row: ${latestWealth.month || "n/a"}.`, "gold"),
-      metric("VTC Target", redactText(vtcRunway.target || "$1,923+", 40), "Current revenue proof target, with record-level details withheld.", "green"),
-      metric("Social", `${social.header?.scheduled ?? 0} scheduled`, "Approval-gated content queue counts only.", "cyan"),
+    mode: "canonical-local-dashboard-mirror",
+    structureSource: "generated local AOS dashboard package",
+    visibleAdditions: [],
+    redactions: [
+      "natural-person and private-record names",
+      "contact, account, credential, and local-path values",
+      "raw communications and exact private narratives",
+      "row-level client, social, purchase, and ledger details",
     ],
-    captain: {
-      status: redactText(aos.captain?.status || "yellow", 40),
-      signal: redactText(aos.captain?.signal || "not complete", 60),
-      oneThing: captainOneThing,
-      readout: {
-        posture: redactText(aos.captain?.readout?.posture || "", 120),
-        movement: redactText(aos.captain?.readout?.movement || "", 180),
-        exposure: redactText(aos.captain?.readout?.exposure || "", 180),
-      },
-    },
-    areas,
-    queues,
-    wealth: {
-      month: redactText(latestWealth.month || "n/a", 24),
-      income: money(latestWealth.income),
-      expenses: money(latestWealth.expenses),
-      cashFlow: money(latestWealth.cash_flow),
-      assets: money(latestWealth.assets),
-      liabilities: money(latestWealth.liabilities),
-      netWorth: money(latestWealth.net_worth),
-      dataStatus: redactText(latestWealth.data_status || "n/a", 80),
-      budget,
-    },
-    vtc: {
-      status: redactText(vtcRunway.statusLabel || "Needs push", 60),
-      target: redactText(vtcRunway.target || "$1,923+", 40),
-      deadline: redactText(vtcRunway.deadline || "2026-07-31", 40),
-      currentWeekCollected: redactText(vtcRunway.currentWeekCollected || "$0", 40),
-      gapToTarget: redactText(vtcRunway.gapToTarget || "", 40),
-      daysRemaining: Number(vtcRunway.daysRemaining || 0),
-      counts: {
-        dueFollowups: Number(vtcRunway.dueFollowups || vtcSales.header?.overdue || 0),
-        warmOpportunities: Number(vtcRunway.warmHighLeads || vtcSales.header?.warmLeads || 0),
-        partnerTouches: Number(vtcSales.header?.partnerWorkshopTouches || 0),
-        proofProgressPct: Number(vtcSales.header?.proofProgressPct || 0),
-      },
-      nextMove: vtcSafeNextMove,
-    },
-    contentSocial: {
-      status: "Approval-gated",
-      activeTotal: Number(social.header?.activeTotal || 0),
-      scheduled: Number(social.header?.scheduled || 0),
-      blocked: Number(social.header?.blocked || 0),
-      posted: Number(social.header?.posted || 0),
-      attention: Number(social.header?.attention || 0),
-      pendingPackets: Number(social.pendingPackets?.packetCount || 0),
-      weekRows: (social.visuals?.weekRows || []).map((item) => ({
-        label: redactText(item.label, 40),
-        dateRange: redactText(item.dateRange, 40),
-        scheduled: Number(item.scheduled || 0),
-        posted: Number(item.posted || 0),
-        blocked: Number(item.blocked || 0),
-        target: Number(item.target || 0),
-      })),
-      platforms: (social.visuals?.platformRows || []).map((item) => ({
-        label: redactText(item.platformLabel, 40),
-        scheduled: Number(item.scheduled || 0),
-        blocked: Number(item.blocked || 0),
-        posted: Number(item.posted || 0),
-        total: Number(item.total || 0),
-      })),
-    },
-    guardrails: {
-      accessPlan: config.accessPlan.map((item) => redactText(item, 180)),
-      sourceContract: config.sourceContract.map((item) => redactText(item, 180)),
-      sourceLabels: [
-        "AOS generated dashboard summary",
-        "Master Command current readout",
-        "CJ Cinco lane summaries",
-        "Approved Wealth dashboard totals",
-        "Approved Wealth budget totals",
-      ],
-    },
-  };
+    outputs: [
+      "public/dashboard/*.html",
+      "public/dashboard/assets/",
+    ],
+  }, null, 2)}\n`);
+  artifacts.set(resolve(outputRoot, "assets/data/dashboard.json"), `${JSON.stringify(sanitizedDashboard, null, 2)}\n`);
+  artifacts.set(resolve(outputRoot, "assets/data/cockpit-core.js"), `${chunk.prefix}${JSON.stringify(sanitizedChunk)}${chunk.suffix}`);
 
-  snapshot.pages = [
-    {
-      key: "overview",
-      title: "Overview",
-      kicker: "Command Mirror",
-      summary: "The private route mirrors the local command dashboard as status, pressure, proof, and queue summaries.",
-      sections: [
-        section("Captain One Thing", "Current", [
-          row("Current", snapshot.captain.oneThing.current, snapshot.captain.oneThing.supports, "gold"),
-          row("Done when", "Proof visible", snapshot.captain.oneThing.doneWhen, "green"),
-        ], "gold"),
-        section("Operating Readout", "Captain", [
-          row("Posture", snapshot.captain.readout.posture, "", "watch"),
-          row("Movement", "Active", snapshot.captain.readout.movement, "cyan"),
-          row("Exposure", "Watch", snapshot.captain.readout.exposure, "alert"),
-        ], "watch"),
-        section("Maintain / Advance", "Lens", [
-          row("Maintain", "Protect stability", "Health, family, home function, finance visibility, and active service loops stay visible first.", "green"),
-          row("Advance", "Move proof", "Revenue proof, public-persona clarity, Wealth decisions, and Aligned Harmonics source clarity advance only when maintenance stays realistic.", "cyan"),
-        ], "green"),
-      ],
-    },
-    {
-      key: "cj-cinco",
-      title: "CJ Cinco",
-      kicker: "Public Persona",
-      summary: "CJ Cinco stays the outward-facing public identity while the operating system remains private and local.",
-      sections: [
-        section("Lane Status", "CJ Cinco", [
-          row("Role", "Public persona", "Music, healing, business, life, and communication-with-the-world context stay source-clear.", "cyan"),
-          row("Current focus", "Bio and profile clarity", parseOneThing(cjHandoff, "CJ Cinco").current, "gold"),
-          row("Approval gate", "Publishing held", "Posting, scheduling, public profile edits, and product activation still require explicit approval.", "alert"),
-        ], "cyan"),
-        section("Roadmap", "Sequence", parseBullets(cjHandoff, "Next Recommended Actions", 5).map((item, index) => row(`Step ${index + 1}`, item, "", index === 0 ? "gold" : "neutral")), "gold"),
-      ],
-    },
-    {
-      key: "areas",
-      title: "Area State",
-      kicker: "AOS Structure",
-      summary: "Core and support lanes are shown as compact redacted cards with status, grade, risk, and next proof.",
-      sections: [
-        section("Core Lanes", "Health / People / Home / Wealth / VTC", areas.filter((area) => area.tier === "Core").map((area) => row(area.name, `${area.scorecard.grade} - ${titleCase(area.status)}`, area.scorecard.upgrade, area.status === "red" ? "alert" : "watch")), "watch"),
-        section("Support Lanes", "Aligned Harmonics / CJ Cinco / Altered States", areas.filter((area) => area.tier === "Support").map((area) => row(area.name, `${area.scorecard.grade} - ${titleCase(area.status)}`, area.scorecard.upgrade, "cyan")), "cyan"),
-      ],
-    },
-    {
-      key: "wealth",
-      title: "Wealth",
-      kicker: "Approved Totals",
-      summary: "Only summary Wealth metrics and approved budget totals are exported.",
-      sections: [
-        section("Latest Month", snapshot.wealth.month, [
-          row("Income", snapshot.wealth.income, "Approved dashboard summary.", "green"),
-          row("Expenses", snapshot.wealth.expenses, "Approved dashboard summary.", "watch"),
-          row("Cash Flow", snapshot.wealth.cashFlow, "Approved dashboard summary.", Number(latestWealth.cash_flow || 0) >= 0 ? "green" : "alert"),
-          row("Net Worth", snapshot.wealth.netWorth, snapshot.wealth.dataStatus, "gold"),
-        ], "gold"),
-        section("Budget Targets", "Monthly", [
-          row("Income target", snapshot.wealth.budget.incomeTarget, "", "green"),
-          row("Outflow target", snapshot.wealth.budget.outflowTarget, "", "watch"),
-          row("Target cash flow", snapshot.wealth.budget.targetCashFlow, "", "cyan"),
-        ], "cyan"),
-      ],
-    },
-    {
-      key: "vtc",
-      title: "VTC",
-      kicker: "Revenue Pressure",
-      summary: "VTC appears as runway, follow-up pressure, and proof progress without row-level service records.",
-      sections: [
-        section("Runway", "Target", [
-          row("Status", snapshot.vtc.status, `Deadline: ${snapshot.vtc.deadline}.`, "watch"),
-          row("Target", snapshot.vtc.target, `Gap: ${snapshot.vtc.gapToTarget || "n/a"}.`, "gold"),
-          row("Current week", snapshot.vtc.currentWeekCollected, `${snapshot.vtc.daysRemaining} day(s) remaining in the push window.`, "cyan"),
-        ], "watch"),
-        section("Follow-Up Pressure", "Counts", [
-          row("Due follow-ups", snapshot.vtc.counts.dueFollowups, "Count only; no row details exported.", snapshot.vtc.counts.dueFollowups > 0 ? "alert" : "good"),
-          row("Warm opportunities", snapshot.vtc.counts.warmOpportunities, "Count only; no names or contact data exported.", "watch"),
-          row("Partner touches", snapshot.vtc.counts.partnerTouches, "Count only.", "cyan"),
-          row("Next move", "Service proof", snapshot.vtc.nextMove, "green"),
-        ], "alert"),
-      ],
-    },
-    {
-      key: "content",
-      title: "Content / Social",
-      kicker: "Approval-Gated",
-      summary: "The content page shows queue health and platform counts only; no post copy is exported.",
-      sections: [
-        section("Queue Health", "Social Raw", [
-          row("Active rows", snapshot.contentSocial.activeTotal, "Approved/scheduled/social rows counted without copy text.", "cyan"),
-          row("Scheduled", snapshot.contentSocial.scheduled, "", "green"),
-          row("Blocked", snapshot.contentSocial.blocked, "Requires review or platform proof before movement.", snapshot.contentSocial.blocked > 0 ? "alert" : "good"),
-          row("Pending packets", snapshot.contentSocial.pendingPackets, "Draft packet counts only.", "watch"),
-        ], "cyan"),
-        section("Platform Counts", "Rows", snapshot.contentSocial.platforms.map((item) => row(item.label, `${item.scheduled} scheduled`, `${item.posted} posted, ${item.blocked} blocked, ${item.total} total.`, item.blocked > 0 ? "watch" : "green")), "green"),
-      ],
-    },
-    {
-      key: "coaching",
-      title: "Coaching",
-      kicker: "Signals",
-      summary: "Coaching strips convert AOS pressure into action language without exposing raw evidence.",
-      sections: [
-        section("Leverage Now", "Move Order", (aos.leverageNow?.moveOrder || []).slice(0, 5).map((item, index) => row(`${index + 1}. ${redactText(item.area, 40)}`, redactText(item.title, 110), redactText(item.nextProof, 150), index === 0 ? "gold" : "neutral")), "gold"),
-        section("Support Gaps", "Area Needs", areas.slice(0, 6).map((area) => row(area.name, area.scorecard.risk, area.scorecard.upgrade, area.status === "red" ? "alert" : "watch")), "watch"),
-      ],
-    },
-    {
-      key: "system",
-      title: "System",
-      kicker: "Access / Generator",
-      summary: "The system page documents the route contract, source boundaries, noindex posture, and privacy checks.",
-      sections: [
-        section("Access Plan", "Cloudflare", snapshot.guardrails.accessPlan.map((item, index) => row(`Gate ${index + 1}`, item, "", "green")), "green"),
-        section("Source Contract", "Exporter", snapshot.guardrails.sourceContract.map((item, index) => row(`Rule ${index + 1}`, item, "", "cyan")), "cyan"),
-        section("Privacy Checks", "Build Gate", snapshot.privacy.checks.map((item, index) => row(`Check ${index + 1}`, item, "Deterministic final-output scan.", "green")), "green"),
-      ],
-    },
+  for (const asset of staticAssetFiles) artifacts.set(resolve(outputRoot, "assets", asset), read(resolve(localAssetsRoot, asset)));
+
+  for (const page of pageFiles) {
+    const localHtml = read(resolve(localPagesRoot, page));
+    const sanitizedHtml = sanitizeHtml(localHtml, page, localDashboard);
+    const localSignature = htmlSignature(localHtml);
+    const sanitizedSignature = htmlSignature(sanitizedHtml);
+    const mismatch = localSignature.findIndex((tag, index) => tag !== sanitizedSignature[index]);
+    assert(mismatch === -1 && localSignature.length === sanitizedSignature.length, `${page} DOM structure changed during redaction at tag ${mismatch}: ${localSignature[mismatch]} != ${sanitizedSignature[mismatch]}`);
+    assert(navText(localHtml) === navText(sanitizedHtml), `${page} navigation labels or order changed`);
+    artifacts.set(resolve(outputRoot, page), sanitizedHtml);
+  }
+
+  return { artifacts, localDashboard, sanitizedDashboard };
+}
+
+function runPrivacyChecks(artifacts) {
+  const renderedHtml = [...artifacts.entries()]
+    .filter(([path]) => path.endsWith(".html"))
+    .map(([, content]) => content)
+    .join("\n");
+
+  const leakRules = [
+    ["email address", /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i],
+    ["phone number", /(?:\+?\d{1,3}[\s.-]?)?(?:\(\d{2,4}\)|\d{2,4})[\s.-]?\d{3,4}[\s.-]?\d{4}\b/],
+    ["street address", /\b\d{1,6}\s+[A-Z0-9.'-]+(?:\s+[A-Z0-9.'-]+){0,4}\s+(?:ST|STREET|AVE|AVENUE|RD|ROAD|DR|DRIVE|LN|LANE|BLVD|BOULEVARD|CT|COURT|CIR|CIRCLE|WAY|TRL|TRAIL|PKWY|PARKWAY|PL|PLACE)\b/i],
+    ["local path", /\/Users\/|Library\/Mobile Documents|com~apple~CloudDocs|iCloud~md~obsidian/i],
+    ["relative local source", /(?:[A-Za-z0-9][A-Za-z0-9 _+.-]*\/)+[A-Za-z0-9][A-Za-z0-9 _+.-]*\.(?:md|csv|json|toml)\b/i],
+    ["long account-like number", /\b(?:\d[ -]?){13,19}\b/],
+    ["old private-mirror UI", /Private AOS Mirror Max|Private CJ Cinco route|Protection Contract|Return to public site|Generator Contract/i],
   ];
 
-  validateSnapshot(snapshot);
-  return snapshot;
+  for (const [name, pattern] of leakRules) {
+    const hit = [...artifacts.entries()].find(([path, content]) => /\.(?:html|json|js)$/.test(path) && pattern.test(content));
+    assert(!hit, `privacy check found ${name}${hit ? ` in ${hit[0]}` : ""}`);
+  }
+  assert(!/\b(password|passcode|api[_ -]?key|bearer token|session token|reset link|two[- ]factor|2fa|verification code)\b/i.test(renderedHtml), "privacy check found a rendered credential marker");
+
+  const fixture = sanitizeNarrative("Follow up with Zoranda Quill at unseen.person@example.test or +44 20 7946 0958.");
+  assert(!/Zoranda|Quill|unseen\.person|7946/.test(fixture), "privacy fixture was not fully redacted");
+  const messageFixture = sanitizeTree({ xoComms: { cards: [{ body: "ordinary words with no leak markers" }] } });
+  assert(messageFixture.xoComms.cards[0].body === redactionSentinels.communication, "field-path communication redaction failed");
+
 }
 
-function buildDashboard() {
-  const config = JSON.parse(readFileSync(sourcePath, "utf8"));
-  return refreshSource ? buildDashboardFromAos(config) : buildDashboardFromSnapshot(config);
+function verifyStaticAssets(artifacts) {
+  for (const asset of staticAssetFiles) {
+    const source = read(resolve(localAssetsRoot, asset));
+    const generated = artifacts.get(resolve(outputRoot, "assets", asset));
+    assert(hash(source) === hash(generated), `${asset} differs from the canonical local asset`);
+  }
 }
 
-const dashboard = buildDashboard();
-const rendered = renderDataModule(dashboard);
+function main() {
+  const { artifacts } = buildArtifacts();
+  runPrivacyChecks(artifacts);
+  verifyStaticAssets(artifacts);
 
-if (refreshSource) {
-  const currentConfig = JSON.parse(readFileSync(sourcePath, "utf8"));
-  writeFileSync(sourcePath, `${JSON.stringify({ ...cloneWithoutSnapshot(currentConfig), snapshot: dashboard }, null, 2)}\n`, "utf8");
+  if (verifyOnly) {
+    for (const [path, expected] of artifacts) {
+      assert(existsSync(path), `generated dashboard artifact is missing: ${path}`);
+      assert(read(path) === expected, `generated dashboard artifact is stale: ${path}`);
+    }
+    console.log("Canonical dashboard mirror, structural parity, and privacy checks passed.");
+    return;
+  }
+
+  rmSync(outputRoot, { recursive: true, force: true });
+  for (const [path, content] of artifacts) write(path, content);
+  console.log(`Generated redacted canonical dashboard mirror at ${outputRoot}`);
 }
 
-if (verifyOnly) {
-  const current = readFileSync(outputPath, "utf8");
-  assert(current === rendered, "generated dashboard data is stale. Run npm run generate:dashboard.");
-  console.log("Private AOS Mirror Max source, generated data, and leak checks verified.");
-} else {
-  writeFileSync(outputPath, rendered, "utf8");
-  console.log(`Generated ${outputPath}`);
-}
+main();

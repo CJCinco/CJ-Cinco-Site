@@ -1,0 +1,1901 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="theme-color" content="#01030a">
+  <title>AOS Dashboard - VTC Sales Floor</title>
+  <link rel="stylesheet" href="assets/dashboard.css?refresh=2026-07-10T17%3A52%3A10">
+
+  <style>
+    .vtc-sales-page {
+      width: min(1500px, calc(100% - 40px));
+    }
+
+    .vtc-sales-page .command-bar {
+      grid-template-columns: minmax(260px, 1.2fr) minmax(210px, auto) minmax(210px, auto);
+    }
+
+    .sales-action-bar,
+    .sales-main-grid,
+    .burnup-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sales-action-bar {
+      grid-template-columns: repeat(6, minmax(128px, 1fr)) minmax(260px, 1.7fr);
+      margin: 14px 0;
+    }
+
+    .sales-source-row {
+      margin: 0 0 14px;
+    }
+
+    .sales-source-row .runway-source-panel {
+      min-height: 0;
+    }
+
+    .sales-source-row .runway-source-grid {
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+    }
+
+    .sales-stat,
+    .sales-panel,
+    .review-basket {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(23, 34, 48, 0.96), rgba(13, 19, 27, 0.96));
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.24);
+    }
+
+    .sales-stat {
+      min-height: 92px;
+      padding: 11px 12px;
+      display: grid;
+      align-content: space-between;
+      gap: 8px;
+    }
+
+    .sales-stat span,
+    .burnup-row small,
+    .timeline-meta,
+    .row-meta,
+    .basket-status {
+      color: var(--quiet);
+      font-size: 0.72rem;
+      font-weight: 780;
+      text-transform: uppercase;
+    }
+
+    .sales-stat strong {
+      color: var(--ink);
+      font-size: 1.78rem;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sales-stat p {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.25;
+    }
+
+    .sales-stat.hot {
+      border-color: rgba(255, 82, 74, 0.62);
+      background: linear-gradient(180deg, rgba(55, 21, 22, 0.9), rgba(13, 19, 27, 0.96));
+    }
+
+    .sales-stat.money {
+      border-color: rgba(100, 217, 139, 0.55);
+    }
+
+    .proof-mini-track,
+    .burnup-track,
+    .timeline-track {
+      position: relative;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .proof-mini-track span,
+    .burnup-confirmed,
+    .burnup-pending,
+    .timeline-track span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+    }
+
+    .proof-mini-track span,
+    .burnup-confirmed {
+      background: linear-gradient(90deg, var(--green), var(--cyan));
+    }
+
+    .cashflow-panel {
+      margin: 14px 0;
+      padding: 14px;
+    }
+
+    .cashflow-panel-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .cashflow-panel-head h2 {
+      margin: 2px 0 0;
+    }
+
+    .cashflow-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(112px, 1fr));
+      gap: 8px;
+      min-width: 500px;
+    }
+
+    .cashflow-summary div {
+      border: 1px solid rgba(142, 163, 181, 0.22);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.024);
+      padding: 8px 9px;
+    }
+
+    .cashflow-summary span {
+      display: block;
+      color: var(--quiet);
+      font-size: 0.68rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .cashflow-summary strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 1.05rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cashflow-chart-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(142, 163, 181, 0.22);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.18);
+      padding: 10px;
+    }
+
+    .cashflow-chart {
+      display: block;
+      width: 100%;
+      min-width: 780px;
+      height: auto;
+    }
+
+    .cashflow-grid-line {
+      stroke: rgba(142, 163, 181, 0.16);
+      stroke-width: 1;
+    }
+
+    .cashflow-axis {
+      stroke: rgba(214, 226, 240, 0.42);
+      stroke-width: 1.2;
+    }
+
+    .cashflow-goal-line {
+      stroke: var(--yellow);
+      stroke-width: 2;
+      stroke-dasharray: 5 6;
+    }
+
+    .cashflow-line {
+      fill: none;
+      stroke: var(--cyan);
+      stroke-width: 3;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    .cashflow-point {
+      fill: #101720;
+      stroke: var(--cyan);
+      stroke-width: 2.4;
+    }
+
+    .cashflow-point.current {
+      fill: var(--yellow);
+      stroke: var(--yellow);
+    }
+
+    .cashflow-y-label,
+    .cashflow-x-label,
+    .cashflow-goal-label {
+      fill: var(--quiet);
+      font-size: 10px;
+      font-weight: 760;
+    }
+
+    .cashflow-goal-label {
+      fill: var(--yellow);
+      font-size: 12px;
+    }
+
+    .cashflow-note {
+      margin-top: 8px;
+      color: var(--quiet);
+      font-size: 0.76rem;
+    }
+
+    .sales-next-move {
+      min-height: 92px;
+      padding: 12px 14px;
+      grid-column: span 1;
+    }
+
+    .sales-next-move strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 0.95rem;
+      line-height: 1.28;
+    }
+
+    .sales-main-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(330px, 0.32fr);
+      align-items: start;
+    }
+
+    .sales-main-stack {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .sales-panel {
+      padding: 14px;
+      min-width: 0;
+    }
+
+    .sales-panel-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .timeline-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: minmax(170px, 0.8fr) minmax(220px, 1.2fr) minmax(160px, 0.7fr) minmax(100px, 0.5fr);
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid rgba(142, 163, 181, 0.25);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .timeline-row.critical {
+      border-color: rgba(255, 82, 74, 0.58);
+      background: rgba(255, 82, 74, 0.055);
+    }
+
+    .timeline-name strong {
+      display: block;
+      font-size: 0.92rem;
+      line-height: 1.2;
+    }
+
+    .timeline-name span,
+    .lane-pill,
+    .due-pill,
+    .priority-pill {
+      display: inline-flex;
+      align-items: center;
+      width: max-content;
+      max-width: 100%;
+      margin-top: 4px;
+      padding: 3px 7px;
+      border: 1px solid rgba(142, 163, 181, 0.3);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 840;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .timeline-step,
+    .timeline-blocker {
+      color: var(--muted);
+      font-size: 0.83rem;
+      line-height: 1.28;
+    }
+
+    .timeline-track span {
+      background: linear-gradient(90deg, var(--orange), var(--yellow));
+    }
+
+    .timeline-row.critical .timeline-track span {
+      background: linear-gradient(90deg, var(--red), var(--orange));
+    }
+
+    .sales-table-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(142, 163, 181, 0.22);
+      border-radius: 8px;
+    }
+
+    .sales-table {
+      width: 100%;
+      min-width: 1120px;
+      border-collapse: collapse;
+    }
+
+    .sales-table th,
+    .sales-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid rgba(142, 163, 181, 0.18);
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .sales-table th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      color: var(--quiet);
+      background: #101720;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    .sales-table td {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .sales-table details summary {
+      cursor: pointer;
+      color: var(--ink);
+      font-weight: 860;
+    }
+
+    .row-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(160px, 1fr));
+      gap: 8px;
+      margin-top: 9px;
+    }
+
+    .row-detail-grid div,
+    .basket-form {
+      border: 1px solid rgba(142, 163, 181, 0.22);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.18);
+      padding: 8px;
+    }
+
+    .row-detail-grid b {
+      display: block;
+      color: var(--quiet);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+    }
+
+    .row-detail-grid p {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.3;
+      white-space: pre-wrap;
+    }
+
+    .basket-form {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      gap: 8px;
+    }
+
+    .basket-form label {
+      display: grid;
+      gap: 4px;
+      color: var(--quiet);
+      font-size: 0.68rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .basket-form textarea,
+    .basket-form input,
+    .basket-form select {
+      width: 100%;
+      min-height: 34px;
+      border: 1px solid rgba(142, 163, 181, 0.35);
+      border-radius: 7px;
+      color: var(--ink);
+      background: rgba(7, 9, 12, 0.92);
+      padding: 7px 8px;
+      font: inherit;
+      font-size: 0.78rem;
+    }
+
+    .basket-form textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .basket-form .wide {
+      grid-column: span 2;
+    }
+
+    .due-pill.overdue {
+      color: var(--red);
+      border-color: rgba(255, 82, 74, 0.55);
+      background: rgba(255, 82, 74, 0.08);
+    }
+
+    .due-pill.due-now,
+    .priority-pill.high {
+      color: var(--yellow);
+      border-color: rgba(244, 200, 79, 0.5);
+      background: rgba(244, 200, 79, 0.08);
+    }
+
+    .priority-pill.medium {
+      color: var(--blue);
+    }
+
+    .row-actions {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(62px, 1fr));
+      gap: 6px;
+      min-width: 220px;
+    }
+
+    .row-actions button,
+    .basket-controls button {
+      min-height: 30px;
+      border: 1px solid rgba(142, 163, 181, 0.34);
+      border-radius: 7px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.72rem;
+      font-weight: 820;
+      cursor: pointer;
+    }
+
+    .row-actions button.primary {
+      border-color: rgba(89, 215, 232, 0.5);
+      background: rgba(89, 215, 232, 0.1);
+    }
+
+    .row-actions button:hover,
+    .basket-controls button:hover {
+      border-color: rgba(244, 200, 79, 0.55);
+      background: rgba(244, 200, 79, 0.08);
+    }
+
+    .burnup-grid {
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+    }
+
+    .burnup-row {
+      padding: 9px;
+      border: 1px solid rgba(142, 163, 181, 0.22);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.024);
+    }
+
+    .burnup-row header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .burnup-row strong {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .burnup-pending {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: linear-gradient(90deg, var(--yellow), var(--orange));
+      opacity: 0.72;
+    }
+
+    .review-basket {
+      position: sticky;
+      top: 14px;
+      max-height: calc(100vh - 28px);
+      display: grid;
+      grid-template-rows: auto auto minmax(120px, 1fr);
+      gap: 10px;
+      padding: 13px;
+      overflow: hidden;
+    }
+
+    .basket-controls {
+      display: grid;
+      grid-template-columns: 1fr 0.7fr;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .basket-controls button {
+      min-height: 36px;
+    }
+
+    .basket-list {
+      display: grid;
+      gap: 8px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .basket-empty {
+      color: var(--quiet);
+      font-size: 0.84rem;
+    }
+
+    .basket-item {
+      border: 1px solid rgba(142, 163, 181, 0.22);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px;
+    }
+
+    .basket-item pre {
+      margin: 0;
+      color: var(--muted);
+      white-space: pre-wrap;
+      font: 0.76rem/1.35 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .stale-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 5px 9px;
+      border: 1px solid rgba(100, 217, 139, 0.45);
+      border-radius: 999px;
+      color: var(--green);
+      font-size: 0.72rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .stale-chip.stale {
+      color: var(--yellow);
+      border-color: rgba(244, 200, 79, 0.56);
+      background: rgba(244, 200, 79, 0.08);
+    }
+
+    @media (max-width: 1180px) {
+      .sales-action-bar {
+        grid-template-columns: repeat(3, minmax(128px, 1fr));
+      }
+
+      .sales-source-row .runway-source-grid {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+
+      .cashflow-panel-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .cashflow-summary {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .sales-next-move {
+        grid-column: span 3;
+      }
+
+      .sales-main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .review-basket {
+        position: relative;
+        top: auto;
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .vtc-sales-page {
+        width: min(1500px, calc(100% - 24px));
+      }
+
+      .vtc-sales-page .command-bar,
+      .sales-action-bar,
+      .sales-source-row .runway-source-grid,
+      .cashflow-summary,
+      .burnup-grid,
+      .basket-form {
+        grid-template-columns: 1fr;
+      }
+
+      .sales-next-move,
+      .basket-form .wide {
+        grid-column: auto;
+      }
+
+      .timeline-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <script>window.AOS_DASHBOARD_DATA = {"meta":{"title":"AOS Dashboard","version":"0.9.0","builtAt":"2026-07-10T17:52:10","today":"2026-07-10","shutdownHour":17,"codexSessionsEnabled":false,"sourceRoot":"[local source hidden]","sourceSystem":"00 Master Command/dashboard-system"}};</script>
+  <div class="app-shell vtc-sales-page">
+    <nav class="war-nav" aria-label="AOS Dashboard pages"><a href="index.html?refresh=2026-07-10T17%3A52%3A10">AOS Dashboard</a><a href="captain.html?refresh=2026-07-10T17%3A52%3A10">Captain</a><a href="xo-comms.html?refresh=2026-07-10T17%3A52%3A10">XO Comms</a><a class="active" href="vtc-sales-floor.html?refresh=2026-07-10T17%3A52%3A10">VTC</a><a href="social-media.html?refresh=2026-07-10T17%3A52%3A10">Social Media</a><a href="purchases.html?refresh=2026-07-10T17%3A52%3A10">Purchases</a><a href="areas.html?refresh=2026-07-10T17%3A52%3A10">Area State</a><a href="wealth.html?refresh=2026-07-10T17%3A52%3A10">Wealth</a></nav>
+    <header class="command-bar">
+      <div class="brand-block">
+        <p class="eyebrow">Vero Tech Care</p>
+        <h1>Sales Floor</h1>
+        <p class="refresh-stamp">Built 2026-07-10 17:52:10</p>
+      </div>
+      <div class="timer-block">
+        <span class="timer-label">Proof week target</span>
+        <strong>$1,923+</strong>
+        <span class="timer-note">Booked or collected</span>
+      </div>
+      <div class="status-chip baseline">
+        <span id="sales-stale-chip" class="stale-chip" data-built-at="2026-07-10T17:52:10">Checking</span>
+      </div>
+    </header>
+
+    
+      <section class="sales-action-bar" aria-label="VTC action bar">
+        
+        <article class="sales-stat hot">
+          <span>Due now</span>
+          <strong>2</strong>
+          <p>Ready for this block</p>
+        </article>
+    
+        
+        <article class="sales-stat hot">
+          <span>Overdue</span>
+          <strong>39</strong>
+          <p>Needs pruning or action</p>
+        </article>
+    
+        
+        <article class="sales-stat">
+          <span>Warm leads</span>
+          <strong>10</strong>
+          <p>High-fit or active</p>
+        </article>
+    
+        
+        <article class="sales-stat">
+          <span>Partner/workshop</span>
+          <strong>20</strong>
+          <p>Due touch points</p>
+        </article>
+    
+        
+        <article class="sales-stat">
+          <span>DPM pitches</span>
+          <strong>7</strong>
+          <p>Warm or active candidates</p>
+        </article>
+    
+        <article class="sales-stat money">
+          <span>Proof week</span>
+          <strong>$0</strong>
+          <p>Booked signal $0 / collected $0</p>
+          <div class="proof-mini-track" aria-label="Revenue proof progress"><span style="width:0%"></span></div>
+        </article>
+        <article class="sales-stat sales-next-move">
+          <span>Next best move</span>
+          <strong>L-2026-046 - Bill Buckley: [local source hidden]; if Bill replies, confirm platform, dimensio...</strong>
+        </article>
+      </section>
+    
+    <section class="sales-source-row" aria-label="VTC source-backed pressure">
+      
+          <article class="mission-panel runway-source-panel">
+            <div class="panel-kicker">[private client detail]</div>
+            <h2>[private client detail]</h2>
+            <div class="runway-source-grid">
+              <div><span>[private client detail]</span><strong>59</strong></div>
+              <div><span>[private client detail]</span><strong>6</strong></div>
+              <div><span>[private client detail]</span><strong>0</strong></div>
+              <div><span>[private client detail]</span><strong>11</strong></div>
+            </div>
+            <p>[private client detail]</p>
+          </article>
+    
+    </section>
+    
+      <section class="sales-panel cashflow-panel" aria-label="Weekly VTC cash flow">
+        <div class="cashflow-panel-head">
+          <div>
+            <p class="panel-kicker">Weekly Cash Flow</p>
+            <h2>Gross generated over time</h2>
+          </div>
+          <div class="cashflow-summary">
+            <div><span>This week</span><strong>$0</strong></div>
+            <div><span>Best week</span><strong>$750</strong></div>
+            <div><span>Total gross</span><strong>$3,531</strong></div>
+            <div><span>Goal line</span><strong>$2,000</strong></div>
+          </div>
+        </div>
+        <div class="cashflow-chart-wrap">
+        <svg class="cashflow-chart" viewBox="0 0 980 380" role="img" aria-label="Weekly VTC gross revenue line chart">
+          <rect x="0" y="0" width="980" height="380" fill="transparent"></rect>
+          <line class="cashflow-grid-line" x1="76" y1="316.0" x2="952" y2="316.0"></line><text class="cashflow-y-label" x="66" y="319.0" text-anchor="end">$0</text><line class="cashflow-grid-line" x1="76" y1="301.4" x2="952" y2="301.4"></line><text class="cashflow-y-label" x="66" y="304.4" text-anchor="end">$100</text><line class="cashflow-grid-line" x1="76" y1="286.8" x2="952" y2="286.8"></line><text class="cashflow-y-label" x="66" y="289.8" text-anchor="end">$200</text><line class="cashflow-grid-line" x1="76" y1="272.2" x2="952" y2="272.2"></line><text class="cashflow-y-label" x="66" y="275.2" text-anchor="end">$300</text><line class="cashflow-grid-line" x1="76" y1="257.6" x2="952" y2="257.6"></line><text class="cashflow-y-label" x="66" y="260.6" text-anchor="end">$400</text><line class="cashflow-grid-line" x1="76" y1="243.0" x2="952" y2="243.0"></line><text class="cashflow-y-label" x="66" y="246.0" text-anchor="end">$500</text><line class="cashflow-grid-line" x1="76" y1="228.4" x2="952" y2="228.4"></line><text class="cashflow-y-label" x="66" y="231.4" text-anchor="end">$600</text><line class="cashflow-grid-line" x1="76" y1="213.8" x2="952" y2="213.8"></line><text class="cashflow-y-label" x="66" y="216.8" text-anchor="end">$700</text><line class="cashflow-grid-line" x1="76" y1="199.2" x2="952" y2="199.2"></line><text class="cashflow-y-label" x="66" y="202.2" text-anchor="end">$800</text><line class="cashflow-grid-line" x1="76" y1="184.6" x2="952" y2="184.6"></line><text class="cashflow-y-label" x="66" y="187.6" text-anchor="end">$900</text><line class="cashflow-grid-line" x1="76" y1="170.0" x2="952" y2="170.0"></line><text class="cashflow-y-label" x="66" y="173.0" text-anchor="end">$1,000</text><line class="cashflow-grid-line" x1="76" y1="155.4" x2="952" y2="155.4"></line><text class="cashflow-y-label" x="66" y="158.4" text-anchor="end">$1,100</text><line class="cashflow-grid-line" x1="76" y1="140.8" x2="952" y2="140.8"></line><text class="cashflow-y-label" x="66" y="143.8" text-anchor="end">$1,200</text><line class="cashflow-grid-line" x1="76" y1="126.2" x2="952" y2="126.2"></line><text class="cashflow-y-label" x="66" y="129.2" text-anchor="end">$1,300</text><line class="cashflow-grid-line" x1="76" y1="111.6" x2="952" y2="111.6"></line><text class="cashflow-y-label" x="66" y="114.6" text-anchor="end">$1,400</text><line class="cashflow-grid-line" x1="76" y1="97.0" x2="952" y2="97.0"></line><text class="cashflow-y-label" x="66" y="100.0" text-anchor="end">$1,500</text><line class="cashflow-grid-line" x1="76" y1="82.4" x2="952" y2="82.4"></line><text class="cashflow-y-label" x="66" y="85.4" text-anchor="end">$1,600</text><line class="cashflow-grid-line" x1="76" y1="67.8" x2="952" y2="67.8"></line><text class="cashflow-y-label" x="66" y="70.8" text-anchor="end">$1,700</text><line class="cashflow-grid-line" x1="76" y1="53.2" x2="952" y2="53.2"></line><text class="cashflow-y-label" x="66" y="56.2" text-anchor="end">$1,800</text><line class="cashflow-grid-line" x1="76" y1="38.6" x2="952" y2="38.6"></line><text class="cashflow-y-label" x="66" y="41.6" text-anchor="end">$1,900</text><line class="cashflow-grid-line" x1="76" y1="24.0" x2="952" y2="24.0"></line><text class="cashflow-y-label" x="66" y="27.0" text-anchor="end">$2,000</text>
+          <line class="cashflow-axis" x1="76" y1="24" x2="76" y2="316"></line>
+          <line class="cashflow-axis" x1="76" y1="316" x2="952" y2="316"></line>
+          <line class="cashflow-goal-line" x1="76" y1="24.0" x2="952" y2="24.0"></line>
+          <text class="cashflow-goal-label" x="946" y="16.0" text-anchor="end">$2,000 goal</text>
+          <polyline class="cashflow-line" points="76.0,261.2 114.1,316.0 152.2,316.0 190.3,316.0 228.3,233.9 266.4,297.8 304.5,316.0 342.6,316.0 380.7,316.0 418.8,316.0 456.9,279.5 495.0,316.0 533.0,316.0 571.1,262.3 609.2,316.0 647.3,316.0 685.4,316.0 723.5,316.0 761.6,257.6 799.7,257.6 837.7,206.5 875.8,316.0 913.9,272.2 952.0,316.0"></polyline>
+          <circle class="cashflow-point" cx="76.0" cy="261.2" r="4.4"><title>Jan 26-Feb 1, 2026: $375 gross, 1 revenue rows</title></circle><text class="cashflow-x-label" x="76.0" y="358" text-anchor="end" transform="rotate(-35 76.0 358)">Jan 26</text><circle class="cashflow-point" cx="114.1" cy="316.0" r="4.4"><title>Feb 2-Feb 8, 2026: $0 gross, 0 revenue rows</title></circle><circle class="cashflow-point" cx="152.2" cy="316.0" r="4.4"><title>Feb 9-Feb 15, 2026: $0 gross, 0 revenue rows</title></circle><text class="cashflow-x-label" x="152.2" y="358" text-anchor="end" transform="rotate(-35 152.2 358)">Feb 9</text><circle class="cashflow-point" cx="190.3" cy="316.0" r="4.4"><title>Feb 16-Feb 22, 2026: $0 gross, 0 revenue rows</title></circle><circle class="cashflow-point" cx="228.3" cy="233.9" r="4.4"><title>Feb 23-Mar 1, 2026: $562 gross, 2 revenue rows</title></circle><text class="cashflow-x-label" x="228.3" y="358" text-anchor="end" transform="rotate(-35 228.3 358)">Feb 23</text><circle class="cashflow-point" cx="266.4" cy="297.8" r="4.4"><title>Mar 2-Mar 8, 2026: $125 gross, 1 revenue rows</title></circle><circle class="cashflow-point" cx="304.5" cy="316.0" r="4.4"><title>Mar 9-Mar 15, 2026: $0 gross, 0 revenue rows</title></circle><text class="cashflow-x-label" x="304.5" y="358" text-anchor="end" transform="rotate(-35 304.5 358)">Mar 9</text><circle class="cashflow-point" cx="342.6" cy="316.0" r="4.4"><title>Mar 16-Mar 22, 2026: $0 gross, 0 revenue rows</title></circle><circle class="cashflow-point" cx="380.7" cy="316.0" r="4.4"><title>Mar 23-Mar 29, 2026: $0 gross, 0 revenue rows</title></circle><text class="cashflow-x-label" x="380.7" y="358" text-anchor="end" transform="rotate(-35 380.7 358)">Mar 23</text><circle class="cashflow-point" cx="418.8" cy="316.0" r="4.4"><title>Mar 30-Apr 5, 2026: $0 gross, 0 revenue rows</title></circle><circle class="cashflow-point" cx="456.9" cy="279.5" r="4.4"><title>Apr 6-Apr 12, 2026: $250 gross, 1 revenue rows</title></circle><text class="cashflow-x-label" x="456.9" y="358" text-anchor="end" transform="rotate(-35 456.9 358)">Apr 6</text><circle class="cashflow-point" cx="495.0" cy="316.0" r="4.4"><title>Apr 13-Apr 19, 2026: $0 gross, 0 revenue rows</title></circle><circle class="cashflow-point" cx="533.0" cy="316.0" r="4.4"><title>Apr 20-Apr 26, 2026: $0 gross, 0 revenue rows</title></circle><text class="cashflow-x-label" x="533.0" y="358" text-anchor="end" transform="rotate(-35 533.0 358)">Apr 20</text><circle class="cashflow-point" cx="571.1" cy="262.3" r="4.4"><title>Apr 27-May 3, 2026: $368 gross, 2 revenue rows</title></circle><circle class="cashflow-point" cx="609.2" cy="316.0" r="4.4"><title>May 4-May 10, 2026: $0 gross, 0 revenue rows</title></circle><text class="cashflow-x-label" x="609.2" y="358" text-anchor="end" transform="rotate(-35 609.2 358)">May 4</text><circle class="cashflow-point" cx="647.3" cy="316.0" r="4.4"><title>May 11-May 17, 2026: $0 gross, 0 revenue rows</title></circle><circle class="cashflow-point" cx="685.4" cy="316.0" r="4.4"><title>May 18-May 24, 2026: $0 gross, 0 revenue rows</title></circle><text class="cashflow-x-label" x="685.4" y="358" text-anchor="end" transform="rotate(-35 685.4 358)">May 18</text><circle class="cashflow-point" cx="723.5" cy="316.0" r="4.4"><title>May 25-May 31, 2026: $0 gross, 0 revenue rows</title></circle><circle class="cashflow-point" cx="761.6" cy="257.6" r="4.4"><title>Jun 1-Jun 7, 2026: $400 gross, 1 revenue rows</title></circle><text class="cashflow-x-label" x="761.6" y="358" text-anchor="end" transform="rotate(-35 761.6 358)">Jun 1</text><circle class="cashflow-point" cx="799.7" cy="257.6" r="4.4"><title>Jun 8-Jun 14, 2026: $400 gross, 1 revenue rows</title></circle><circle class="cashflow-point" cx="837.7" cy="206.5" r="4.4"><title>Jun 15-Jun 21, 2026: $750 gross, 1 revenue rows</title></circle><text class="cashflow-x-label" x="837.7" y="358" text-anchor="end" transform="rotate(-35 837.7 358)">Jun 15</text><circle class="cashflow-point" cx="875.8" cy="316.0" r="4.4"><title>Jun 22-Jun 28, 2026: $0 gross, 0 revenue rows</title></circle><circle class="cashflow-point" cx="913.9" cy="272.2" r="4.4"><title>Jun 29-Jul 5, 2026: $300 gross, 1 revenue rows</title></circle><text class="cashflow-x-label" x="913.9" y="358" text-anchor="end" transform="rotate(-35 913.9 358)">Jun 29</text><circle class="cashflow-point current" cx="952.0" cy="316.0" r="4.4"><title>Jul 6-Jul 12, 2026: $0 gross, 0 revenue rows</title></circle><text class="cashflow-x-label" x="952.0" y="358" text-anchor="end" transform="rotate(-35 952.0 358)">Jul 6</text>
+        </svg>
+    </div>
+        <p class="cashflow-note">Each point is one week. Y-axis grid lines are $100 increments. Gross uses confirmed <code>total_collected</code> [local source hidden].</p>
+      </section>
+    
+
+    <main class="sales-main-grid">
+      <div class="sales-main-stack">
+        
+      <section class="sales-panel" aria-label="Critical path timeline">
+        <div class="sales-panel-head">
+          <div>
+            <p class="panel-kicker">Critical Path</p>
+            <h2>Active VTC threads</h2>
+          </div>
+          <span class="timeline-meta">5-10 thread view</span>
+        </div>
+        <div class="timeline-list">
+            <div class="timeline-row critical">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill overdue">[private client detail]</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:100%"></span></div>
+              </div>
+            </div>
+            
+            <div class="timeline-row critical">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill overdue">[private client detail]</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:100%"></span></div>
+              </div>
+            </div>
+            
+            <div class="timeline-row critical">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill overdue">[private client detail]</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:100%"></span></div>
+              </div>
+            </div>
+            
+            <div class="timeline-row critical">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill overdue">[private client detail]</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:100%"></span></div>
+              </div>
+            </div>
+            
+            <div class="timeline-row critical">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill overdue">[private client detail]</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:100%"></span></div>
+              </div>
+            </div>
+            
+            <div class="timeline-row critical">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill due-now">[private client detail]</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:100%"></span></div>
+              </div>
+            </div>
+            
+            <div class="timeline-row critical">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill due-now">[private client detail]</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:100%"></span></div>
+              </div>
+            </div>
+            
+            <div class="timeline-row critical">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill overdue">[private client detail]</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:100%"></span></div>
+              </div>
+            </div>
+            
+            <div class="timeline-row">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill no-date">[private client detail]</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:34%"></span></div>
+              </div>
+            </div>
+            
+            <div class="timeline-row critical">
+              <div class="timeline-name">
+                <strong>[private client detail]</strong>
+                <span>[private client detail]</span>
+              </div>
+              <div class="timeline-step">[private client detail]</div>
+              <div class="timeline-blocker">[private client detail]</div>
+              <div>
+                <span class="due-pill soon">Next</span>
+                <div class="timeline-track" aria-label="Critical path pressure"><span style="width:78%"></span></div>
+              </div>
+            </div>
+            </div>
+      </section>
+    
+        
+      <section class="sales-panel" aria-label="Sales sprint list">
+        <div class="sales-panel-head">
+          <div>
+            <p class="panel-kicker">Sales Sprint</p>
+            <h2>One-hour follow-up block</h2>
+          </div>
+        </div>
+        <div class="sales-table-wrap">
+          <table class="sales-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Due</th>
+                <th>Priority</th>
+                <th>Service interest</th>
+                <th>Last contact</th>
+                <th>Next action</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill high">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill high">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill high">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]">[private client detail]</textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill high">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill high">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]">[private client detail]</textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill due-now">[private client detail]</span></td>
+              <td><span class="priority-pill high">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill due-now">[private client detail]</span></td>
+              <td><span class="priority-pill high">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill medium">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill medium">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]">[private client detail]</textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill medium">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]">[private client detail]</textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill medium">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]">[private client detail]</textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill medium">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]">[private client detail]</textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill medium">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]">[private client detail]</textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill medium">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]">[private client detail]</textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill medium">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            
+            <tr class="sales-row" data-key="[private client detail]" data-lead-id="[private client detail]" data-lead-name="[private client detail]">
+              <td>
+                <details>
+                  <summary>[private client detail]</summary>
+                  <div class="row-detail-grid">
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="wide"><b>[private client detail]</b><p>[private client detail]</p></div>
+                    <div class="basket-form wide" data-action-form="[private client detail]">
+                      <label>[private client detail]<select data-field="[private client detail]"><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]">[private client detail]</option><option value="[private client detail]" selected>[private client detail]</option><option value="[private client detail]">[private client detail]</option></select></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input type="date" data-field="[private client detail]" value="[private client detail]"></label>
+                      <label>[private client detail]<input data-field="[private client detail]" value="[private client detail]"></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                      <label class="wide">[private client detail]<textarea data-field="[private client detail]"></textarea></label>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td>[private client detail]</td>
+              <td><span class="due-pill overdue">[private client detail]</span></td>
+              <td><span class="priority-pill medium">[private client detail]</span></td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>[private client detail]</td>
+              <td>
+                <div class="row-actions">
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button class="primary" type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                  <button type="button" data-basket-action="[private client detail]">[private client detail]</button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    
+        
+      <section class="sales-panel" aria-label="Weekly burn-up">
+        <div class="sales-panel-head">
+          <div>
+            <p class="panel-kicker">Weekly Burn-Up</p>
+            <h2>AOS confirmed plus basket deltas</h2>
+          </div>
+        </div>
+        <div class="burnup-grid">
+            <div class="burnup-row" data-burnup-key="followups" data-target="10" data-confirmed="0">
+              <header>
+                <div>
+                  <strong>Follow-ups</strong>
+                  <small>target 10</small>
+                </div>
+                <div><strong class="burnup-total">0</strong> <small><span class="burnup-delta">+0</span></small></div>
+              </header>
+              <div class="burnup-track">
+                <span class="burnup-confirmed" style="width:0%"></span>
+                <span class="burnup-pending" style="width:0%"></span>
+              </div>
+            </div>
+            
+            <div class="burnup-row" data-burnup-key="partnerTouches" data-target="5" data-confirmed="0">
+              <header>
+                <div>
+                  <strong>Partner touches</strong>
+                  <small>target 5</small>
+                </div>
+                <div><strong class="burnup-total">0</strong> <small><span class="burnup-delta">+0</span></small></div>
+              </header>
+              <div class="burnup-track">
+                <span class="burnup-confirmed" style="width:0%"></span>
+                <span class="burnup-pending" style="width:0%"></span>
+              </div>
+            </div>
+            
+            <div class="burnup-row" data-burnup-key="workshopAsks" data-target="3" data-confirmed="0">
+              <header>
+                <div>
+                  <strong>Workshop asks</strong>
+                  <small>target 3</small>
+                </div>
+                <div><strong class="burnup-total">0</strong> <small><span class="burnup-delta">+0</span></small></div>
+              </header>
+              <div class="burnup-track">
+                <span class="burnup-confirmed" style="width:0%"></span>
+                <span class="burnup-pending" style="width:0%"></span>
+              </div>
+            </div>
+            
+            <div class="burnup-row" data-burnup-key="dpmPitches" data-target="3" data-confirmed="0">
+              <header>
+                <div>
+                  <strong>DPM pitches</strong>
+                  <small>target 3</small>
+                </div>
+                <div><strong class="burnup-total">0</strong> <small><span class="burnup-delta">+0</span></small></div>
+              </header>
+              <div class="burnup-track">
+                <span class="burnup-confirmed" style="width:0%"></span>
+                <span class="burnup-pending" style="width:0%"></span>
+              </div>
+            </div>
+            
+            <div class="burnup-row" data-burnup-key="reviewReferralAsks" data-target="3" data-confirmed="0">
+              <header>
+                <div>
+                  <strong>Review/referral asks</strong>
+                  <small>target 3</small>
+                </div>
+                <div><strong class="burnup-total">0</strong> <small><span class="burnup-delta">+0</span></small></div>
+              </header>
+              <div class="burnup-track">
+                <span class="burnup-confirmed" style="width:0%"></span>
+                <span class="burnup-pending" style="width:0%"></span>
+              </div>
+            </div>
+            
+            <div class="burnup-row" data-burnup-key="bookedSessions" data-target="3" data-confirmed="0">
+              <header>
+                <div>
+                  <strong>Booked sessions</strong>
+                  <small>target 3</small>
+                </div>
+                <div><strong class="burnup-total">0</strong> <small><span class="burnup-delta">+0</span></small></div>
+              </header>
+              <div class="burnup-track">
+                <span class="burnup-confirmed" style="width:0%"></span>
+                <span class="burnup-pending" style="width:0%"></span>
+              </div>
+            </div>
+            </div>
+      </section>
+    
+        <section class="source-section" aria-label="VTC Sales Floor sources">
+          <details>
+            <summary>[local source hidden]</summary>
+            <ul>      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+      <li>[local source hidden]</li>
+    </ul>
+          </details>
+        </section>
+      </div>
+      
+      <aside class="review-basket" aria-label="Review Basket">
+        <div>
+          <p class="panel-kicker">Review Basket</p>
+          <h2>Apply queue</h2>
+          <p class="basket-status" id="basket-status">Basket ready</p>
+        </div>
+        <div class="basket-controls">
+          <button type="button" id="copy-basket">Copy Basket as Markdown</button>
+          <button type="button" id="clear-basket">Clear</button>
+        </div>
+        <div class="basket-list" id="basket-list">
+          <p class="basket-empty">No basket items yet.</p>
+        </div>
+      </aside>
+    
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const storageKey = "aos.vtcSalesFloor.reviewBasket.v1";
+      const list = document.getElementById("basket-list");
+      const status = document.getElementById("basket-status");
+      const copyButton = document.getElementById("copy-basket");
+      const clearButton = document.getElementById("clear-basket");
+      const staleChip = document.getElementById("sales-stale-chip");
+      let basket = [];
+
+      function escapeText(value) {
+        return String(value || "").replace(/[&>"']/g, function (char) {
+          return {"&": "&amp;", "": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"}[char];
+        });
+      }
+
+      function plainItem(item) {
+        return [
+          "- " + (item.leadId || "No ID") + " / " + (item.name || "Unnamed") + " - " + (item.action || "Action"),
+          "  - Channel: " + (item.channel || ""),
+          "  - Actual sent: " + (item.actualSent || ""),
+          "  - Outcome: " + (item.outcome || ""),
+          "  - Next follow-up: " + (item.nextFollowUp || ""),
+          "  - Notes: " + (item.notes || ""),
+          "  - Captured: " + (item.capturedAt || "")
+        ].join("\n");
+      }
+
+      function loadBasket() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(storageKey) || "[]");
+          basket = Array.isArray(parsed) ? parsed : [];
+        } catch (_error) {
+          basket = [];
+        }
+      }
+
+      function saveBasket() {
+        localStorage.setItem(storageKey, JSON.stringify(basket));
+        if (status) status.textContent = "Basket saved " + new Date().toLocaleTimeString([], {hour: "numeric", minute: "2-digit"});
+      }
+
+      function pendingDeltas() {
+        const deltas = {
+          followups: 0,
+          partnerTouches: 0,
+          workshopAsks: 0,
+          dpmPitches: 0,
+          reviewReferralAsks: 0,
+          bookedSessions: 0
+        };
+        basket.forEach(function (item) {
+          const channel = String(item.channel || "").toLowerCase();
+          const action = String(item.action || "").toLowerCase();
+          const haystack = [item.name, item.leadId, item.channel, item.actualSent, item.outcome, item.notes].join(" ").toLowerCase();
+          if (action === "booked") deltas.bookedSessions += 1;
+          else deltas.followups += 1;
+          if (channel.includes("partner") || haystack.includes("partner")) deltas.partnerTouches += 1;
+          if (channel.includes("workshop") || haystack.includes("workshop") || haystack.includes("unity")) deltas.workshopAsks += 1;
+          if (channel.includes("dpm") || haystack.includes("digital presence") || haystack.includes("presence")) deltas.dpmPitches += 1;
+          if (haystack.includes("review") || haystack.includes("referral")) deltas.reviewReferralAsks += 1;
+        });
+        return deltas;
+      }
+
+      function updateBurnup() {
+        const deltas = pendingDeltas();
+        document.querySelectorAll("[data-burnup-key]").forEach(function (node) {
+          const key = node.getAttribute("data-burnup-key");
+          const target = Math.max(Number(node.getAttribute("data-target") || 1), 1);
+          const confirmed = Number(node.getAttribute("data-confirmed") || 0);
+          const pending = Number(deltas[key] || 0);
+          const total = confirmed + pending;
+          const confirmedPct = Math.min(100, Math.round((confirmed / target) * 100));
+          const pendingPct = Math.min(100 - confirmedPct, Math.round((pending / target) * 100));
+          const totalNode = node.querySelector(".burnup-total");
+          const deltaNode = node.querySelector(".burnup-delta");
+          const pendingBar = node.querySelector(".burnup-pending");
+          if (totalNode) totalNode.textContent = String(total);
+          if (deltaNode) deltaNode.textContent = "+" + pending;
+          if (pendingBar) {
+            pendingBar.style.left = confirmedPct + "%";
+            pendingBar.style.width = pendingPct + "%";
+          }
+        });
+      }
+
+      function renderBasket() {
+        if (!list) return;
+        if (!basket.length) {
+          list.innerHTML = '<p class="basket-empty">No basket items yet.</p>';
+          updateBurnup();
+          return;
+        }
+        list.innerHTML = basket.map(function (item) {
+          return '<div class="basket-item"><pre>[private client detail]</pre></div>';
+        }).join("");
+        updateBurnup();
+      }
+
+      function formValue(form, field) {
+        const node = form && form.querySelector('[data-field="' + field + '"]');
+        return node ? node.value.trim() : "";
+      }
+
+      function addBasketItem(button) {
+        const row = button.closest(".sales-row");
+        if (!row) return;
+        const key = row.getAttribute("data-key") || "";
+        const form = document.querySelector('[data-action-form="' + key + '"]');
+        const item = {
+          leadId: row.getAttribute("data-lead-id") || "",
+          name: row.getAttribute("data-lead-name") || "",
+          action: button.getAttribute("data-basket-action") || "Private person 68",
+          channel: formValue(form, "channel"),
+          actualSent: formValue(form, "actualSent"),
+          outcome: formValue(form, "outcome"),
+          nextFollowUp: formValue(form, "nextFollowUp"),
+          notes: formValue(form, "notes"),
+          capturedAt: new Private person 69().toISOString()
+        };
+        basket.push(item);
+        saveBasket();
+        renderBasket();
+      }
+
+      function copyBasket() {
+        const markdown = "# VTC Private person 70 Private person 71 Private person 72 Private person 73\n\n" + (basket.length ? basket.map(plainItem).join("\n\n") : "- No basket items.");
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(markdown).then(function () {
+            if (status) status.textContent = "Private person 73 copied";
+          }).catch(function () {
+            if (status) status.textContent = "Private person 74 failed";
+          });
+        }
+      }
+
+      function updateStaleChip() {
+        if (!staleChip) return;
+        const builtAt = staleChip.getAttribute("data-built-at") || "";
+        const built = new Private person 69(builtAt);
+        if (Private person 75.isNaN(built.getTime())) {
+          staleChip.textContent = "Private person 76 unknown";
+          staleChip.classList.add("stale");
+          return;
+        }
+        const ageHours = (Private person 69.now() - built.getTime()) / 36e5;
+        if (ageHours > 4) {
+          staleChip.textContent = "Private person 77 " + ageHours.toFixed(1) + "h";
+          staleChip.classList.add("stale");
+        } else {
+          staleChip.textContent = "Private person 78 " + Private person 79.max(0, ageHours).toFixed(1) + "h";
+          staleChip.classList.remove("stale");
+        }
+      }
+
+      document.querySelectorAll("[data-basket-action]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          addBasketItem(button);
+        });
+      });
+      if (copyButton) copyButton.addEventListener("click", copyBasket);
+      if (clearButton) clearButton.addEventListener("click", function () {
+        basket = [];
+        saveBasket();
+        renderBasket();
+      });
+
+      loadBasket();
+      renderBasket();
+      updateStaleChip();
+      setInterval(updateStaleChip, 60000);
+    })();
+  </script>
+  <script src="assets/dashboard.js?refresh=2026-07-10T17%3A52%3A10" defer></script>
+</body>
+</html>
