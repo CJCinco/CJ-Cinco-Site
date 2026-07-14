@@ -6,10 +6,11 @@
     "generate:dashboard": "node scripts/generate-web-dashboard.mjs",
     "verify:dashboard": "node scripts/generate-web-dashboard.mjs --verify",
     "verify:dashboard:privacy": "node scripts/generate-web-dashboard.mjs --verify",
+    "verify:dashboard:committed": "node scripts/generate-web-dashboard.mjs --verify-committed",
     "refresh:dashboard:aos": "node scripts/generate-web-dashboard.mjs",
     "verify:dashboard:live": "node scripts/verify-private-dashboard-live.mjs",
     "dev": "next dev",
-    "build": "npm run generate:dashboard && npm run verify:dashboard:privacy && next build",
+    "build": "npm run verify:dashboard:committed && next build",
     "start": "next start",
     "lint": "eslint"
   },

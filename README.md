@@ -87,6 +87,14 @@ Run the named privacy gate:
 npm run verify:dashboard:privacy
 ```
 
+Cloudflare builds validate the already-generated, committed dashboard package without trying to read the private Aligned OS folder:
+
+```bash
+npm run verify:dashboard:committed
+```
+
+Refresh and source-parity checks remain local-only. Commit the generated redacted package before pushing; the remote build intentionally does not regenerate it.
+
 Source and generated files:
 
 ```text

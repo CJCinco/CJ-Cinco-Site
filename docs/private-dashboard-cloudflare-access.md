@@ -78,8 +78,11 @@ Verify before deploy:
 ```sh
 npm run verify:dashboard
 npm run verify:dashboard:privacy
+npm run verify:dashboard:committed
 npm run build
 ```
+
+`generate:dashboard` and the source-parity checks run only on the local Aligned OS Mac. The Cloudflare build uses `verify:dashboard:committed`, which validates the checked-in redacted package without requiring access to the private Aligned OS source folder.
 
 After deploy, verify:
 

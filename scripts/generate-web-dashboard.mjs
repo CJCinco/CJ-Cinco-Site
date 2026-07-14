@@ -20,6 +20,7 @@ const localAssetsRoot = resolve(localDashboardRoot, "assets");
 const outputRoot = resolve(repoRoot, "public/dashboard");
 const manifestPath = resolve(repoRoot, "dashboard-source/web-dashboard.json");
 const verifyOnly = process.argv.includes("--verify");
+const verifyCommittedOnly = process.argv.includes("--verify-committed");
 
 const pageFiles = [
   "index.html",
@@ -510,7 +511,55 @@ function verifyStaticAssets(artifacts) {
   }
 }
 
+function loadCommittedArtifacts() {
+  const requiredFiles = [
+    manifestPath,
+    ...pageFiles.map((page) => resolve(outputRoot, page)),
+    ...staticAssetFiles.map((asset) => resolve(outputRoot, "assets", asset)),
+    resolve(outputRoot, "assets/data/dashboard.json"),
+    resolve(outputRoot, "assets/data/cockpit-core.js"),
+  ];
+  const artifacts = new Map();
+
+  for (const path of requiredFiles) {
+    assert(existsSync(path), `committed dashboard artifact is missing: ${path}`);
+    const content = read(path);
+    assert(content.trim().length > 0, `committed dashboard artifact is empty: ${path}`);
+    artifacts.set(path, content);
+  }
+
+  return artifacts;
+}
+
+function verifyCommittedPackage(artifacts) {
+  const manifest = JSON.parse(artifacts.get(manifestPath));
+  const dashboard = JSON.parse(artifacts.get(resolve(outputRoot, "assets/data/dashboard.json")));
+  const indexHtml = artifacts.get(resolve(outputRoot, "index.html"));
+
+  assert(manifest.schemaVersion === 3, "committed dashboard manifest schema is unexpected");
+  assert(manifest.route === "/dashboard", "committed dashboard route is unexpected");
+  assert(manifest.mode === "canonical-local-dashboard-mirror", "committed dashboard mode is unexpected");
+  assert(dashboard?.meta?.title === "AOS Dashboard", "committed dashboard data is missing its title");
+  assert(/<title>AOS Dashboard<\/title>/i.test(indexHtml), "committed dashboard index title is missing");
+  assert(/class=["']war-nav["']/i.test(indexHtml), "committed dashboard navigation is missing");
+  assert(/assets\/dashboard\.js/i.test(indexHtml), "committed dashboard runtime is missing");
+
+  for (const page of pageFiles) {
+    const html = artifacts.get(resolve(outputRoot, page));
+    assert(/<html\b/i.test(html) && /<\/html>/i.test(html), `${page} is not a complete HTML document`);
+    assert(/noindex/i.test(read(resolve(repoRoot, "public/_headers"))), "dashboard indexing protection is missing");
+  }
+}
+
 function main() {
+  if (verifyCommittedOnly) {
+    const artifacts = loadCommittedArtifacts();
+    runPrivacyChecks(artifacts);
+    verifyCommittedPackage(artifacts);
+    console.log("Committed dashboard package and privacy checks passed without local AOS source access.");
+    return;
+  }
+
   const { artifacts } = buildArtifacts();
   runPrivacyChecks(artifacts);
   verifyStaticAssets(artifacts);
