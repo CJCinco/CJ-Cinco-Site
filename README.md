@@ -59,54 +59,6 @@ Global styles live in:
 src/app/globals.css
 ```
 
-## Private Dashboard
-
-The private CJ Cinco web dashboard lives at:
-
-```text
-/dashboard
-```
-
-It is intentionally not linked from the public homepage, nav, or footer. The route is built into the same static Cloudflare Pages deployment, but it should be protected in Cloudflare Zero Trust / Access with One-Time PIN for CJ's approved email before use.
-
-Generate the privacy-redacted mirror of the canonical local AOS dashboard:
-
-```bash
-npm run generate:dashboard
-```
-
-Verify the generated data is current:
-
-```bash
-npm run verify:dashboard
-```
-
-Run the named privacy gate:
-
-```bash
-npm run verify:dashboard:privacy
-```
-
-Cloudflare builds validate the already-generated, committed dashboard package without trying to read the private Aligned OS folder:
-
-```bash
-npm run verify:dashboard:committed
-```
-
-Refresh and source-parity checks remain local-only. Commit the generated redacted package before pushing; the remote build intentionally does not regenerate it.
-
-Source and generated files:
-
-```text
-dashboard-source/web-dashboard.json
-public/dashboard/*.html
-public/dashboard/assets/
-public/_headers
-docs/private-dashboard-cloudflare-access.md
-```
-
-`dashboard-source/web-dashboard.json` is a small redaction manifest, not a second dashboard data store. The generator treats the local generated dashboard package as the sole structural source. It preserves the original page set, navigation, DOM, CSS, JavaScript, labels, counts, chart structure, and ordering, then masks sensitive leaf values before anything enters this repository. It does not add CJ Cinco website, access-plan, privacy-card, coaching, or system UI to the dashboard.
-
 The original local hero visual is:
 
 ```text
