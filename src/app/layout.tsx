@@ -19,9 +19,9 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "CJ Cinco | Music, Healing, Business, Life",
+  title: "CJ Cinco | Music, Healing & Tech Help",
   description:
-    "The personal-brand hub for CJ Cinco: music, healing work, entrepreneurship, and creative projects.",
+    "Explore CJ Cinco's background in music, healing, and technology, discover his work, and connect at energy@cjcinco.com.",
 };
 
 export default function RootLayout({
@@ -34,7 +34,9 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${cormorant.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }

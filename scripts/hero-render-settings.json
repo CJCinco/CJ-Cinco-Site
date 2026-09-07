@@ -1,0 +1,16 @@
+{
+  "benchmark-01": {
+    "width": 512,
+    "height": 320,
+    "frames": 25,
+    "seed": 365,
+    "prompt": "A cinematic macro film of music made visible. In a vast near-black studio, one broad sculptural ribbon of polished iridescent glass flows into a graceful sound wave. Deep indigo and saturated violet folds catch warm amber and cyan edge light. A soft luminous pulse travels slowly along the continuous curved surface, like a low sustained musical note becoming visible. The camera makes a slow steady sideways dolly with stable framing. The form occupies the center and right side, while the left stays dark and spacious. Smooth coherent unhurried motion, rich contrast, physically convincing reflections, soft depth of field, no cuts, no people, no lettering, no logos, no flashing. A quiet low ambient tone accompanies the movement."
+  },
+  "music-journey-01": {
+    "width": 1152,
+    "height": 640,
+    "frames": 145,
+    "seed": 365,
+    "prompt": "A cinematic macro film of music made visible. In a vast near-black studio, one broad sculptural ribbon of polished iridescent glass flows into a graceful sound wave. Deep indigo and saturated violet folds catch warm amber and cyan edge light. A soft luminous pulse travels slowly along the continuous curved surface, like a low sustained musical note becoming visible. The camera makes a slow steady sideways dolly with stable framing. The form occupies the center and right side, while the left stays dark and spacious. Smooth coherent unhurried motion, rich contrast, physically convincing reflections, soft depth of field, no cuts, no people, no lettering, no logos, no flashing. A quiet low ambient tone accompanies the movement."
+  }
+}

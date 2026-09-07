@@ -1,107 +1,41 @@
-import {
-  AudioLines,
-  BriefcaseBusiness,
-  CalendarDays,
-  HeartHandshake,
-  Mail,
-  Music2,
-  Radio,
-  Sparkles,
-  Waves,
-} from "lucide-react";
-
 export const siteContent = {
   name: "CJ Cinco",
-  tagline: "Music • Healing • Business • Life",
-  supportingLine:
-    "Building a creative and healing-centered life through sound, service, and practical support.",
-  email: "hello@cjcinco.com",
-  bio:
-    "CJ Cinco is the public creative identity of CJ Watson: a new dad, music producer, Reiki practitioner, entrepreneur, and founder behind Vero Tech Care and Green Bodyworks. This hub brings the public threads together without merging the businesses: music, healing work, practical service, and the long-game creative ecosystem behind Aligned Harmonics.",
+  supportingLine: "I make music, explore grounded healing practices, and help people feel more confident with everyday technology. Whether I'm shaping a track or working through a technical problem, I bring curiosity, care, and a practical approach to the work.",
+  email: "energy@cjcinco.com",
+  bio: [
+    "I'm a tech specialist, music producer, and certified Reiki teacher. My path has taken me from U.S. Army aviation maintenance to Recording Arts, where I graduated with highest honors.",
+    "I'm drawn to creativity, grounded spiritual practice, and helping people. Away from work, I enjoy movement, balance, and electric unicycle riding.",
+  ],
 };
 
 export const navItems = [
   { label: "About", href: "#about" },
+  { label: "Tech Help", href: "#tech-help" },
   { label: "Sound", href: "#sound" },
   { label: "Healing", href: "#healing" },
-  { label: "Ventures", href: "#ventures" },
-  { label: "Contact", href: "#contact" },
 ];
 
-export const focusAreas = [
-  {
-    title: "Sound",
-    text: "Artist work, production, beats, intentional audio, and future release paths.",
-    icon: Music2,
-  },
-  {
-    title: "Healing",
-    text: "Reiki, bodywork, nervous-system reset, grounding, and reconnection.",
-    icon: Sparkles,
-  },
-  {
-    title: "Service",
-    text: "Practical support through Vero Tech Care and grounded local entrepreneurship.",
-    icon: HeartHandshake,
-  },
-  {
-    title: "Ecosystem",
-    text: "Aligned Harmonics as the umbrella for creative, healing, and business lanes.",
-    icon: BriefcaseBusiness,
-  },
-];
+export const sound = {
+  paragraphs: [
+    "Music is where my creative and technical sides meet. I create music from the first idea through the finished track, bringing production and audio engineering together to shape the sound, feeling, and flow of each piece.",
+    "I'm drawn to trap, meditation and healing music, and music that brings energy to a workout. I enjoy exploring everything from atmospheric textures to driving rhythms, with room for both stillness and movement. You can explore my music through Aligned Harmonics below.",
+  ],
+  href: "https://alignedharmonics.com/",
+  linkLabel: "Explore Music",
+};
 
-export const soundCards = [
-  {
-    title: "Releases",
-    label: "Coming soon",
-    text: "A home for future CJ Cinco singles, albums, ambient projects, and intentional sound releases.",
-    icon: Radio,
-  },
-  {
-    title: "Beats",
-    label: "Library placeholder",
-    text: "Space for beats, loops, sketches, and producer notes once the catalog is ready to publish.",
-    icon: AudioLines,
-  },
-  {
-    title: "Production Work",
-    label: "Selective projects",
-    text: "Future case studies for production, scoring, editing, sound design, and collaboration.",
-    icon: Waves,
-  },
-];
+export const healing = {
+  paragraphs: [
+    "My healing background includes Reiki teacher certification, craniosacral work, and Lucia Light. These practices reflect my interest in slowing down, paying attention, and making room for a more grounded experience.",
+    "Through Green Bodyworks, I've explored gentle hands-on work, energy practices, and meditative light experiences. My approach is quiet and personal, with an emphasis on presence and meeting people where they are. You're welcome to reach out with questions about the practices or my background.",
+  ],
+  href: "https://greenbodyworks.com/",
+};
 
-export const ventures = [
-  {
-    title: "Vero Tech Care",
-    type: "Separate business",
-    text: "Premium local tech help, in-home support, workshops, and digital-presence services for Vero Beach and nearby communities.",
-    href: "https://verotechcare.com/",
-  },
-  {
-    title: "Green Bodyworks",
-    type: "Healing lane",
-    text: "Reiki, craniosacral-inspired bodywork, Lucia Light support, and calm session work kept as its own healing identity.",
-    href: "https://greenbodyworks.com/",
-  },
-  {
-    title: "Aligned Harmonics",
-    type: "Umbrella company",
-    text: "The broader creative and business ecosystem behind technology, healing, music, land, and long-term aligned service.",
-    href: "https://alignedharmonics.com/",
-  },
-  {
-    title: "Music / CJ Cinco",
-    type: "Artist identity",
-    text: "The public sound and personal-brand lane for music, production, public content, and creative studio experiments.",
-    href: "#sound",
-  },
-];
-
-export const contactLinks = [
-  { label: "Email", href: "mailto:hello@cjcinco.com", icon: Mail },
-  { label: "Instagram", href: null, icon: Sparkles },
-  { label: "YouTube", href: null, icon: Radio },
-  { label: "Facebook", href: null, icon: CalendarDays },
-];
+export const techHelp = {
+  paragraphs: [
+    "Through Vero Tech Care, I help small businesses with their everyday technology and digital presence: websites, online listings, business tools, and making it easier for customers to find and contact them. I bring careful troubleshooting, clear explanations, and practical next steps.",
+    "I also help people at home with phones, computers, Wi-Fi, printers, passwords, photos, and online safety. I care about helping someone feel confident using their devices as much as solving the immediate problem, with support that keeps technology approachable.",
+  ],
+  href: "https://verotechcare.com/",
+};

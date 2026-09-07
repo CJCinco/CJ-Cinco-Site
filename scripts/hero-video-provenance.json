@@ -1,0 +1,116 @@
+{
+  "source_name": "music-journey-01.mp4",
+  "source_sha256": "aac6d46f0510ad09784ee11eb1c4167eb6e4bf9f1921079cda312c8e49eb1555",
+  "source_probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1152,
+        "height": 640,
+        "r_frame_rate": "24/1",
+        "nb_frames": "145"
+      }
+    ],
+    "format": {
+      "duration": "6.041667"
+    }
+  },
+  "purpose": "Scroll-controlled decorative hero; no audio track",
+  "encoding": "H.264, CRF 24, every frame a keyframe, yuv420p, faststart",
+  "files": {
+    "desktop": {
+      "name": "cj-cinco-music-desktop.mp4",
+      "bytes": 2140181,
+      "sha256": "660bdf93ce9a13b102a0741d524a22dc5da18e8b72181c8f1532bdd5bdfc9a5d"
+    },
+    "mobile": {
+      "name": "cj-cinco-music-mobile.mp4",
+      "bytes": 1065751,
+      "sha256": "e263095cde05ce234873c027f69885c16215006b3690788e6b5a7c3cc318ffda"
+    },
+    "poster": {
+      "name": "cj-cinco-music-poster.jpg",
+      "bytes": 52361,
+      "sha256": "d116bfb2009af0677bb2073c9668e0846d278479d12af1780a77e60d20ef73fc"
+    }
+  },
+  "commands": [
+    [
+      "ffmpeg",
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-n",
+      "-i",
+      "<source>",
+      "-vf",
+      "scale='min(1280,iw)':-2,setsar=1",
+      "-an",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "slow",
+      "-crf",
+      "24",
+      "-pix_fmt",
+      "yuv420p",
+      "-g",
+      "1",
+      "-keyint_min",
+      "1",
+      "-sc_threshold",
+      "0",
+      "-movflags",
+      "+faststart",
+      "-map_metadata",
+      "-1",
+      "public/visuals/cj-cinco-music-desktop.mp4"
+    ],
+    [
+      "ffmpeg",
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-n",
+      "-i",
+      "<source>",
+      "-vf",
+      "crop=trunc(ih*3/4/2)*2:ih:trunc((iw-ow)*0.62/2)*2:0,scale=-2:'min(640,ih)',setsar=1",
+      "-an",
+      "-c:v",
+      "libx264",
+      "-preset",
+      "slow",
+      "-crf",
+      "24",
+      "-pix_fmt",
+      "yuv420p",
+      "-g",
+      "1",
+      "-keyint_min",
+      "1",
+      "-sc_threshold",
+      "0",
+      "-movflags",
+      "+faststart",
+      "-map_metadata",
+      "-1",
+      "public/visuals/cj-cinco-music-mobile.mp4"
+    ],
+    [
+      "ffmpeg",
+      "-hide_banner",
+      "-loglevel",
+      "error",
+      "-n",
+      "-i",
+      "<source>",
+      "-frames:v",
+      "1",
+      "-q:v",
+      "2",
+      "public/visuals/cj-cinco-music-poster.jpg"
+    ]
+  ]
+}
