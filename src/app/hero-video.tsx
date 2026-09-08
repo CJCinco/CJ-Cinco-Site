@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 type Connection = EventTarget & { saveData?: boolean; effectiveType?: string };
-type FrameVideo = HTMLVideoElement & { requestVideoFrameCallback?: (callback: () => void) => number };
 const reducedQuery = "(prefers-reduced-motion: reduce)";
 // The portrait-cropped film also suits tablets held upright; landscape tablets
 // and laptops keep the wide asset.
@@ -49,7 +48,7 @@ function HeroFilm({ mode }: { mode: string }) {
   const reveal = useCallback(() => setReady(true), []);
 
   useEffect(() => {
-    const video = videoRef.current as FrameVideo | null;
+    const video = videoRef.current;
     const page = video?.closest<HTMLElement>(".site-shell");
     if (!video || !page || mode === "static" || failed) return;
     let frame = 0;
@@ -82,7 +81,7 @@ function HeroFilm({ mode }: { mode: string }) {
     const needsKick = /apple/i.test(navigator.vendor || "");
 
     function settle() {
-      if (!video) return;
+      if (!video || settled) return;
       settled = true;
       kicking = false;
       window.clearTimeout(timer);
@@ -91,36 +90,32 @@ function HeroFilm({ mode }: { mode: string }) {
       scheduleSeek();
     }
 
+    // "playing" is the browser saying a frame is on screen, which is exactly
+    // what the kick is for. Stop there rather than guessing at a delay.
+    function onPlaying() {
+      settle();
+    }
+
+    function abandonKick() {
+      if (!video || settled) return;
+      video.pause();
+      kicking = false; // playback never really started; a later gesture may retry
+    }
+
     function kick() {
       if (!video || disposed || settled || kicking) return;
       kicking = true; // claim the kick now: a second play() would outlive the pause
+      window.clearTimeout(timer);
+      timer = window.setTimeout(abandonKick, 2000);
       let started: Promise<void> | undefined;
       try {
         started = video.play();
       } catch {
-        kicking = false;
+        abandonKick();
         return;
       }
-      if (!started || typeof started.then !== "function") {
-        settle();
-        return;
-      }
-      // Never leave the film running: pause on the first painted frame, and
-      // again on a timer in case the frame callback never arrives.
-      timer = window.setTimeout(settle, 400);
-      started
-        .then(() => {
-          if (typeof video.requestVideoFrameCallback === "function") {
-            video.requestVideoFrameCallback(settle);
-          } else {
-            settle();
-          }
-        })
-        .catch(() => {
-          // Low Power Mode refuses programmatic playback; retry on a gesture.
-          kicking = false;
-          window.clearTimeout(timer);
-        });
+      // Low Power Mode refuses programmatic playback; retry on a gesture.
+      started?.catch?.(abandonKick);
     }
 
     // The film is scroll-driven, so it must never play on its own.
@@ -143,6 +138,7 @@ function HeroFilm({ mode }: { mode: string }) {
       window.addEventListener(name, onGesture, { passive: true } as AddEventListenerOptions),
     );
     video.addEventListener("play", holdPaused);
+    video.addEventListener("playing", onPlaying);
     video.addEventListener("loadedmetadata", scheduleSeek);
     video.addEventListener("loadeddata", reveal);
     video.addEventListener("canplay", reveal);
@@ -165,6 +161,7 @@ function HeroFilm({ mode }: { mode: string }) {
       window.removeEventListener("pageshow", scheduleSeek);
       gestures.forEach((name) => window.removeEventListener(name, onGesture));
       video.removeEventListener("play", holdPaused);
+      video.removeEventListener("playing", onPlaying);
       video.removeEventListener("loadedmetadata", scheduleSeek);
       video.removeEventListener("loadeddata", reveal);
       video.removeEventListener("canplay", reveal);
