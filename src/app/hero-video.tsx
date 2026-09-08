@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 type Connection = EventTarget & { saveData?: boolean; effectiveType?: string };
+type FrameVideo = HTMLVideoElement & { requestVideoFrameCallback?: (callback: () => void) => number };
 const reducedQuery = "(prefers-reduced-motion: reduce)";
 // The portrait-cropped film also suits tablets held upright; landscape tablets
 // and laptops keep the wide asset.
@@ -48,12 +49,14 @@ function HeroFilm({ mode }: { mode: string }) {
   const reveal = useCallback(() => setReady(true), []);
 
   useEffect(() => {
-    const video = videoRef.current;
+    const video = videoRef.current as FrameVideo | null;
     const page = video?.closest<HTMLElement>(".site-shell");
     if (!video || !page || mode === "static" || failed) return;
     let frame = 0;
+    let timer = 0;
     let disposed = false;
-    let primed = false;
+    let kicking = false;
+    let settled = false;
 
     function seekToScroll() {
       frame = 0;
@@ -72,37 +75,65 @@ function HeroFilm({ mode }: { mode: string }) {
       if (!disposed && !frame) frame = requestAnimationFrame(seekToScroll);
     }
 
-    // Safari on iOS and iPadOS will not buffer a preload="auto" film, and will
-    // not paint a seeked frame, until the element has been played at least
-    // once. Start it muted and inline, then pause immediately; the first frame
-    // arrives and every later seek renders. If the browser refuses (Low Power
-    // Mode blocks programmatic playback), retry on the first real gesture.
-    function prime() {
-      if (disposed || primed || !video) return;
-      const started = video.play();
-      if (!started) {
-        primed = true;
-        video.pause();
-        scheduleSeek();
-        return;
-      }
-      started
-        .then(() => {
-          if (disposed) return;
-          primed = true;
-          video.pause();
-          reveal();
-          scheduleSeek();
-        })
-        .catch(() => undefined);
-    }
+    // Safari on iOS and iPadOS will not buffer a preloaded film, and will not
+    // paint a seeked frame, until the element has played once. Start it just
+    // long enough to decode one frame, then hold it paused for good. Other
+    // engines seek a paused film correctly and are left alone.
+    const needsKick = /apple/i.test(navigator.vendor || "");
 
-    const gestures = ["touchstart", "touchend", "pointerdown", "click", "keydown"] as const;
-    function onGesture() {
-      prime();
+    function settle() {
+      if (!video) return;
+      settled = true;
+      kicking = false;
+      window.clearTimeout(timer);
+      video.pause();
+      reveal();
       scheduleSeek();
     }
 
+    function kick() {
+      if (!video || disposed || settled || kicking) return;
+      kicking = true; // claim the kick now: a second play() would outlive the pause
+      let started: Promise<void> | undefined;
+      try {
+        started = video.play();
+      } catch {
+        kicking = false;
+        return;
+      }
+      if (!started || typeof started.then !== "function") {
+        settle();
+        return;
+      }
+      // Never leave the film running: pause on the first painted frame, and
+      // again on a timer in case the frame callback never arrives.
+      timer = window.setTimeout(settle, 400);
+      started
+        .then(() => {
+          if (typeof video.requestVideoFrameCallback === "function") {
+            video.requestVideoFrameCallback(settle);
+          } else {
+            settle();
+          }
+        })
+        .catch(() => {
+          // Low Power Mode refuses programmatic playback; retry on a gesture.
+          kicking = false;
+          window.clearTimeout(timer);
+        });
+    }
+
+    // The film is scroll-driven, so it must never play on its own.
+    function holdPaused() {
+      if (video && settled && !video.paused) video.pause();
+    }
+
+    function onGesture() {
+      if (needsKick) kick();
+      scheduleSeek();
+    }
+
+    const gestures = ["touchstart", "pointerdown", "keydown"] as const;
     const observer = new ResizeObserver(scheduleSeek);
     observer.observe(page);
     window.addEventListener("scroll", onGesture, { passive: true });
@@ -111,33 +142,35 @@ function HeroFilm({ mode }: { mode: string }) {
     gestures.forEach((name) =>
       window.addEventListener(name, onGesture, { passive: true } as AddEventListenerOptions),
     );
+    video.addEventListener("play", holdPaused);
     video.addEventListener("loadedmetadata", scheduleSeek);
     video.addEventListener("loadeddata", reveal);
     video.addEventListener("canplay", reveal);
     video.addEventListener("loadeddata", scheduleSeek);
     video.addEventListener("seeked", scheduleSeek);
-    video.addEventListener("loadedmetadata", prime);
+    if (needsKick) video.addEventListener("loadedmetadata", kick);
 
-    // iOS ignores preload on a freshly inserted element often enough to be
-    // worth an explicit nudge.
     if (video.readyState === 0) video.load();
-    if (video.readyState >= 1) prime();
+    if (needsKick && video.readyState >= 1) kick();
     scheduleSeek();
 
     return () => {
       disposed = true;
       cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+      video.pause(); // never hand back a film that is still running
       observer.disconnect();
       window.removeEventListener("scroll", onGesture);
       window.removeEventListener("resize", scheduleSeek);
       window.removeEventListener("pageshow", scheduleSeek);
       gestures.forEach((name) => window.removeEventListener(name, onGesture));
+      video.removeEventListener("play", holdPaused);
       video.removeEventListener("loadedmetadata", scheduleSeek);
       video.removeEventListener("loadeddata", reveal);
       video.removeEventListener("canplay", reveal);
       video.removeEventListener("loadeddata", scheduleSeek);
       video.removeEventListener("seeked", scheduleSeek);
-      video.removeEventListener("loadedmetadata", prime);
+      video.removeEventListener("loadedmetadata", kick);
     };
   }, [mode, failed, reveal]);
 
