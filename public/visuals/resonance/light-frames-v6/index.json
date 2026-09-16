@@ -1,0 +1,12 @@
+{
+  "frameCount": 164,
+  "fps": 30,
+  "desktop": {
+    "width": 540,
+    "height": 960
+  },
+  "mobile": {
+    "width": 360,
+    "height": 640
+  }
+}

@@ -8,11 +8,12 @@ export const siteContent = {
   ],
 };
 
-export const navItems = [
+export const navItems: { label: string; href: string }[] = [
   { label: "About", href: "#about" },
   { label: "Tech Help", href: "#tech-help" },
   { label: "Sound", href: "#sound" },
   { label: "Healing", href: "#healing" },
+  { label: "Health Snapshot", href: "/health-snapshot.html" },
 ];
 
 export const sound = {

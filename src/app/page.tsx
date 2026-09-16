@@ -1,23 +1,12 @@
-import HeroVideo from "./hero-video";
-import Image from "next/image";
-import { healing, navItems, siteContent, sound, techHelp } from "./content";
+import SiteHeader from "./site-header";
+import HeroRider from "./hero-rider";
+import { healing, siteContent, sound, techHelp } from "./content";
 
 export default function Home() {
   return (
     <main className="site-shell">
-      <HeroVideo />
-      <header className="site-header">
-        <nav aria-label="Main navigation" className="header-inner">
-          <a href="#home" className="wordmark">{siteContent.name}</a>
-          <div className="desktop-navigation">
-            {navItems.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
-          </div>
-          <a href="#email" className="header-email">Email</a>
-        </nav>
-        <nav aria-label="Page sections" className="mobile-navigation">
-          {navItems.map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}
-        </nav>
-      </header>
+      <HeroRider />
+      <SiteHeader home emailHref="#email" />
 
       <section id="home" className="hero-section">
         <div className="content-width">
@@ -31,57 +20,48 @@ export default function Home() {
       <div className="story-surface">
         <div className="content-width">
           <section id="about" className="story-section about-section">
-            <div className="section-heading about-profile">
+            <div className="section-heading">
               <h2>About</h2>
-              <Image
-                src="/visuals/cj-cinco-headshot-teal.webp"
-                alt="CJ Cinco"
-                loading="eager"
-                width={720}
-                height={720}
-                className="about-portrait"
-                sizes="(max-width: 767px) 280px, 320px"
-              />
             </div>
             <div className="section-copy">{siteContent.bio.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
           </section>
 
-          <section id="tech-help" className="story-section">
-            <div className="section-heading section-brand">
-              <h2>Tech Help</h2>
-              <div className="brand-logo-frame brand-logo-frame-dark">
-                <Image src="/visuals/vero-tech-care-logo.webp" alt="Vero Tech Care" width={640} height={640} className="brand-logo brand-logo-vtc" />
+          <section id="tech-help" className="story-section journey-section">
+            <div className="journey-art-space" aria-hidden="true" />
+            <div className="journey-content">
+              <div className="section-heading section-brand">
+                <h2>Tech Help</h2>
               </div>
-            </div>
-            <div className="section-copy">
-              {techHelp.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-              <a href={techHelp.href} target="_blank" rel="noreferrer" className="text-link">Vero Tech Care</a>
+              <div className="section-copy">
+                {techHelp.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                <a href={techHelp.href} target="_blank" rel="noreferrer" className="text-link">Vero Tech Care</a>
+              </div>
             </div>
           </section>
 
-          <section id="sound" className="story-section">
-            <div className="section-heading section-brand">
-              <h2>Sound</h2>
-              <div className="brand-logo-frame">
-                <Image src="/visuals/aligned-harmonics-logo.webp" alt="Aligned Harmonics" width={276} height={97} className="brand-logo brand-logo-sound" />
+          <section id="sound" className="story-section journey-section journey-section-left">
+            <div className="journey-art-space" aria-hidden="true" />
+            <div className="journey-content">
+              <div className="section-heading section-brand">
+                <h2>Sound</h2>
               </div>
-            </div>
-            <div className="section-copy">
-              {sound.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-              <a href={sound.href} target="_blank" rel="noreferrer" className="text-link">{sound.linkLabel}</a>
+              <div className="section-copy">
+                {sound.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                <a href={sound.href} target="_blank" rel="noreferrer" className="text-link">{sound.linkLabel}</a>
+              </div>
             </div>
           </section>
 
-          <section id="healing" className="story-section">
-            <div className="section-heading section-brand">
-              <h2>Healing</h2>
-              <div className="brand-logo-frame">
-                <Image src="/visuals/green-bodyworks-logo.webp" alt="Green Bodyworks" width={300} height={300} className="brand-logo brand-logo-healing" />
+          <section id="healing" className="story-section journey-section">
+            <div className="journey-art-space" aria-hidden="true" />
+            <div className="journey-content">
+              <div className="section-heading section-brand">
+                <h2>Healing</h2>
               </div>
-            </div>
-            <div className="section-copy">
-              {healing.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-              <a href={healing.href} target="_blank" rel="noreferrer" className="text-link">Green Bodyworks</a>
+              <div className="section-copy">
+                {healing.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+                <a href={healing.href} target="_blank" rel="noreferrer" className="text-link">Green Bodyworks</a>
+              </div>
             </div>
           </section>
 

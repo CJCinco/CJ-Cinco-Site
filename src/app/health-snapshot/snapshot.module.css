@@ -1,0 +1,20 @@
+.page { min-height: 100vh; background: radial-gradient(ellipse at 20% 15%, #d7bd8312, transparent 55%), #080b0d; }
+.page :global([aria-current=page]) { color: #d7bd83; }
+.skipLink { position: fixed; top: -100px; left: 20px; z-index: 100; padding: 12px 20px; background: #f4efe3; color: #080b0d; }
+.skipLink:focus { top: 12px; }
+.content { width: min(1120px, calc(100% - 112px)); margin: auto; padding: 140px 0 72px; display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 80px; }
+.intro { padding-top: 28px; }
+.eyebrow { color: #d7bd83; text-transform: uppercase; letter-spacing: .18em; font-size: 11px; }
+.intro h1 { font-family: var(--font-display), Georgia, serif; font-size: clamp(50px, 5.5vw, 76px); font-weight: 400; letter-spacing: -.035em; line-height: 1; margin-top: 22px; }
+.subheading { font-family: var(--font-display), Georgia, serif; font-size: 27px; line-height: 1.35; margin-top: 26px; }
+.description { color: #c9c7bd; font-size: 15px; line-height: 1.85; margin-top: 24px; }
+.download { display: inline-flex; align-items: center; justify-content: center; gap: 12px; margin-top: 32px; min-height: 52px; padding: 14px 24px; border: 1px solid #d7bd83; border-radius: 4px; background: #d7bd83; color: #080b0d; font-size: 15px; font-weight: 600; }
+.download:hover { background: #ead3a4; }
+.details { color: #c9c7bd; font-size: 12px; margin-top: 14px; }
+.preview img { width: 100%; height: auto; box-shadow: 0 20px 60px #0006; border: 1px solid #d7bd8340; }
+.preview figcaption { color: #c9c7bd; font-size: 12px; line-height: 1.7; margin-top: 18px; }
+.footer { width: min(1120px, calc(100% - 112px)); margin: auto; padding: 24px 0 32px; border-top: 1px solid #d7bd8330; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.footer a { font-family: var(--font-display), Georgia, serif; font-size: 26px; }
+.footer span { color: #c9c7bd; font-size: 11px; }
+@media (max-width: 1000px) { .content { gap: 40px; } .intro { padding-top: 0; } }
+@media (max-width: 767px) { .content { width: calc(100% - 48px); padding: 190px 0 44px; grid-template-columns: 1fr; gap: 38px; } .intro h1 { font-size: clamp(48px, 12vw, 68px); } .subheading { font-size: 25px; } .download { width: 100%; } .footer { width: calc(100% - 48px); } }
