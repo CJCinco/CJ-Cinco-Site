@@ -33,17 +33,30 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .journey-loaded .journey-canvas { opacity: 1; }
 .journey-loaded .journey-poster, .journey-loaded .journey-static-shade { visibility: hidden; }
 .journey-static-shade { background: linear-gradient(90deg, #080b0df2, #080b0d20); }
-.motion-toggle { position: fixed; z-index: 60; right: 26px; bottom: 20px; min-height: 40px; padding: 8px 13px; border: 1px solid #f4efe328; border-radius: 24px; background: #080b0ddb; color: var(--muted); font-size: 12px; cursor: pointer; backdrop-filter: blur(12px); }
 
 .site-header { position: fixed; inset: 0 0 auto; z-index: 50; background: #080b0de8; backdrop-filter: blur(18px); border-bottom: 1px solid #f4efe314; }
 .header-inner { max-width: 1600px; margin: auto; min-height: 80px; padding: 12px 40px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 24px; }
 .wordmark { justify-self: start; font-family: var(--font-display), Georgia, serif; font-size: 28px; white-space: nowrap; }
-.desktop-navigation { display: flex; gap: 30px; color: var(--muted); font-size: 14px; }
-.desktop-navigation a { padding-block: 12px; white-space: nowrap; }
-.desktop-navigation a:hover, .mobile-navigation a:hover { color: var(--foreground); }
 .header-email { justify-self: end; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 8px 18px; border: 1px solid #d7bd8352; border-radius: 24px; font-size: 14px; }
 .header-email:hover { border-color: var(--accent); }
-.mobile-navigation { display: none; }
+.navigation-menu { justify-self: center; }
+.menu-toggle { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid #f4efe326; border-radius: 50%; cursor: pointer; list-style: none; color: var(--foreground); }
+.menu-toggle::-webkit-details-marker { display: none; }
+.menu-toggle::marker { content: ""; }
+.menu-toggle:hover, .navigation-menu[open] .menu-toggle { border-color: var(--accent); background: #d7bd830d; }
+.menu-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+.menu-icon { display: grid; gap: 5px; width: 20px; }
+.menu-icon span { display: block; height: 1px; background: currentColor; transition: transform 160ms ease, opacity 160ms ease; }
+.navigation-menu[open] .menu-icon span:first-child { transform: translateY(6px) rotate(45deg); }
+.navigation-menu[open] .menu-icon span:nth-child(2) { opacity: 0; }
+.navigation-menu[open] .menu-icon span:last-child { transform: translateY(-6px) rotate(-45deg); }
+.navigation-panel { position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%); width: min(520px, calc(100% - 32px)); max-height: calc(100dvh - 110px); overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 28px; border: 1px solid #d7bd8338; border-radius: 16px; background: #0d1112fa; box-shadow: 0 24px 70px #0008; }
+.navigation-menu:not([open]) .navigation-panel { display: none; }
+.navigation-group + .navigation-group { border-left: 1px solid #f4efe31a; padding-left: 28px; }
+.navigation-label { margin-bottom: 10px; color: var(--accent); font-size: 11px; letter-spacing: .15em; text-transform: uppercase; }
+.navigation-group a { display: flex; align-items: center; min-height: 46px; padding-block: 9px; color: var(--muted); font-size: 16px; line-height: 1.45; }
+.navigation-group a:hover, .navigation-group a[aria-current="page"] { color: var(--accent); }
+
 
 .hero-section { position: relative; display: flex; align-items: center; padding-block: 132px 48px; }
 .hero-content { max-width: 560px; text-align: left; }
@@ -81,22 +94,21 @@ html[data-resonance-motion="off"] .journey-content { width: 100%; display: grid;
   .header-inner { padding-inline: 28px; }
   .hero-content { max-width: 50%; }
   .hero-description { font-size: 18px; }
-  .desktop-navigation { gap: 16px; font-size: 13px; }
 }
 @media (max-width: 767px) {
-  html { scroll-padding-top: 172px; }
+  html { scroll-padding-top: 88px; }
   .content-width { width: calc(100% - 48px); }
-  .header-inner { grid-template-columns: 1fr auto; min-height: 68px; padding: 10px 24px; }
+  .header-inner { min-height: 68px; gap: 12px; padding: 10px 24px; }
   .wordmark { font-size: 26px; }
+  .menu-toggle { width: 44px; height: 44px; }
+  .navigation-panel { gap: 18px; padding: 22px; }
+  .navigation-group + .navigation-group { padding-left: 18px; }
   .header-email { min-height: 42px; padding: 6px 16px; }
-  .desktop-navigation { display: none; }
-  .mobile-navigation { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 10px; padding-inline: 24px; border-top: 1px solid #f4efe30d; font-size: 13px; color: var(--muted); }
-  .mobile-navigation a { display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; }
-  .hero-section { display: block; min-height: 0; padding-block: 182px 32px; }
+  .hero-section { display: block; min-height: 0; padding-block: 108px 32px; }
   .hero-content { max-width: none; }
   .hero-content h1 { font-size: clamp(68px, 16.5vw, 110px); max-width: 58%; }
   .hero-description { margin-top: 40px; font-size: 17px; line-height: 1.8; }
-  .rider-layer { height: min(40lvh, 340px); left: 79%; top: calc(180px - min(40lvh, 340px) * .723558); }
+  .rider-layer { height: min(40lvh, 340px); left: 79%; top: calc(106px - min(40lvh, 340px) * .723558); }
   .journey-static-shade { background: linear-gradient(180deg, #080b0d11 30%, #080b0df2 65%); }
   .story-section { padding-block: 32px; }
   .about-section { display: block; }
@@ -110,7 +122,6 @@ html[data-resonance-motion="off"] .journey-content { width: 100%; display: grid;
   .section-copy > p { font-size: 16px; line-height: 1.8; }
   .site-footer { padding-block: clamp(280px, 38svh, 330px) 76px; gap: 28px; }
   html[data-resonance-motion="off"] .site-footer { min-height: 0; padding-top: 48px; }
-  .motion-toggle { right: 108px; top: 12px; bottom: auto; min-height: 44px; padding: 8px 10px; font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .journey-art-space { display: none; }

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { mountJourney } from "./journey-player";
 import manifest from "../../public/visuals/rider-v2/manifest.json";
 
@@ -27,17 +27,14 @@ function subscribe(notify: () => void) {
 
 export default function HeroRider() {
   const playback = useSyncExternalStore<Playback>(subscribe, mode, () => "static");
-  const [paused, setPaused] = useState(false);
   return <>
-    <div className="cinematic-backdrop resonance-backdrop" aria-hidden="true"><Rider key={playback} playback={playback} paused={paused} /></div>
-    {playback !== "static" && <button type="button" className="motion-toggle" data-motion-toggle aria-pressed={paused} onClick={() => setPaused(!paused)}>{paused ? "Resume motion" : "Pause motion"}</button>}
+    <div className="cinematic-backdrop resonance-backdrop" aria-hidden="true"><Rider key={playback} playback={playback} /></div>
   </>;
 }
 
-function Rider({ playback, paused }: { playback: Playback; paused: boolean }) {
+function Rider({ playback }: { playback: Playback }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const layer = useRef<HTMLDivElement>(null);
-  const active = useRef<ReturnType<typeof mountJourney> | null>(null);
   useEffect(() => {
     if (playback === "static") {
       document.documentElement.dataset.resonanceMotion = "off";
@@ -46,10 +43,8 @@ function Rider({ playback, paused }: { playback: Playback; paused: boolean }) {
     if (!canvas.current) return;
     document.documentElement.dataset.resonanceMotion = "on";
     const player = mountJourney(canvas.current, playback, () => layer.current?.classList.add("journey-loaded"));
-    active.current = player;
-    return () => { player.dispose(); active.current = null; delete document.documentElement.dataset.resonanceMotion; };
+    return () => { player.dispose(); delete document.documentElement.dataset.resonanceMotion; };
   }, [playback]);
-  useEffect(() => { active.current?.setPaused(paused); }, [paused, playback]);
   return (
     <div className="journey-layer" ref={layer}>
       <Image src="/visuals/resonance/flow-field-v3.webp" alt="" fill priority unoptimized className="journey-field" />

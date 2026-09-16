@@ -17,4 +17,4 @@
 .footer a { font-family: var(--font-display), Georgia, serif; font-size: 26px; }
 .footer span { color: #c9c7bd; font-size: 11px; }
 @media (max-width: 1000px) { .content { gap: 40px; } .intro { padding-top: 0; } }
-@media (max-width: 767px) { .content { width: calc(100% - 48px); padding: 190px 0 44px; grid-template-columns: 1fr; gap: 38px; } .intro h1 { font-size: clamp(48px, 12vw, 68px); } .subheading { font-size: 25px; } .download { width: 100%; } .footer { width: calc(100% - 48px); } }
+@media (max-width: 767px) { .content { width: calc(100% - 48px); padding: 112px 0 44px; grid-template-columns: 1fr; gap: 38px; } .intro h1 { font-size: clamp(48px, 12vw, 68px); } .subheading { font-size: 25px; } .download { width: 100%; } .footer { width: calc(100% - 48px); } }

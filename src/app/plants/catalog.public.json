@@ -1,0 +1,311 @@
+{
+  "schemaVersion": 1,
+  "preview": true,
+  "registrationNumber": null,
+  "contacts": {
+    "phone": null,
+    "messenger": null
+  },
+  "plants": [
+    {
+      "id": "cuban-oregano",
+      "name": "Cuban oregano",
+      "category": "Herbs",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "3–6 in",
+      "format": "Rooted cutting",
+      "detailsAssumed": true,
+      "price": 4,
+      "priceIsEstimate": false,
+      "description": "A fragrant herb with thick, velvety leaves. Give it partial shade and well-drained soil.",
+      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/cuban-oregano/",
+      "care": {
+        "sun": "Partial shade",
+        "water": "Water periodically; avoid keeping the roots soggy.",
+        "soil": "Well-drained soil or potting mix."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/cuban-oregano-reference.jpg",
+        "alt": "A small Cuban oregano cutting in a soil plug.",
+        "kind": "reference",
+        "sourceUrl": "https://floridaplantsnursery.com/products/mexican-oregano-plant-cuban-mint-4-6-inch-live-plant-plectranthus-amboinicus-succulent-indian-borage-mexican-thyme-spanish-thyme",
+        "credit": "Florida Plants Nursery",
+        "license": null,
+        "licenseUrl": null
+      }
+    },
+    {
+      "id": "peppermint",
+      "name": "Peppermint",
+      "category": "Herbs",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "3–6 in",
+      "format": "Rooted cutting",
+      "detailsAssumed": true,
+      "price": 4,
+      "priceIsEstimate": false,
+      "description": "A fresh-scented herb that spreads readily. A container helps keep its runners in check; keep the soil moist.",
+      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/mint/",
+      "care": {
+        "sun": "Sun to partial shade; some afternoon shade helps in Florida.",
+        "water": "Keep the soil evenly moist.",
+        "soil": "Moist, well-drained soil; a container helps control spreading."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/peppermint-reference.jpg",
+        "alt": "Leafy peppermint stems in a nursery pot.",
+        "kind": "reference",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Peppermint_Plant.jpg",
+        "credit": "Joshua T Polito",
+        "license": "CC0 1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      }
+    },
+    {
+      "id": "sweet-potato",
+      "name": "Sweet potato",
+      "category": "Vines",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "6–10 in",
+      "format": "Rooted vine slip",
+      "detailsAssumed": true,
+      "price": 3,
+      "priceIsEstimate": false,
+      "description": "A warm-season vine grown from slips. Give it a sunny spot and room for its trailing growth.",
+      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/sweet-potatoes/",
+      "care": {
+        "sun": "Full sun",
+        "water": "Water during establishment and dry periods; avoid soggy soil.",
+        "soil": "Loose, well-drained soil with room for roots and vines."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/sweet-potato-reference.jpg",
+        "alt": "Two small sweet-potato slips with roots in soil plugs.",
+        "kind": "reference",
+        "sourceUrl": "https://www.sweetpotato-slips.co.uk/growing",
+        "credit": "Highland Horticulture",
+        "license": null,
+        "licenseUrl": null
+      }
+    },
+    {
+      "id": "banana",
+      "name": "Banana",
+      "category": "Fruit plants",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "6–12 in",
+      "format": "Small rooted starter",
+      "detailsAssumed": true,
+      "price": 8,
+      "priceIsEstimate": false,
+      "description": "Broad tropical leaves bring a lush feel to the garden. Keep it warm with consistent moisture; mature size depends on the variety.",
+      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/fruits/bananas/",
+      "care": {
+        "sun": "Full sun in a wind-protected spot.",
+        "water": "Water regularly; keep moist without leaving the soil continuously wet.",
+        "soil": "Fertile, well-drained soil."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/banana-reference.jpg",
+        "alt": "A hand holding a small banana starter plug.",
+        "kind": "reference",
+        "sourceUrl": "https://microstarts.com/products/dwarf-cavendish-banana-tree-musa-acuminata-microstarts-starter-plant-plugs",
+        "credit": "MicroStarts",
+        "license": null,
+        "licenseUrl": null
+      }
+    },
+    {
+      "id": "mulberry",
+      "name": "Mulberry",
+      "category": "Fruit plants",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "6–10 in",
+      "format": "Rooted woody cutting",
+      "detailsAssumed": true,
+      "price": 8,
+      "priceIsEstimate": false,
+      "description": "A deciduous fruit tree that can grow quickly. Give it sunlight and room to develop; mature size varies by variety.",
+      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/fruits/mulberry/",
+      "care": {
+        "sun": "Full sun to light shade.",
+        "water": "Water while establishing; established trees tolerate drier conditions.",
+        "soil": "Well-drained soil with space for a tree to develop."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/mulberry-reference.png",
+        "alt": "Small mulberry cuttings with fresh leaf growth in nursery bags.",
+        "kind": "reference",
+        "sourceUrl": "https://jaymegarden.com/products/pakistani-mulberry-tree-rooted-cutting-live-fruit-tree-starter-plant-fast-growing-garden-mulberry",
+        "credit": "Jayme Garden",
+        "license": null,
+        "licenseUrl": null
+      }
+    },
+    {
+      "id": "fig",
+      "name": "Fig",
+      "category": "Fruit plants",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "6–10 in",
+      "format": "Rooted woody cutting",
+      "detailsAssumed": true,
+      "price": 8,
+      "priceIsEstimate": false,
+      "description": "A sun-loving deciduous tree that can be trained as a bush. Plant in well-drained soil and protect tender new growth from cold.",
+      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/fruits/figs/",
+      "care": {
+        "sun": "Full sun",
+        "water": "Provide consistent moisture; avoid excessively wet soil.",
+        "soil": "Well-drained soil; mulch helps retain moisture."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/fig-reference.jpg",
+        "alt": "Fig cuttings with newly emerging leaves in a propagation tray.",
+        "kind": "reference",
+        "sourceUrl": "https://www.gardeningknowhow.com/edible/fruits/figs/fig-propagation.htm",
+        "credit": "25092526 / Getty Images",
+        "license": null,
+        "licenseUrl": null
+      }
+    },
+    {
+      "id": "passion-fruit",
+      "name": "Passion fruit",
+      "category": "Vines",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "4–8 in",
+      "format": "Small rooted starter",
+      "detailsAssumed": true,
+      "price": 10,
+      "priceIsEstimate": false,
+      "description": "A vigorous tropical climbing vine. Provide a trellis, well-drained soil, and steady moisture as it grows.",
+      "guideUrl": "https://ask.ifas.ufl.edu/publication/HS1406",
+      "care": {
+        "sun": "Full sun for best flowering and fruiting.",
+        "water": "Keep moisture consistent; avoid drought and waterlogging.",
+        "soil": "Well-drained soil; provide a trellis for the climbing vine."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/passion-fruit-reference.jpg",
+        "alt": "A small passion-fruit seedling with a few leaves.",
+        "kind": "reference",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Starr-040410-0309-Passiflora_edulis-seedling-LaPerouse-Maui_(24405812720).jpg",
+        "credit": "Forest & Kim Starr",
+        "license": "CC BY 3.0 US",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0/us/"
+      }
+    },
+    {
+      "id": "turmeric",
+      "name": "Turmeric",
+      "category": "Roots & canes",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "2–6 in",
+      "format": "Sprouted rhizome",
+      "detailsAssumed": true,
+      "price": 5,
+      "priceIsEstimate": false,
+      "description": "A tropical plant grown from rhizomes, with broad green leaves as it develops. Give it partial shade and rich, moist soil.",
+      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/turmeric/",
+      "care": {
+        "sun": "Partial shade",
+        "water": "Keep the growing soil moist.",
+        "soil": "Rich soil with organic matter and good drainage."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/turmeric-reference.jpg",
+        "alt": "Tiny turmeric shoots emerging from potting soil.",
+        "kind": "reference",
+        "sourceUrl": "https://www.babsprojects.com/grow-turmeric-plant-indoors/",
+        "credit": "Babita / Babs Projects",
+        "license": null,
+        "licenseUrl": null
+      }
+    },
+    {
+      "id": "sugarcane",
+      "name": "Sugarcane",
+      "category": "Roots & canes",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "3–8 in",
+      "format": "Sprouted cane cutting",
+      "detailsAssumed": true,
+      "price": 5,
+      "priceIsEstimate": false,
+      "description": "A tall, clumping grass started from pieces of cane. Choose a sunny spot with good drainage and room away from walkways.",
+      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/sugarcane/",
+      "care": {
+        "sun": "Full sun",
+        "water": "Keep new plants moist without drowning the roots.",
+        "soil": "Well-drained soil; allow room away from paths."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/sugarcane-reference.png",
+        "alt": "A tiny sugarcane shoot beside its parent cane in a pot.",
+        "kind": "reference",
+        "sourceUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/sugarcane/",
+        "credit": "David Atlas / UF/IFAS",
+        "license": null,
+        "licenseUrl": null
+      }
+    },
+    {
+      "id": "aloe",
+      "name": "Aloe",
+      "category": "Succulents",
+      "identityVerified": false,
+      "cultivar": null,
+      "size": "3–5 in",
+      "format": "Small rooted pup",
+      "detailsAssumed": true,
+      "price": 5,
+      "priceIsEstimate": false,
+      "description": "A succulent with thick, fleshy leaves. Use a well-drained potting mix and let the soil dry between waterings.",
+      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/ornamentals/aloe-vera/",
+      "care": {
+        "sun": "Bright light; introduce stronger outdoor sun gradually.",
+        "water": "Let the soil dry between waterings. Never leave the pot standing in water.",
+        "soil": "A well-drained potting mix in a container with drainage."
+      },
+      "availability": "unverified",
+      "checkedAt": null,
+      "photo": {
+        "src": "/plants/aloe-reference.jpg",
+        "alt": "Small aloe plants and separated rooted pups.",
+        "kind": "reference",
+        "sourceUrl": "https://www.gardeningknowhow.com/houseplants/aloe-vera/aloe-plant-propagation.htm",
+        "credit": "Sundaemorning / Getty Images",
+        "license": null,
+        "licenseUrl": null
+      }
+    }
+  ]
+}

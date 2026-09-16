@@ -13,6 +13,7 @@ export const navItems: { label: string; href: string }[] = [
   { label: "Tech Help", href: "#tech-help" },
   { label: "Sound", href: "#sound" },
   { label: "Healing", href: "#healing" },
+  { label: "Plants", href: "/plants.html" },
   { label: "Health Snapshot", href: "/health-snapshot.html" },
 ];
 
