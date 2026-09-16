@@ -23,6 +23,10 @@ Cloudflare Pages project `cj-cinco-site` builds the `main` branch of `CJCinco/CJ
 
 ## Scroll artwork
 
-`hero-rider.tsx`, `journey-player.ts`, `journey-scene.ts`, `rider-frames.ts`, `scroll-frames.ts`, `scroll-film.ts` and `image-loader.ts` own the decorative scene. Every position and frame follows measured absolute scroll, with no autoplay or recurring idle animation. Devices begin fading when the About body reaches their origin, then grow and depart down-right. Sound exits down-left. Desktop healing settles at the center of the space beside its text; mobile retains its existing placement. Reduced motion and data-saving settings use a static layout. The former Pause motion button has been removed.
+`hero-rider.tsx`, `journey-player.ts`, `journey-scene.ts`, `rider-frames.ts`, `scroll-frames.ts`, `scroll-film.ts` and `image-loader.ts` own the decorative scene. Every position and frame follows measured absolute scroll, with no autoplay or recurring idle animation. Devices begin fading when the About body reaches their origin, then grow and depart down-right. On phones, the devices fan out into four readable silhouettes before their parallel departure. Sound exits down-left. Desktop healing settles at the center of the space beside its text; mobile retains its existing placement. Reduced motion and data-saving settings use a static layout. The former Pause motion button has been removed.
 
 Delivery media contains the approved rider-v2 frames, Lucia-v6 frames, studio and background films, and required artwork. Public runtime JSON contains only dimensions and crop/frame geometry. Full original media, internal provenance and review packages remain preserved in the separate local candidate; they are not part of this release. Previously published fallback/brand assets remain preserved in the repository.
+
+## Mobile Sound playback
+
+Phones use `studio-frames-v1/mobile/`: 240 source-derived WebP frames at the original 30fps, with the same 640×360 composition, saturation and soft perimeter as the video. This keeps scrolling independent of native paused-video seekability. The bounded sequence loader blends adjacent frames, shares a two-request pool, and releases decoded neighbors outside Sound. Desktop still uses the existing MP4 controller and unchanged poses/spacing. The original mobile MP4 remains preserved.

@@ -3,6 +3,7 @@ import { mountScrollFilm } from "./scroll-film";
 import { createImageLoader } from "./image-loader";
 import { mountScrollFrames } from "./scroll-frames";
 import { createRiderFrames } from "./rider-frames";
+import studioSequence from "../../public/visuals/resonance/studio-frames-v1/index.json";
 import lightSequence from "../../public/visuals/resonance/light-frames-v6/index.json";
 
 export function mountJourney(canvas: HTMLCanvasElement, variant: "desktop" | "mobile", onReady: () => void) {
@@ -31,14 +32,19 @@ export function mountJourney(canvas: HTMLCanvasElement, variant: "desktop" | "mo
     delete images.light; schedule();
   });
   function decoded() { captureJourneyFilms(images); schedule(); }
-  const films = ([
-    ["film", `flow-field-motion-${variant}-v3.mp4`, 24],
-    ["studioFilm", `studio-motion-${variant}-v5.mp4`, 30],
-  ] as const).map(([key, name, fps]) => {
+  function film(key: "film" | "studioFilm", name: string, fps: number) {
     const video = document.createElement("video"); video.className = "journey-source-video";
     canvas.parentElement?.appendChild(video); images[key] = video;
     return mountScrollFilm(video, `/visuals/resonance/${name}`, decoded, fps);
-  });
+  }
+  const backgroundFilm = film("film", `flow-field-motion-${variant}-v3.mp4`, 24);
+  // Phone browsers can indefinitely withhold seekable data for a paused video.
+  // Original frames keep Sound scroll-addressed without playback permission.
+  const studioFilm = variant === "desktop" ? film("studioFilm", "studio-motion-desktop-v5.mp4", 30) : undefined;
+  const studioFrames = variant === "mobile" ? mountScrollFrames({ source: "/visuals/resonance/studio-frames-v1/mobile", frameCount: studioSequence.frameCount, ...studioSequence.mobile }, loader.load, frame => {
+    images.studioFrames = frame; schedule();
+  }) : undefined;
+  const films = [backgroundFilm, ...(studioFilm ? [studioFilm] : [])];
   const sections = ["tech-help", "sound", "healing"].map(id => document.getElementById(id)).filter((e): e is HTMLElement => !!e);
   function measure() {
     viewport = innerHeight; pageHeight = Math.max(1, document.documentElement.scrollHeight - viewport);
@@ -98,7 +104,10 @@ export function mountJourney(canvas: HTMLCanvasElement, variant: "desktop" | "mo
     const p = paused && frozen ? frozen : progress();
     // Every output is a function of this same absolute scroll snapshot.
     const rider = riderSequence.sample(p.rider, riderFrames);
-    films[0].setProgress(p.whole); films[1].setProgress(clamp(p.sound));
+    backgroundFilm.setProgress(p.whole); studioFilm?.setProgress(clamp(p.sound));
+    const studioActive = p.sound >= -.15 && p.sound <= 1.05;
+    studioFrames?.setProgress(p.sound, studioActive);
+    canvas.dataset.studioFrame = !studioFrames ? "video" : !studioActive ? "inactive" : images.studioFrames ? `${images.studioFrames.dataset.frameFrom}:${images.studioFrames.dataset.frameTo}:${images.studioFrames.dataset.frameFraction}` : "loading";
     lightFrames.setProgress(p.healing, p.healing >= -.28);
     canvas.dataset.lightFrame = images.lightFrames ? `${images.lightFrames.dataset.frameFrom}:${images.lightFrames.dataset.frameTo}:${images.lightFrames.dataset.frameFraction}` : "loading";
     canvas.dataset.riderFrame = rider ? `${rider.image.dataset.frameFrom}:${rider.image.dataset.frameTo}:${rider.image.dataset.frameFraction}` : "loading";
@@ -120,7 +129,7 @@ export function mountJourney(canvas: HTMLCanvasElement, variant: "desktop" | "mo
     dispose() {
       alive = false; cancelAnimationFrame(raf); resize.disconnect();
       removeEventListener("scroll", schedule); removeEventListener("resize", measure); document.removeEventListener("visibilitychange", visibility);
-      films.forEach(f => f.dispose()); lightFrames.dispose(); riderSequence.dispose(); loader.dispose(); riderFrames.clear();
+      films.forEach(f => f.dispose()); studioFrames?.dispose(); lightFrames.dispose(); riderSequence.dispose(); loader.dispose(); riderFrames.clear();
     },
   };
 }

@@ -1,0 +1,8 @@
+{
+  "frameCount": 240,
+  "fps": 30,
+  "mobile": {
+    "width": 640,
+    "height": 360
+  }
+}

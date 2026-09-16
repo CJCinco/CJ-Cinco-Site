@@ -5,7 +5,7 @@ export const mix = (a: number, b: number, t: number) => a + (b - a) * t;
 export const smooth = (n: number) => { const t = clamp(n); return t * t * (3 - 2 * t); };
 export type JourneyProgress = { rider: number; riderStartBottom?: number; healingCenterX?: number; tech: number; sound: number; healing: number; whole: number; readingRight?: boolean };
 export type Art = HTMLImageElement | HTMLCanvasElement;
-export type JourneyImages = { field?: HTMLImageElement; film?: HTMLVideoElement; studio?: Art; light?: Art; devices?: Art; studioFilm?: HTMLVideoElement; lightFrames?: HTMLCanvasElement };
+export type JourneyImages = { field?: HTMLImageElement; film?: HTMLVideoElement; studio?: Art; light?: Art; devices?: Art; studioFilm?: HTMLVideoElement; studioFrames?: HTMLCanvasElement; lightFrames?: HTMLCanvasElement };
 const decodedFilmFrames = new WeakMap<HTMLVideoElement, HTMLCanvasElement>();
 export const devices = [
   { name: "tablet", crop: [720, 45, 465, 565], delay: 0, duration: 1, growth: 1.5, x: -.018, y: -.025, size: .42, distance: 1.20 },
@@ -83,7 +83,12 @@ export function prepareArt(image: HTMLImageElement, kind: "devices" | "studio" |
   return canvas;
 }
 
-export const deviceOrigin = (mobile: boolean) => ({ x: mobile ? .40 : .61, y: mobile ? .23 : .27 });
+export const deviceOrigin = (mobile: boolean) => ({ x: mobile ? .50 : .61, y: mobile ? .23 : .27 });
+
+const mobileDeviceOffsets = {
+  tablet: { x: -.18, y: -.08 }, phone: { x: .18, y: -.08 },
+  laptop: { x: -.08, y: .07 }, router: { x: .20, y: .12 },
+};
 
 export function devicePose(d: typeof devices[number], q: number, w: number, h: number, mobile = w < 768) {
   const unit = Math.min(h, w * 1.15), t = clamp(q);
@@ -93,8 +98,12 @@ export function devicePose(d: typeof devices[number], q: number, w: number, h: n
   const { x: originX, y: originY } = deviceOrigin(mobile);
   // Every device follows the same unchanging down-right vector. Different
   // distances separate the group without bending or changing lanes on exit.
-  const x = (originX + d.x + travel) * w;
-  const y = (originY + d.y + travel * (mobile ? .34 : .55)) * h;
+  // Phones need separated silhouettes; fan out during the entrance, then keep
+  // the established parallel down-right exit once the group has opened.
+  const fan = mobile ? smooth((t - .06) / .32) : 0;
+  const offset = mobileDeviceOffsets[d.name as keyof typeof mobileDeviceOffsets];
+  const x = (originX + (mobile ? mix(d.x, offset.x, fan) : d.x) + travel) * w;
+  const y = mobile ? originY * h + mix(d.y * h, offset.y * unit, fan) + travel * .34 * h : (originY + d.y + travel * .55) * h;
   return { x, y, height, width: height * d.crop[2] / d.crop[3], alpha: smooth(t / .28) };
 }
 
@@ -157,6 +166,29 @@ function videoArt(video: HTMLVideoElement | undefined, mask: Art | undefined) {
   return cached?.canvas ?? mask;
 }
 
+const studioFrameMasks = new WeakMap<HTMLCanvasElement, { canvas: HTMLCanvasElement; key: string; mask: Art }>();
+function studioFrameArt(frame: HTMLCanvasElement, mask?: Art) {
+  if (!mask) return undefined;
+  const key = `${frame.dataset.frameFrom}:${frame.dataset.frameTo}:${frame.dataset.frameFraction}`;
+  let cached = studioFrameMasks.get(frame);
+  if (!cached) {
+    const canvas = document.createElement("canvas"); canvas.width = frame.width; canvas.height = frame.height;
+    cached = { canvas, key: "", mask }; studioFrameMasks.set(frame, cached);
+  }
+  if (cached.key !== key || cached.mask !== mask) {
+    const ctx = cached.canvas.getContext("2d");
+    if (ctx) {
+      const { width, height } = cached.canvas;
+      ctx.clearRect(0, 0, width, height); ctx.save(); ctx.filter = "saturate(.72)";
+      ctx.drawImage(frame, 0, 0, width, height); ctx.filter = "none";
+      ctx.globalCompositeOperation = "destination-in"; ctx.filter = "blur(2px)";
+      ctx.drawImage(mask, 0, 0, width, height); ctx.restore();
+      cached.key = key; cached.mask = mask;
+    }
+  }
+  return cached.canvas;
+}
+
 /** Copy a completed decode synchronously before the controller drains its next
  * seek. Waiting for the next paint can otherwise starve video during scrolling. */
 export function captureJourneyFilms(images: JourneyImages) {
@@ -189,7 +221,7 @@ export function drawJourney(ctx: CanvasRenderingContext2D, w: number, h: number,
   ctx.restore();
   drawFlow(ctx, w, h, p, mobile);
   for (const [key, q] of [["light", p.healing], ["studio", p.sound]] as const) {
-    const im = key === "studio" ? videoArt(images.studioFilm, images.studio) : images.lightFrames ?? images.light;
+    const im = key === "studio" ? (images.studioFrames ? studioFrameArt(images.studioFrames, images.studio) : videoArt(images.studioFilm, images.studio)) : images.lightFrames ?? images.light;
     if (!im || q < 0 || (key === "studio" && q > 1)) continue;
     const pose = servicePose(key, q, w, h, im.width / im.height, mobile, p.healingCenterX);
     ctx.save(); ctx.globalAlpha = pose.alpha;
