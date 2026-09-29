@@ -149,7 +149,7 @@ test('approximate size offers expose only approved bounded options and do not ve
   ] };
   inventory.plants[0].sizeOptions = structuredClone(options);
   const plant = projectCatalog(inventory, { now }).plants[0];
-  assert.deepEqual(plant.sizeOptions, [{ label: 'Starter', price: 12, size: '6–12 in tall' }, { label: 'Larger', price: 25, size: '18–30 in tall' }]);
+  assert.deepEqual(plant.sizeOptions, [{ label: 'Starter', price: 12, size: '6–12 in tall', availability: 'unverified', reportedAt: null }, { label: 'Larger', price: 25, size: '18–30 in tall', availability: 'unverified', reportedAt: null }]);
   assert.equal(plant.availability, 'unverified');
   assert.equal(JSON.stringify(plant).includes('PRIVATE_'), false);
   for (const invalidate of [o => o.approvedForDisplay = false, o => o.options[0].price = 5, o => o.options[1].price = -1, o => o.options[1].price = 12, o => o.options[1].size = 'x'.repeat(61)]) {
@@ -167,4 +167,31 @@ test('pickup projection exposes only an explicitly approved area label', () => {
   const projected = projectCatalog(inventory, { now });
   assert.equal(projected.pickupArea, 'West Vero Corridor, Vero Beach');
   assert.equal(JSON.stringify(projected).includes('PRIVATE_'), false);
+});
+
+test('size availability overrides independently, inherits existing stock and keeps evidence private', () => {
+  const inventory = fixture();
+  const row = inventory.plants[0];
+  row.private.ownerReport = { availability: 'available', date: '2026-09-15' };
+  row.sizeOptions = { approvedForDisplay: true, approximate: true, options: [
+    { label: 'Starter', price: 12, size: '6–12 in', private: 'PRIVATE_SIZE' },
+    { label: 'Larger', price: 25, size: '18–30 in' },
+  ] };
+  const read = () => projectCatalog(inventory, { now }).plants[0];
+  assert.deepEqual(read().sizeOptions.map(o => o.availability), ['available', 'available']);
+  row.sizeOptions.options[0].availability = 'restocking';
+  assert.deepEqual(read().sizeOptions.map(o => o.availability), ['restocking', 'available']);
+  row.sizeOptions.options[1].availability = 'restocking';
+  assert.deepEqual(read().sizeOptions.map(o => o.availability), ['restocking', 'restocking']);
+  row.availability = 'restocking';
+  row.sizeOptions.options[0].availability = 'available';
+  row.sizeOptions.options[0].availabilityReportedAt = '2026-09-15';
+  assert.deepEqual(read().sizeOptions.map(o => o.availability), ['available', 'restocking']);
+  assert.equal(read().sizeOptions[0].reportedAt, '2026-09-15');
+  assert.equal(read().availability, 'restocking'); // Reports do not rewrite verified inventory.
+  row.sizeOptions.options[0].availability = 'made-up';
+  assert.equal(read().sizeOptions[0].availability, 'unverified');
+  assert.equal(JSON.stringify(read()).includes('PRIVATE_'), false);
+  for (const option of row.sizeOptions.options) delete option.availability;
+  assert.deepEqual(read().sizeOptions.map(o => o.availability), ['restocking', 'restocking']);
 });

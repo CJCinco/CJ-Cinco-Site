@@ -65,7 +65,12 @@ export function projectCatalog(inventory, { now = new Date(), verifyPhoto = () =
     const care = guideUrl ? { sun: text(row.guide?.sun, 180), water: text(row.guide?.water, 180), soil: text(row.guide?.soil, 180) } : null;
     const offered = row.sizeOptions;
     const sizeOptions = offered?.approvedForDisplay === true && offered.approximate === true && Array.isArray(offered.options) && offered.options.length === 2 && offered.options.every((option, index) => option.label === ['Starter', 'Larger'][index] && money(option.price) && text(option.size, 60)) && offered.options[0].price === price && offered.options[1].price > price
-      ? offered.options.map(option => ({ label: option.label, price: option.price, size: text(option.size, 60) })) : [];
+      ? offered.options.map(option => {
+        // A size override is an owner report, not verified counts or release evidence.
+        const inherited = ['restocking', 'sold_out', 'paused'].includes(availability) ? 'restocking' : (ownerReportedAt || availability === 'available') ? 'available' : 'unverified';
+        const status = option.availability == null ? inherited : ['available', 'restocking'].includes(option.availability) ? option.availability : 'unverified';
+        return { label: option.label, price: option.price, size: text(option.size, 60), availability: status, reportedAt: status === 'available' ? date(option.availabilityReportedAt) || ownerReportedAt || (availability === 'available' ? checkedAt : null) : null };
+      }) : [];
     return { id: row.id, name, category: row.category, identityVerified, cultivar, size, format, detailsAssumed: !detailsVerified && starterAssumptions, price, priceFrom: price !== null && row.price?.from === true, priceIsEstimate: price !== null && priceIsEstimate, sizeOptions, description: guideUrl ? text(row.guide?.description, 600) : null, guideUrl, care, availability, ownerReportedAt, checkedAt: availability === 'available' ? checkedAt : null, photo: publicPhoto, largerPhoto: publicLargerPhoto };
   });
   const approvedContact = (contact, pattern) => contact?.approvedForPublic === true && pattern.test(contact.value || '') ? contact.value : null;

@@ -113,3 +113,10 @@
 .sizeOptions dt strong { color: #e1e6d8; font-weight: 500; }
 .sizeOptions dt span { color: #b2bda9; font-size: 11px; }
 .sizeOptions dd { color: var(--plant-gold); font-size: 18px; white-space: nowrap; }
+
+/* Keep unavailable size details readable, while muting only that row. */
+.sizeOptions dl > div[data-restocking=true] { background: #ffffff04; border-color: #ffffff14; }
+.sizeOptions dl > div[data-restocking=true] dt strong,
+.sizeOptions dl > div[data-restocking=true] dt span,
+.sizeOptions dl > div[data-restocking=true] dd { color: #a3aaa1; }
+.sizeOptions dt .sizeStatus { flex-basis: 100%; font-size: 11px; letter-spacing: .02em; }

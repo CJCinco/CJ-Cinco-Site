@@ -24,12 +24,16 @@
         {
           "label": "Starter",
           "price": 5,
-          "size": "3–6 in tall"
+          "size": "3–6 in tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         },
         {
           "label": "Larger",
           "price": 10,
-          "size": "8–12 in tall"
+          "size": "8–12 in tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         }
       ],
       "description": "Bring bold flavor to your kitchen with this fragrant herb’s thick, velvety leaves. Finely chop a little into chicken marinades, savory meat dishes or stuffing; its strong aroma means a small amount goes a long way. A handy choice for a patio herb pot, with partial shade and well-drained soil.",
@@ -77,12 +81,16 @@
         {
           "label": "Starter",
           "price": 5,
-          "size": "3–6 in tall"
+          "size": "3–6 in tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         },
         {
           "label": "Larger",
           "price": 10,
-          "size": "8–12 in tall"
+          "size": "8–12 in tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         }
       ],
       "description": "Pick a few sweet-smelling leaves for fresh mint tea, lemonade or fruit salad. Spearmint also brightens yogurt sauces and makes a refreshing garnish for desserts and cold drinks. Keep a pot near the kitchen for easy snipping; give it some afternoon shade and evenly moist soil, with its own container to keep the runners contained.",
@@ -130,12 +138,16 @@
         {
           "label": "Starter",
           "price": 4,
-          "size": "6–10 in vine"
+          "size": "6–10 in vine",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         },
         {
           "label": "Larger",
           "price": 8,
-          "size": "12–24 in vine"
+          "size": "12–24 in vine",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         }
       ],
       "description": "Grow more than a side dish: sweet potatoes offer roots for roasting, mashing and baking, plus tender young leaves you can cook as greens. Their trailing vines add a lush look to an edible garden while the crop develops below ground. Give them sun, loose soil and room to spread; roots need a growing season before harvest.",
@@ -183,12 +195,16 @@
         {
           "label": "Starter",
           "price": 10,
-          "size": "8–18 in tall"
+          "size": "8–18 in tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         },
         {
           "label": "Larger",
           "price": 25,
-          "size": "2–3 ft tall"
+          "size": "2–3 ft tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         }
       ],
       "description": "Bring a tropical feel to your yard with big, lush leaves that make a striking backdrop for an edible garden. Mature banana leaves can be used as cooking wraps for steaming or grilling, helping hold moisture around the food. Plant in a warm, sunny, wind-protected spot and water regularly to support strong growth.",
@@ -236,12 +252,16 @@
         {
           "label": "Starter",
           "price": 15,
-          "size": "1–2 ft tall"
+          "size": "1–2 ft tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         },
         {
           "label": "Larger",
           "price": 35,
-          "size": "3–4 ft tall"
+          "size": "3–4 ft tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         }
       ],
       "description": "Enjoy sweet, juicy mulberries fresh, spooned over yogurt or cooked into homemade jam. A Tice mulberry adds a fruit-tree centerpiece to an edible yard, with berries worth making room for. Plant away from patios where fallen fruit could stain. Extra-large trees beyond these two size options are priced individually.",
@@ -289,12 +309,16 @@
         {
           "label": "Starter",
           "price": 12,
-          "size": "6–12 in tall"
+          "size": "6–12 in tall",
+          "availability": "restocking",
+          "reportedAt": null
         },
         {
           "label": "Larger",
           "price": 25,
-          "size": "18–30 in tall"
+          "size": "18–30 in tall",
+          "availability": "restocking",
+          "reportedAt": null
         }
       ],
       "description": "Grow tree-ripened figs for fresh snacks, breakfast bowls and homemade preserves. Their soft, sweet fruit also pairs beautifully with cheese or a simple salad, while broad leaves give the garden a distinctive look. Choose a sunny spot with well-drained soil; a fig can be trained as a small tree or a bush as it grows.",
@@ -342,12 +366,16 @@
         {
           "label": "Starter",
           "price": 12,
-          "size": "8–16 in vine"
+          "size": "8–16 in vine",
+          "availability": "restocking",
+          "reportedAt": null
         },
         {
           "label": "Larger",
           "price": 25,
-          "size": "2–3 ft vine"
+          "size": "2–3 ft vine",
+          "availability": "restocking",
+          "reportedAt": null
         }
       ],
       "description": "Turn a sunny trellis into a leafy feature with intricate flowers and fruit prized for its fragrant, tangy pulp. Spoon ripe pulp into yogurt, blend it into drinks or use it in desserts and homemade jam. Give this vigorous climber sturdy support and regular water, and train its stems along a fence or trellis as it grows.",
@@ -395,12 +423,16 @@
         {
           "label": "Starter",
           "price": 8,
-          "size": "6–12 in tall"
+          "size": "6–12 in tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         },
         {
           "label": "Larger",
           "price": 15,
-          "size": "12–24 in tall"
+          "size": "12–24 in tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         }
       ],
       "description": "Grow the golden spice you can grate fresh into curries, rice, soups or smoothies. Turmeric brings earthy flavor and rich yellow color to cooking, while its broad tropical leaves add interest to a partly shaded garden. Plant in rich, well-drained soil and keep it moist during growth; harvest the rhizomes as the foliage dies back at season’s end.",
@@ -448,12 +480,16 @@
         {
           "label": "Starter",
           "price": 8,
-          "size": "12–24 in tall"
+          "size": "12–24 in tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         },
         {
           "label": "Larger",
           "price": 15,
-          "size": "2–3 ft tall"
+          "size": "2–3 ft tall",
+          "availability": "available",
+          "reportedAt": "2026-09-28"
         }
       ],
       "description": "Grow a sweet taste of the tropics with tall, leafy canes that sway in the breeze. Mature stalks can be pressed for fresh sugarcane juice, enjoyed in cold drinks or cooked down into syrup. The upright foliage adds height to an edible garden; give the clump a sunny spot with room to grow, away from narrow paths.",
@@ -501,12 +537,16 @@
         {
           "label": "Starter",
           "price": 8,
-          "size": "12–18 in tall"
+          "size": "12–18 in tall",
+          "availability": "restocking",
+          "reportedAt": null
         },
         {
           "label": "Larger",
           "price": 20,
-          "size": "2–3 ft tall"
+          "size": "2–3 ft tall",
+          "availability": "restocking",
+          "reportedAt": null
         }
       ],
       "description": "Grow a leafy ingredient for your kitchen on a fast-growing tree. Young moringa leaves can be cooked into soups, stirred into rice or prepared as greens, making it a useful addition to an edible garden. Regular pruning helps keep new growth within reach; give it a sunny spot and freely draining soil.",

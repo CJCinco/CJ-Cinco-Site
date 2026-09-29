@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check, ChevronLeft, ChevronRight, Copy, Leaf, Mail, MessageCircle, Search, Sprout, X } from "lucide-react";
 import styles from "./plants.module.css";
 
-type SizeOption = { label: string; price: number; size: string };
+type SizeOption = { label: string; price: number; size: string; availability: string; reportedAt: string | null };
 type PlantImage = { src: string; alt: string; kind: string; sourceUrl: string | null; credit: string | null; license: string | null; licenseUrl: string | null };
 type Plant = { sizeOptions: SizeOption[]; id: string; name: string; category: string; identityVerified: boolean; cultivar: string | null; size: string | null; format: string | null; detailsAssumed: boolean; price: number | null; priceFrom?: boolean; priceIsEstimate: boolean; description: string | null; guideUrl: string | null; care: { sun: string | null; water: string | null; soil: string | null } | null; availability: string; ownerReportedAt: string | null; checkedAt: string | null; photo: PlantImage | null; largerPhoto?: PlantImage | null };
 type Catalog = { preview: boolean; registrationNumber: string | null; pickupArea: string | null; contacts: { phone: string | null; messenger: string | null }; plants: Plant[] };
@@ -15,12 +15,16 @@ function SizeOptions({ plant }: { plant: Plant }) {
   if (!plant.sizeOptions.length) return null;
   return <div className={styles.sizeOptions}>
     <p className={styles.sizeLabel}>Approximate sizes</p>
-    <dl>{plant.sizeOptions.map(option => <div key={option.label}><dt><strong>{option.label}</strong><span>{option.size}</span></dt><dd>${option.price}</dd></div>)}</dl>
+    <dl>{plant.sizeOptions.map(option => <div key={option.label} data-restocking={option.availability === "restocking"}><dt><strong>{option.label}</strong><span>{option.size}</span>{option.availability === "restocking" && <span className={styles.sizeStatus}>Restocking</span>}</dt><dd>${option.price}</dd></div>)}</dl>
   </div>;
 }
-const isRestocking = (plant: Plant) => ["restocking", "sold_out", "paused"].includes(plant.availability);
+const isRestocking = (plant: Plant) => plant.sizeOptions.length ? plant.sizeOptions.every(option => option.availability === "restocking") : ["restocking", "sold_out", "paused"].includes(plant.availability);
 function isAvailable(plant: Plant, now: number | null) {
   if (isRestocking(plant) || now === null) return false;
+  if (plant.sizeOptions.length) return plant.sizeOptions.some(option => {
+    const checked = option.reportedAt ? Date.parse(option.reportedAt) : NaN;
+    return option.availability === "available" && Number.isFinite(checked) && now >= checked && now - checked <= 7 * 86400000;
+  });
   const reported = plant.ownerReportedAt || (plant.availability === "available" ? plant.checkedAt : null);
   const checked = reported ? Date.parse(reported) : NaN;
   return Number.isFinite(checked) && now >= checked && now - checked <= 7 * 86400000;
