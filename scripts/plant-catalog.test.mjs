@@ -13,7 +13,7 @@ test('only explicit public fields survive; hidden rows and unverified cultivar s
   const result = projectCatalog(inventory, { now });
   assert.equal(result.plants.length, 1);
   assert.equal(JSON.stringify(result).includes('PRIVATE_'), false);
-  assert.deepEqual(Object.keys(result.plants[0]).sort(), ['id', 'name', 'category', 'identityVerified', 'cultivar', 'size', 'format', 'detailsAssumed', 'price', 'priceFrom', 'priceIsEstimate', 'sizeOptions', 'description', 'guideUrl', 'care', 'availability', 'ownerReportedAt', 'checkedAt', 'photo'].sort());
+  assert.deepEqual(Object.keys(result.plants[0]).sort(), ['id', 'name', 'category', 'identityVerified', 'cultivar', 'size', 'format', 'detailsAssumed', 'price', 'priceFrom', 'priceIsEstimate', 'sizeOptions', 'description', 'guideUrl', 'care', 'availability', 'ownerReportedAt', 'checkedAt', 'photo', 'largerPhoto'].sort());
   assert.equal('stock' in result.plants[0], false);
 });
 test('available requires release, identity, price, condition, size, format and fresh sale stock', () => {
@@ -55,6 +55,23 @@ test('photos require explicit review, metadata stripping, item match and byte ve
     inventory.plants[0].photo = bad;
     assert.equal(projectCatalog(inventory, { now, verifyPhoto: () => true }).plants[0].photo, null);
   }
+});
+test('larger photo has independent hash verification and exposes only approved image fields', () => {
+  const inventory = fixture();
+  const starter = { src: '/plants/test-plant.png', alt: 'Starter illustration', sha256: 'a'.repeat(64), approvedForPublic: true, depictsSaleItem: true, metadataStripped: true };
+  const larger = { ...starter, src: '/plants/test-plant-larger-v1.png', alt: 'Larger illustration', sha256: 'b'.repeat(64), private: 'PRIVATE_IMAGE_NOTE', generatedIllustration: true };
+  inventory.plants[0].photo = starter;
+  inventory.plants[0].largerPhoto = larger;
+  const verified = projectCatalog(inventory, { now, verifyPhoto: photo => photo.sha256 === 'a'.repeat(64) });
+  assert.equal(verified.plants[0].photo.src, starter.src);
+  assert.equal(verified.plants[0].largerPhoto, null);
+  const both = projectCatalog(inventory, { now, verifyPhoto: () => true }).plants[0];
+  assert.deepEqual(both.largerPhoto, { src: larger.src, alt: larger.alt, kind: 'product', sourceUrl: null, credit: null, license: null, licenseUrl: null });
+  assert.equal(JSON.stringify(both).includes('PRIVATE_'), false);
+  inventory.plants[0].largerPhoto = { ...larger, metadataStripped: false };
+  assert.equal(projectCatalog(inventory, { now, verifyPhoto: () => true }).plants[0].largerPhoto, null);
+  delete inventory.plants[0].largerPhoto;
+  assert.equal(projectCatalog(inventory, { now, verifyPhoto: () => true }).plants[0].largerPhoto, null);
 });
 test('malformed/duplicate identifiers fail instead of replacing a valid catalog', () => {
   const inventory = fixture(); inventory.plants.push(inventory.plants[0]);

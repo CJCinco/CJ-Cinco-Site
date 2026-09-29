@@ -50,6 +50,15 @@
         "credit": "SoulFire Farm",
         "license": null,
         "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/cuban-oregano-larger-v1.png",
+        "alt": "Illustration of a larger cuban oregano in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://soulfire.farm/products/oregano-plant-cuban",
+        "credit": "SoulFire Farm",
+        "license": null,
+        "licenseUrl": null
       }
     },
     {
@@ -89,6 +98,15 @@
       "photo": {
         "src": "/plants/spearmint-catalog-v2.png",
         "alt": "Illustration of a young spearmint in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://www.herbcottage.com.au/products/mint-spearmint",
+        "credit": "Mudbrick Herb Cottage",
+        "license": null,
+        "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/spearmint-larger-v1.png",
+        "alt": "Illustration of a larger spearmint in a charcoal pot against a cream wall.",
         "kind": "reference",
         "sourceUrl": "https://www.herbcottage.com.au/products/mint-spearmint",
         "credit": "Mudbrick Herb Cottage",
@@ -138,6 +156,15 @@
         "credit": "The Original Garden",
         "license": null,
         "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/sweet-potato-larger-v1.png",
+        "alt": "Illustration of a larger sweet potato in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://theoriginalgarden.com/p/plants/vegetables/vegetable/ipomoea-batatas-beauregard",
+        "credit": "The Original Garden",
+        "license": null,
+        "licenseUrl": null
       }
     },
     {
@@ -182,6 +209,15 @@
         "credit": "Home for the Harvest",
         "license": null,
         "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/banana-larger-v1.png",
+        "alt": "Illustration of a larger banana in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://homefortheharvest.com/how-fast-does-a-banana-tree-grow/",
+        "credit": "Home for the Harvest",
+        "license": null,
+        "licenseUrl": null
       }
     },
     {
@@ -193,22 +229,22 @@
       "size": null,
       "format": null,
       "detailsAssumed": false,
-      "price": 20,
+      "price": 15,
       "priceFrom": true,
       "priceIsEstimate": false,
       "sizeOptions": [
         {
           "label": "Starter",
-          "price": 20,
+          "price": 15,
           "size": "1–2 ft tall"
         },
         {
           "label": "Larger",
-          "price": 50,
+          "price": 35,
           "size": "3–4 ft tall"
         }
       ],
-      "description": "Enjoy sweet, juicy mulberries fresh, spooned over yogurt or cooked into homemade jam. A Tice mulberry adds a fruit-tree centerpiece to an edible yard, with berries worth making room for. Plant away from patios where fallen fruit could stain. Larger trees beyond these two size options are priced individually, up to $150.",
+      "description": "Enjoy sweet, juicy mulberries fresh, spooned over yogurt or cooked into homemade jam. A Tice mulberry adds a fruit-tree centerpiece to an edible yard, with berries worth making room for. Plant away from patios where fallen fruit could stain. Extra-large trees beyond these two size options are priced individually.",
       "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/fruits/mulberry/",
       "care": {
         "sun": "Full sun to light shade.",
@@ -221,6 +257,15 @@
       "photo": {
         "src": "/plants/mulberry-catalog-v2.png",
         "alt": "Illustration of a young tice mulberry in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://www.greendreamsfl.com/online-store/Mulberry-Tice-Morus-spp-4%E2%80%9D-p775415054",
+        "credit": "GreenDreams",
+        "license": null,
+        "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/mulberry-larger-v1.png",
+        "alt": "Illustration of a larger tice mulberry in a charcoal pot against a cream wall.",
         "kind": "reference",
         "sourceUrl": "https://www.greendreamsfl.com/online-store/Mulberry-Tice-Morus-spp-4%E2%80%9D-p775415054",
         "credit": "GreenDreams",
@@ -270,6 +315,15 @@
         "credit": "The Greenhouse PNW",
         "license": null,
         "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/fig-larger-v1.png",
+        "alt": "Illustration of a larger fig in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://www.thegreenhousepnw.com/products/olympian-fig",
+        "credit": "The Greenhouse PNW",
+        "license": null,
+        "licenseUrl": null
       }
     },
     {
@@ -309,6 +363,15 @@
       "photo": {
         "src": "/plants/passion-fruit-catalog-v2.png",
         "alt": "Illustration of a young passion fruit in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://topnotchtropical.com/products/passiflora-edulis-purple-passion-fruit-vine-4",
+        "credit": "Top Notch Tropicals",
+        "license": null,
+        "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/passion-fruit-larger-v1.png",
+        "alt": "Illustration of a larger passion fruit in a charcoal pot against a cream wall.",
         "kind": "reference",
         "sourceUrl": "https://topnotchtropical.com/products/passiflora-edulis-purple-passion-fruit-vine-4",
         "credit": "Top Notch Tropicals",
@@ -358,6 +421,15 @@
         "credit": "Whitwam Organics",
         "license": null,
         "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/turmeric-larger-v1.png",
+        "alt": "Illustration of a larger turmeric in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://whitwamorganics.com/products/turmeric",
+        "credit": "Whitwam Organics",
+        "license": null,
+        "licenseUrl": null
       }
     },
     {
@@ -402,6 +474,15 @@
         "credit": "Wollongong Nursery",
         "license": null,
         "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/sugarcane-larger-v1.png",
+        "alt": "Illustration of a larger sugarcane in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://wollongongnursery.com.au/young-heirloom-sugarcane-saccharum-sp-settling-cultivar-1-1",
+        "credit": "Wollongong Nursery",
+        "license": null,
+        "licenseUrl": null
       }
     },
     {
@@ -441,6 +522,15 @@
       "photo": {
         "src": "/plants/moringa-catalog-v2.png",
         "alt": "Illustration of a young moringa in a charcoal pot against a cream wall.",
+        "kind": "reference",
+        "sourceUrl": "https://shop.farmoncentral.com/products/moringa-plant-moringa-oleifera",
+        "credit": "The Farm on Central",
+        "license": null,
+        "licenseUrl": null
+      },
+      "largerPhoto": {
+        "src": "/plants/moringa-larger-v1.png",
+        "alt": "Illustration of a larger moringa in a charcoal pot against a cream wall.",
         "kind": "reference",
         "sourceUrl": "https://shop.farmoncentral.com/products/moringa-plant-moringa-oleifera",
         "credit": "The Farm on Central",

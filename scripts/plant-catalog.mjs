@@ -44,26 +44,29 @@ export function projectCatalog(inventory, { now = new Date(), verifyPhoto = () =
     }
     // Owner-reported stock is distinct from fully verified release/inventory evidence.
     const ownerReportedAt = row.availability === 'available' && row.private?.ownerReport?.availability === 'available' ? date(row.private.ownerReport.date) : null;
-    const photo = row.photo;
-    const photoFileValid = /^\/plants\/[a-z0-9][a-z0-9-]*\.(webp|jpg|png)$/.test(photo?.src || '') && text(photo?.alt, 180) && /^[a-f0-9]{64}$/.test(photo?.sha256 || '') && verifyPhoto(photo);
-    const productApproved = photo?.kind !== 'reference' && photo?.approvedForPublic === true && photo?.depictsSaleItem === true && photo?.metadataStripped === true;
-    const referenceApproved = photo?.kind === 'reference' && photo?.approvedForLocalReference === true && publicUrl(photo?.sourceUrl) && text(photo?.credit, 120);
-    // A reference photo never becomes proof of the plant offered or of readiness.
-    // Block release if an included reference still lacks public-use rights.
-    if (releaseReady && photo?.kind === 'reference' && !(photo?.publicUseApproved === true && text(photo?.license, 80) && publicUrl(photo?.licenseUrl))) throw new Error(`Public photo rights unresolved: ${row.id}`);
-    const publicPhoto = photoFileValid && (productApproved || referenceApproved) ? {
-      src: photo.src, alt: photo.alt, kind: referenceApproved ? 'reference' : 'product',
-      sourceUrl: referenceApproved ? publicUrl(photo.sourceUrl) : null,
-      credit: referenceApproved ? text(photo.credit, 120) : null,
-      license: referenceApproved && photo.publicUseApproved === true ? text(photo.license, 80) : null,
-      licenseUrl: referenceApproved && photo.publicUseApproved === true ? publicUrl(photo.licenseUrl) : null,
-    } : null;
+    const projectPhoto = photo => {
+      const photoFileValid = /^\/plants\/[a-z0-9][a-z0-9-]*\.(webp|jpg|png)$/.test(photo?.src || '') && text(photo?.alt, 180) && /^[a-f0-9]{64}$/.test(photo?.sha256 || '') && verifyPhoto(photo);
+      const productApproved = photo?.kind !== 'reference' && photo?.approvedForPublic === true && photo?.depictsSaleItem === true && photo?.metadataStripped === true;
+      const referenceApproved = photo?.kind === 'reference' && photo?.approvedForLocalReference === true && publicUrl(photo?.sourceUrl) && text(photo?.credit, 120);
+      // A reference photo never becomes proof of the plant offered or of readiness.
+      // Block release if an included reference still lacks public-use rights.
+      if (releaseReady && photo?.kind === 'reference' && !(photo?.publicUseApproved === true && text(photo?.license, 80) && publicUrl(photo?.licenseUrl))) throw new Error(`Public photo rights unresolved: ${row.id}`);
+      return photoFileValid && (productApproved || referenceApproved) ? {
+        src: photo.src, alt: photo.alt, kind: referenceApproved ? 'reference' : 'product',
+        sourceUrl: referenceApproved ? publicUrl(photo.sourceUrl) : null,
+        credit: referenceApproved ? text(photo.credit, 120) : null,
+        license: referenceApproved && photo.publicUseApproved === true ? text(photo.license, 80) : null,
+        licenseUrl: referenceApproved && photo.publicUseApproved === true ? publicUrl(photo.licenseUrl) : null,
+      } : null;
+    };
+    const publicPhoto = projectPhoto(row.photo);
+    const publicLargerPhoto = projectPhoto(row.largerPhoto);
     const guideUrl = publicUrl(row.guide?.url);
     const care = guideUrl ? { sun: text(row.guide?.sun, 180), water: text(row.guide?.water, 180), soil: text(row.guide?.soil, 180) } : null;
     const offered = row.sizeOptions;
     const sizeOptions = offered?.approvedForDisplay === true && offered.approximate === true && Array.isArray(offered.options) && offered.options.length === 2 && offered.options.every((option, index) => option.label === ['Starter', 'Larger'][index] && money(option.price) && text(option.size, 60)) && offered.options[0].price === price && offered.options[1].price > price
       ? offered.options.map(option => ({ label: option.label, price: option.price, size: text(option.size, 60) })) : [];
-    return { id: row.id, name, category: row.category, identityVerified, cultivar, size, format, detailsAssumed: !detailsVerified && starterAssumptions, price, priceFrom: price !== null && row.price?.from === true, priceIsEstimate: price !== null && priceIsEstimate, sizeOptions, description: guideUrl ? text(row.guide?.description, 600) : null, guideUrl, care, availability, ownerReportedAt, checkedAt: availability === 'available' ? checkedAt : null, photo: publicPhoto };
+    return { id: row.id, name, category: row.category, identityVerified, cultivar, size, format, detailsAssumed: !detailsVerified && starterAssumptions, price, priceFrom: price !== null && row.price?.from === true, priceIsEstimate: price !== null && priceIsEstimate, sizeOptions, description: guideUrl ? text(row.guide?.description, 600) : null, guideUrl, care, availability, ownerReportedAt, checkedAt: availability === 'available' ? checkedAt : null, photo: publicPhoto, largerPhoto: publicLargerPhoto };
   });
   const approvedContact = (contact, pattern) => contact?.approvedForPublic === true && pattern.test(contact.value || '') ? contact.value : null;
   return {

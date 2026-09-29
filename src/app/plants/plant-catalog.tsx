@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { Check, Copy, Leaf, Mail, MessageCircle, Search, Sprout, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Copy, Leaf, Mail, MessageCircle, Search, Sprout, X } from "lucide-react";
 import styles from "./plants.module.css";
 
 type SizeOption = { label: string; price: number; size: string };
-type Plant = { sizeOptions: SizeOption[]; id: string; name: string; category: string; identityVerified: boolean; cultivar: string | null; size: string | null; format: string | null; detailsAssumed: boolean; price: number | null; priceFrom?: boolean; priceIsEstimate: boolean; description: string | null; guideUrl: string | null; care: { sun: string | null; water: string | null; soil: string | null } | null; availability: string; ownerReportedAt: string | null; checkedAt: string | null; photo: { src: string; alt: string; kind: string; sourceUrl: string | null; credit: string | null; license: string | null; licenseUrl: string | null } | null };
+type PlantImage = { src: string; alt: string; kind: string; sourceUrl: string | null; credit: string | null; license: string | null; licenseUrl: string | null };
+type Plant = { sizeOptions: SizeOption[]; id: string; name: string; category: string; identityVerified: boolean; cultivar: string | null; size: string | null; format: string | null; detailsAssumed: boolean; price: number | null; priceFrom?: boolean; priceIsEstimate: boolean; description: string | null; guideUrl: string | null; care: { sun: string | null; water: string | null; soil: string | null } | null; availability: string; ownerReportedAt: string | null; checkedAt: string | null; photo: PlantImage | null; largerPhoto?: PlantImage | null };
 type Catalog = { preview: boolean; registrationNumber: string | null; pickupArea: string | null; contacts: { phone: string | null; messenger: string | null }; plants: Plant[] };
 const categories = ["All plants", "Herbs", "Vines", "Fruit plants", "Roots & canes", "Succulents", "Other"];
 const priceLabel = (plant: Plant) => plant.price === null ? "Price to be confirmed" : `${plant.priceFrom ? "From " : ""}${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(plant.price)}`;
@@ -26,11 +27,25 @@ function isAvailable(plant: Plant, now: number | null) {
 }
 
 function PlantPhoto({ plant }: { plant: Plant }) {
-  const [failed, setFailed] = useState(false);
-  return <div className={styles.photo} data-category={plant.category} data-photo-kind={plant.photo?.kind} data-restocking={isRestocking(plant)}>
-    {plant.photo && !failed ? <Image src={plant.photo.src} alt={plant.photo.alt} fill sizes="(max-width: 640px) 100vw, (max-width: 1050px) 50vw, 33vw" onError={() => setFailed(true)} /> : <div className={styles.photoPending}><Sprout aria-hidden="true" strokeWidth={0.8} /><span>Plant photo coming soon</span><small>Actual plant photo pending review</small></div>}
+  const [index, setIndex] = useState(0);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const images = [{ label: "Starter", photo: plant.photo }, { label: "Larger", photo: plant.largerPhoto }].filter((item): item is { label: string; photo: PlantImage } => !!item.photo);
+  const current = images[index] || images[0];
+  const carousel = images.length > 1;
+  const show = (direction: -1 | 1) => setIndex(previous => (previous + direction + images.length) % images.length);
+  return <div className={styles.photo} data-category={plant.category} data-photo-kind={current?.photo.kind} data-restocking={isRestocking(plant)} data-carousel={carousel} onKeyDown={event => {
+    if (!carousel || (event.target !== event.currentTarget && !(event.target instanceof HTMLButtonElement))) return;
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); show(event.key === "ArrowLeft" ? -1 : 1); }
+  }}>
+    {current && failedSrc !== current.photo.src ? <Image key={current.photo.src} src={current.photo.src} alt={current.photo.alt} fill sizes="(max-width: 640px) 100vw, (max-width: 1050px) 50vw, 33vw" onError={() => setFailedSrc(current.photo.src)} /> : <div className={styles.photoPending}><Sprout aria-hidden="true" strokeWidth={0.8} /><span>Plant photo coming soon</span><small>Actual plant photo pending review</small></div>}
     <span className={styles.photoCategory}>{plant.category}</span>
     {isRestocking(plant) && <div className={styles.restockingOverlay}><span>Restocking</span></div>}
+    {current && <small className={styles.imageCaption}>Illustrative image</small>}
+    {carousel && <div className={styles.carouselControls} role="group" aria-label={`${plant.name} images`}>
+      <button type="button" onClick={() => show(-1)} aria-label={`Show ${images[(index + images.length - 1) % images.length].label.toLowerCase()} ${plant.name} image`}><ChevronLeft size={20} aria-hidden="true" /></button>
+      <span aria-live="polite">{current.label} · {index + 1} of {images.length}</span>
+      <button type="button" onClick={() => show(1)} aria-label={`Show ${images[(index + 1) % images.length].label.toLowerCase()} ${plant.name} image`}><ChevronRight size={20} aria-hidden="true" /></button>
+    </div>}
   </div>;
 }
 
@@ -83,7 +98,7 @@ export default function PlantCatalog({ catalog, email }: { catalog: Catalog; ema
         </div>
       </article>)}</div> : <div className={styles.empty}><Leaf size={36} aria-hidden="true" /><h3>{availableOnly ? "No confirmed available plants yet." : "No plants match your search."}</h3><p>{availableOnly ? "You can browse the full directory and ask about a plant that interests you." : "Try another name or choose a different category."}</p><button type="button" onClick={reset}>Show all plants</button></div>}
     </section>
-    <section id="inquiries" className={styles.inquiries} aria-labelledby="inquiry-title"><div><p className={styles.eyebrow}>LET’S TALK PLANTS</p><h2 id="inquiry-title">A question is a good start.</h2><p>Ask about a plant and we’ll confirm the details together. An inquiry doesn’t reserve a plant or arrange a pickup.</p></div><div className={styles.channels}><a href={`mailto:${email}?subject=Plant%20inquiry`}><Mail size={20} aria-hidden="true"/><span>Email CJ<small>{email}</small></span></a>{catalog.contacts.messenger ? <a href={catalog.contacts.messenger} target="_blank" rel="noreferrer"><MessageCircle size={20} aria-hidden="true"/><span>Messenger<small>Open a conversation</small></span></a> : <div aria-disabled="true"><MessageCircle size={20} aria-hidden="true"/><span>Messenger<small>Not available yet · use email</small></span></div>}</div></section>
+    <section id="inquiries" className={styles.inquiries} aria-labelledby="inquiry-title"><div><p className={styles.eyebrow}>LET’S TALK PLANTS</p><h2 id="inquiry-title">A question is a good start.</h2><p>Message me to confirm current availability. An inquiry doesn’t reserve a plant or arrange a pickup.</p></div><div className={styles.channels}><a href={`mailto:${email}?subject=Plant%20inquiry`}><Mail size={20} aria-hidden="true"/><span>Email CJ<small>{email}</small></span></a>{catalog.contacts.messenger ? <a href={catalog.contacts.messenger} target="_blank" rel="noreferrer"><MessageCircle size={20} aria-hidden="true"/><span>Messenger<small>Open a conversation</small></span></a> : <div aria-disabled="true"><MessageCircle size={20} aria-hidden="true"/><span>Messenger<small>Not available yet · use email</small></span></div>}</div></section>
     {catalog.registrationNumber && <p className={styles.registration}>FDACS nursery registration: {catalog.registrationNumber}</p>}
     <dialog ref={dialog} className={styles.dialog} aria-labelledby="plant-dialog-title" onClose={() => setSelected(null)} onClick={event => { if (event.target === event.currentTarget) close(); }}>
       {selected && <div className={styles.dialogBody}>
