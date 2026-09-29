@@ -25,7 +25,7 @@
 .resultCount { font-size: 11px; color: #aeb9a8; white-space: nowrap; }
 .grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 24px; }
 .card { border: 0; border-radius: 6px; overflow: hidden; background: #121b16; scroll-margin-top: 135px; display: flex; flex-direction: column; }
-.photo { position: relative; height: 226px; flex-shrink: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 100%, #51614638, transparent 78%), #1b2921; }
+.photo { position: relative; aspect-ratio: 4 / 5; flex-shrink: 0; overflow: hidden; background: radial-gradient(ellipse at 50% 100%, #51614638, transparent 78%), #1b2921; }
 .photo[data-category=Vines] { background-color: #232b1e; }
 .photo[data-category="Fruit plants"] { background-color: #292b20; }
 .photo img { object-fit: cover; }
@@ -74,7 +74,7 @@
 /* Keep content clear of the shared compact header on phones. */
 @media(max-width:767px) { .page .hero { padding-top: 108px; } .page .catalog, .page .card, .page .inquiries { scroll-margin-top: 88px; } }
 @media(max-width:1050px) { .container { width: calc(100% - 64px); } .grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .inquiries { gap: 50px; } }
-@media(max-width:640px) { .container { width: calc(100% - 40px); } .hero { padding-top: 142px; padding-bottom: 26px; } .hero h1 { font-size: clamp(44px, 11vw, 54px); } .intro { font-size: 14px; } .catalog { scroll-margin-top: 125px; } .filters { align-items: stretch; flex-direction: column; gap: 6px; } .search { max-width: none; } .availableToggle { align-self: start; } .filterBottom { margin-top: 10px; align-items: end; } .categories { gap: 6px; } .categories button { padding: 8px 13px; } .grid { grid-template-columns: minmax(0,1fr); gap: 22px; } .photo { height: 235px; } .cardContent { padding: 24px; display: flex; flex-direction: column; flex: 1; } .inquiries { margin-top: 46px; padding-block: 38px; grid-template-columns: 1fr; gap: 22px; } .footer { flex-wrap: wrap; } .footer > p { display: none; } .dialogBody { padding: 34px 22px 22px; } .dialog h2 { font-size: 40px; } }
+@media(max-width:640px) { .container { width: calc(100% - 40px); } .hero { padding-top: 142px; padding-bottom: 26px; } .hero h1 { font-size: clamp(44px, 11vw, 54px); } .intro { font-size: 14px; } .catalog { scroll-margin-top: 125px; } .filters { align-items: stretch; flex-direction: column; gap: 6px; } .search { max-width: none; } .availableToggle { align-self: start; } .filterBottom { margin-top: 10px; align-items: end; } .categories { gap: 6px; } .categories button { padding: 8px 13px; } .grid { grid-template-columns: minmax(0,1fr); gap: 22px; } .cardContent { padding: 24px; display: flex; flex-direction: column; flex: 1; } .inquiries { margin-top: 46px; padding-block: 38px; grid-template-columns: 1fr; gap: 22px; } .footer { flex-wrap: wrap; } .footer > p { display: none; } .dialogBody { padding: 34px 22px 22px; } .dialog h2 { font-size: 40px; } }
 
 .cardHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
 .cardHeading h2 { min-width: 0; }
@@ -88,10 +88,22 @@
 .infoDetails > div { display: grid; grid-template-columns: 125px 1fr; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid #c1d5ad20; font-size: 12px; line-height: 1.6; }
 .infoDetails dt { color: #a9b69f; }
 .infoDetails dd { color: #e1e6d8; }
-.dialog .detailNote { font-size: 11px; }
 .guideLink { display: inline-block; margin-top: 16px; text-decoration: underline; text-underline-offset: 4px; font-size: 12px; color: #c4d4b4; }
 .dialog button.primaryButton { width: 100%; }
-.photoCredits { margin-top: 22px; color: #a9b69f; font-size: 11px; }
-.photoCredits summary { cursor: pointer; }
-.photoCredits a { text-decoration: underline; }
 @media(max-width:380px) { .cardContent { padding: 20px; } .card h2 { font-size: 29px; } .cardPrice { font-size: 22px; } .askButton, .infoButton { padding-inline: 9px; font-size: 10px; } .infoDetails > div { grid-template-columns: 100px 1fr; gap: 12px; } }
+
+.photo[data-restocking=true] img { filter: grayscale(1); }
+.restockingOverlay { position: absolute; inset: 0; display: grid; place-items: center; background: #d1d3d05c; }
+.restockingOverlay span { padding: 12px 24px; color: #fff; background: #28302deb; border: 1px solid #ffffff40; border-radius: 4px; font-size: 18px; font-weight: 500; letter-spacing: .035em; }
+
+.imageNote { margin: 0 0 18px; color: #b2bda9; font-size: 12px; line-height: 1.5; }
+
+.pickupArea { color: #d5dfc3; font-size: 13px; line-height: 1.5; margin-bottom: 5px; }
+.sizeOptions { margin-top: 18px; }
+.sizeOptions .sizeLabel { margin: 0 0 8px; color: #a9b69f; font-size: 11px; line-height: 1.5; }
+.sizeOptions dl { display: grid; gap: 8px; }
+.sizeOptions dl > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 12px; background: #d5dfc308; border: 1px solid #c1d5ad20; border-radius: 4px; }
+.sizeOptions dt { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 9px; row-gap: 2px; font-size: 12px; }
+.sizeOptions dt strong { color: #e1e6d8; font-weight: 500; }
+.sizeOptions dt span { color: #b2bda9; font-size: 11px; }
+.sizeOptions dd { color: var(--plant-gold); font-size: 18px; white-space: nowrap; }

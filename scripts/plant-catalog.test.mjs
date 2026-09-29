@@ -13,7 +13,7 @@ test('only explicit public fields survive; hidden rows and unverified cultivar s
   const result = projectCatalog(inventory, { now });
   assert.equal(result.plants.length, 1);
   assert.equal(JSON.stringify(result).includes('PRIVATE_'), false);
-  assert.deepEqual(Object.keys(result.plants[0]).sort(), ['id', 'name', 'category', 'identityVerified', 'cultivar', 'size', 'format', 'detailsAssumed', 'price', 'priceIsEstimate', 'description', 'guideUrl', 'care', 'availability', 'checkedAt', 'photo'].sort());
+  assert.deepEqual(Object.keys(result.plants[0]).sort(), ['id', 'name', 'category', 'identityVerified', 'cultivar', 'size', 'format', 'detailsAssumed', 'price', 'priceFrom', 'priceIsEstimate', 'sizeOptions', 'description', 'guideUrl', 'care', 'availability', 'ownerReportedAt', 'checkedAt', 'photo'].sort());
   assert.equal('stock' in result.plants[0], false);
 });
 test('available requires release, identity, price, condition, size, format and fresh sale stock', () => {
@@ -108,4 +108,46 @@ test('care information is bounded and private guide fields never enter the publi
   assert.equal(projectCatalog(inventory, { now }).plants[0].care.sun, null);
   inventory.plants[0].guide.url = 'javascript:alert(1)';
   assert.equal(projectCatalog(inventory, { now }).plants[0].care, null);
+});
+
+test('owner availability report stays separate from verified inventory and never overrides restocking', () => {
+  const inventory = fixture();
+  inventory.plants[0].private.ownerReport = { date: '2026-09-15', availability: 'available', evidence: 'PRIVATE_OWNER_EVIDENCE' };
+  let plant = projectCatalog(inventory, { now }).plants[0];
+  assert.equal(plant.ownerReportedAt, '2026-09-15');
+  assert.equal(plant.availability, 'unverified');
+  assert.equal(JSON.stringify(plant).includes('PRIVATE_OWNER_EVIDENCE'), false);
+  inventory.plants[0].availability = 'restocking';
+  plant = projectCatalog(inventory, { now }).plants[0];
+  assert.equal(plant.availability, 'restocking');
+  assert.equal(plant.ownerReportedAt, null);
+});
+
+
+test('approximate size offers expose only approved bounded options and do not verify stock', () => {
+  const inventory = fixture();
+  const options = { approvedForDisplay: true, approximate: true, options: [
+    { label: 'Starter', price: 12, size: '6–12 in tall', count: 'PRIVATE_COUNT' },
+    { label: 'Larger', price: 25, size: '18–30 in tall', cost: 'PRIVATE_COST' },
+  ] };
+  inventory.plants[0].sizeOptions = structuredClone(options);
+  const plant = projectCatalog(inventory, { now }).plants[0];
+  assert.deepEqual(plant.sizeOptions, [{ label: 'Starter', price: 12, size: '6–12 in tall' }, { label: 'Larger', price: 25, size: '18–30 in tall' }]);
+  assert.equal(plant.availability, 'unverified');
+  assert.equal(JSON.stringify(plant).includes('PRIVATE_'), false);
+  for (const invalidate of [o => o.approvedForDisplay = false, o => o.options[0].price = 5, o => o.options[1].price = -1, o => o.options[1].price = 12, o => o.options[1].size = 'x'.repeat(61)]) {
+    inventory.plants[0].sizeOptions = structuredClone(options);
+    invalidate(inventory.plants[0].sizeOptions);
+    assert.deepEqual(projectCatalog(inventory, { now }).plants[0].sizeOptions, []);
+  }
+});
+
+test('pickup projection exposes only an explicitly approved area label', () => {
+  const inventory = fixture();
+  inventory.pickupArea = { value: 'West Vero Corridor, Vero Beach', approvedForPublic: false, address: 'PRIVATE_ADDRESS', directions: 'PRIVATE_DIRECTIONS' };
+  assert.equal(projectCatalog(inventory, { now }).pickupArea, null);
+  inventory.pickupArea.approvedForPublic = true;
+  const projected = projectCatalog(inventory, { now });
+  assert.equal(projected.pickupArea, 'West Vero Corridor, Vero Beach');
+  assert.equal(JSON.stringify(projected).includes('PRIVATE_'), false);
 });

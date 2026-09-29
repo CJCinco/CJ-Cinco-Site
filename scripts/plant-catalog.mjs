@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const defaultSource = '/Users/cjwatts/Library/Mobile Documents/com~apple~CloudDocs/Documents/Aligned OS/06 Aligned Harmonics/CJ Cinco/Website/plant-inventory.json';
+const defaultSource = '/Users/cjcinco/AOS/06 Aligned Harmonics/CJ Cinco/Website/plant-inventory.json';
 const text = (value, limit = 100) => typeof value === 'string' && value.trim() && value.length <= limit ? value.trim() : null;
 const date = (value) => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value)) ? value : null;
 const money = (value) => typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 100000 && Math.abs(Math.round(value * 100) - value * 100) < 1e-7;
@@ -38,10 +38,12 @@ export function projectCatalog(inventory, { now = new Date(), verifyPhoto = () =
     const age = checkedAt ? now.getTime() - Date.parse(checkedAt) : Infinity;
     const fresh = age >= 0 && age <= 7 * 86400000;
     const validStock = count(row.stock?.count) && count(row.stock?.reserved) && row.stock.reserved <= row.stock.count;
-    let availability = ['sold_out', 'paused'].includes(row.availability) ? row.availability : 'unverified';
+    let availability = ['sold_out', 'paused', 'restocking'].includes(row.availability) ? row.availability : 'unverified';
     if (row.availability === 'available' && identityVerified && detailsVerified && size && format && text(row.details.condition) && priceVerified && price !== null && validStock && fresh && releaseReady) {
       availability = row.stock.count > row.stock.reserved ? 'available' : 'sold_out';
     }
+    // Owner-reported stock is distinct from fully verified release/inventory evidence.
+    const ownerReportedAt = row.availability === 'available' && row.private?.ownerReport?.availability === 'available' ? date(row.private.ownerReport.date) : null;
     const photo = row.photo;
     const photoFileValid = /^\/plants\/[a-z0-9][a-z0-9-]*\.(webp|jpg|png)$/.test(photo?.src || '') && text(photo?.alt, 180) && /^[a-f0-9]{64}$/.test(photo?.sha256 || '') && verifyPhoto(photo);
     const productApproved = photo?.kind !== 'reference' && photo?.approvedForPublic === true && photo?.depictsSaleItem === true && photo?.metadataStripped === true;
@@ -58,13 +60,17 @@ export function projectCatalog(inventory, { now = new Date(), verifyPhoto = () =
     } : null;
     const guideUrl = publicUrl(row.guide?.url);
     const care = guideUrl ? { sun: text(row.guide?.sun, 180), water: text(row.guide?.water, 180), soil: text(row.guide?.soil, 180) } : null;
-    return { id: row.id, name, category: row.category, identityVerified, cultivar, size, format, detailsAssumed: !detailsVerified && starterAssumptions, price, priceIsEstimate: price !== null && priceIsEstimate, description: guideUrl ? text(row.guide?.description, 220) : null, guideUrl, care, availability, checkedAt: availability === 'available' ? checkedAt : null, photo: publicPhoto };
+    const offered = row.sizeOptions;
+    const sizeOptions = offered?.approvedForDisplay === true && offered.approximate === true && Array.isArray(offered.options) && offered.options.length === 2 && offered.options.every((option, index) => option.label === ['Starter', 'Larger'][index] && money(option.price) && text(option.size, 60)) && offered.options[0].price === price && offered.options[1].price > price
+      ? offered.options.map(option => ({ label: option.label, price: option.price, size: text(option.size, 60) })) : [];
+    return { id: row.id, name, category: row.category, identityVerified, cultivar, size, format, detailsAssumed: !detailsVerified && starterAssumptions, price, priceFrom: price !== null && row.price?.from === true, priceIsEstimate: price !== null && priceIsEstimate, sizeOptions, description: guideUrl ? text(row.guide?.description, 600) : null, guideUrl, care, availability, ownerReportedAt, checkedAt: availability === 'available' ? checkedAt : null, photo: publicPhoto };
   });
   const approvedContact = (contact, pattern) => contact?.approvedForPublic === true && pattern.test(contact.value || '') ? contact.value : null;
   return {
     schemaVersion: 1,
     preview: !releaseReady,
     registrationNumber: releaseReady ? registrationNumber : null,
+    pickupArea: inventory.pickupArea?.approvedForPublic === true ? text(inventory.pickupArea.value, 80) : null,
     contacts: {
       phone: approvedContact(inventory.contacts?.phone, /^\+[1-9]\d{7,14}$/),
       messenger: approvedContact(inventory.contacts?.messenger, /^https:\/\/m\.me\/[a-zA-Z0-9.]+$/),

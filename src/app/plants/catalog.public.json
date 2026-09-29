@@ -2,9 +2,10 @@
   "schemaVersion": 1,
   "preview": true,
   "registrationNumber": null,
+  "pickupArea": "West Vero Corridor, Vero Beach",
   "contacts": {
     "phone": null,
-    "messenger": null
+    "messenger": "https://m.me/61558139677903"
   },
   "plants": [
     {
@@ -16,9 +17,22 @@
       "size": "3–6 in",
       "format": "Rooted cutting",
       "detailsAssumed": true,
-      "price": 4,
+      "price": 5,
+      "priceFrom": false,
       "priceIsEstimate": false,
-      "description": "A fragrant herb with thick, velvety leaves. Give it partial shade and well-drained soil.",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 5,
+          "size": "3–6 in tall"
+        },
+        {
+          "label": "Larger",
+          "price": 10,
+          "size": "8–12 in tall"
+        }
+      ],
+      "description": "Bring bold flavor to your kitchen with this fragrant herb’s thick, velvety leaves. Finely chop a little into chicken marinades, savory meat dishes or stuffing; its strong aroma means a small amount goes a long way. A handy choice for a patio herb pot, with partial shade and well-drained soil.",
       "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/cuban-oregano/",
       "care": {
         "sun": "Partial shade",
@@ -26,29 +40,43 @@
         "soil": "Well-drained soil or potting mix."
       },
       "availability": "unverified",
+      "ownerReportedAt": "2026-09-28",
       "checkedAt": null,
       "photo": {
-        "src": "/plants/cuban-oregano-reference.jpg",
-        "alt": "A small Cuban oregano cutting in a soil plug.",
+        "src": "/plants/cuban-oregano-catalog-v2.png",
+        "alt": "Illustration of a young cuban oregano in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://floridaplantsnursery.com/products/mexican-oregano-plant-cuban-mint-4-6-inch-live-plant-plectranthus-amboinicus-succulent-indian-borage-mexican-thyme-spanish-thyme",
-        "credit": "Florida Plants Nursery",
+        "sourceUrl": "https://soulfire.farm/products/oregano-plant-cuban",
+        "credit": "SoulFire Farm",
         "license": null,
         "licenseUrl": null
       }
     },
     {
-      "id": "peppermint",
-      "name": "Peppermint",
+      "id": "spearmint",
+      "name": "Spearmint",
       "category": "Herbs",
-      "identityVerified": false,
+      "identityVerified": true,
       "cultivar": null,
       "size": "3–6 in",
       "format": "Rooted cutting",
       "detailsAssumed": true,
-      "price": 4,
+      "price": 5,
+      "priceFrom": false,
       "priceIsEstimate": false,
-      "description": "A fresh-scented herb that spreads readily. A container helps keep its runners in check; keep the soil moist.",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 5,
+          "size": "3–6 in tall"
+        },
+        {
+          "label": "Larger",
+          "price": 10,
+          "size": "8–12 in tall"
+        }
+      ],
+      "description": "Pick a few sweet-smelling leaves for fresh mint tea, lemonade or fruit salad. Spearmint also brightens yogurt sauces and makes a refreshing garnish for desserts and cold drinks. Keep a pot near the kitchen for easy snipping; give it some afternoon shade and evenly moist soil, with its own container to keep the runners contained.",
       "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/mint/",
       "care": {
         "sun": "Sun to partial shade; some afternoon shade helps in Florida.",
@@ -56,15 +84,16 @@
         "soil": "Moist, well-drained soil; a container helps control spreading."
       },
       "availability": "unverified",
+      "ownerReportedAt": "2026-09-28",
       "checkedAt": null,
       "photo": {
-        "src": "/plants/peppermint-reference.jpg",
-        "alt": "Leafy peppermint stems in a nursery pot.",
+        "src": "/plants/spearmint-catalog-v2.png",
+        "alt": "Illustration of a young spearmint in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Peppermint_Plant.jpg",
-        "credit": "Joshua T Polito",
-        "license": "CC0 1.0",
-        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+        "sourceUrl": "https://www.herbcottage.com.au/products/mint-spearmint",
+        "credit": "Mudbrick Herb Cottage",
+        "license": null,
+        "licenseUrl": null
       }
     },
     {
@@ -76,9 +105,22 @@
       "size": "6–10 in",
       "format": "Rooted vine slip",
       "detailsAssumed": true,
-      "price": 3,
+      "price": 4,
+      "priceFrom": false,
       "priceIsEstimate": false,
-      "description": "A warm-season vine grown from slips. Give it a sunny spot and room for its trailing growth.",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 4,
+          "size": "6–10 in vine"
+        },
+        {
+          "label": "Larger",
+          "price": 8,
+          "size": "12–24 in vine"
+        }
+      ],
+      "description": "Grow more than a side dish: sweet potatoes offer roots for roasting, mashing and baking, plus tender young leaves you can cook as greens. Their trailing vines add a lush look to an edible garden while the crop develops below ground. Give them sun, loose soil and room to spread; roots need a growing season before harvest.",
       "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/sweet-potatoes/",
       "care": {
         "sun": "Full sun",
@@ -86,13 +128,14 @@
         "soil": "Loose, well-drained soil with room for roots and vines."
       },
       "availability": "unverified",
+      "ownerReportedAt": "2026-09-28",
       "checkedAt": null,
       "photo": {
-        "src": "/plants/sweet-potato-reference.jpg",
-        "alt": "Two small sweet-potato slips with roots in soil plugs.",
+        "src": "/plants/sweet-potato-catalog-v2.png",
+        "alt": "Illustration of a young sweet potato in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://www.sweetpotato-slips.co.uk/growing",
-        "credit": "Highland Horticulture",
+        "sourceUrl": "https://theoriginalgarden.com/p/plants/vegetables/vegetable/ipomoea-batatas-beauregard",
+        "credit": "The Original Garden",
         "license": null,
         "licenseUrl": null
       }
@@ -106,9 +149,22 @@
       "size": "6–12 in",
       "format": "Small rooted starter",
       "detailsAssumed": true,
-      "price": 8,
+      "price": 10,
+      "priceFrom": false,
       "priceIsEstimate": false,
-      "description": "Broad tropical leaves bring a lush feel to the garden. Keep it warm with consistent moisture; mature size depends on the variety.",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 10,
+          "size": "8–18 in tall"
+        },
+        {
+          "label": "Larger",
+          "price": 25,
+          "size": "2–3 ft tall"
+        }
+      ],
+      "description": "Bring a tropical feel to your yard with big, lush leaves that make a striking backdrop for an edible garden. Mature banana leaves can be used as cooking wraps for steaming or grilling, helping hold moisture around the food. Plant in a warm, sunny, wind-protected spot and water regularly to support strong growth.",
       "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/fruits/bananas/",
       "care": {
         "sun": "Full sun in a wind-protected spot.",
@@ -116,29 +172,43 @@
         "soil": "Fertile, well-drained soil."
       },
       "availability": "unverified",
+      "ownerReportedAt": "2026-09-28",
       "checkedAt": null,
       "photo": {
-        "src": "/plants/banana-reference.jpg",
-        "alt": "A hand holding a small banana starter plug.",
+        "src": "/plants/banana-catalog-v2.png",
+        "alt": "Illustration of a young banana in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://microstarts.com/products/dwarf-cavendish-banana-tree-musa-acuminata-microstarts-starter-plant-plugs",
-        "credit": "MicroStarts",
+        "sourceUrl": "https://homefortheharvest.com/how-fast-does-a-banana-tree-grow/",
+        "credit": "Home for the Harvest",
         "license": null,
         "licenseUrl": null
       }
     },
     {
       "id": "mulberry",
-      "name": "Mulberry",
+      "name": "Tice mulberry",
       "category": "Fruit plants",
-      "identityVerified": false,
-      "cultivar": null,
-      "size": "6–10 in",
-      "format": "Rooted woody cutting",
-      "detailsAssumed": true,
-      "price": 8,
+      "identityVerified": true,
+      "cultivar": "Tice",
+      "size": null,
+      "format": null,
+      "detailsAssumed": false,
+      "price": 20,
+      "priceFrom": true,
       "priceIsEstimate": false,
-      "description": "A deciduous fruit tree that can grow quickly. Give it sunlight and room to develop; mature size varies by variety.",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 20,
+          "size": "1–2 ft tall"
+        },
+        {
+          "label": "Larger",
+          "price": 50,
+          "size": "3–4 ft tall"
+        }
+      ],
+      "description": "Enjoy sweet, juicy mulberries fresh, spooned over yogurt or cooked into homemade jam. A Tice mulberry adds a fruit-tree centerpiece to an edible yard, with berries worth making room for. Plant away from patios where fallen fruit could stain. Larger trees beyond these two size options are priced individually, up to $150.",
       "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/fruits/mulberry/",
       "care": {
         "sun": "Full sun to light shade.",
@@ -146,13 +216,14 @@
         "soil": "Well-drained soil with space for a tree to develop."
       },
       "availability": "unverified",
+      "ownerReportedAt": "2026-09-28",
       "checkedAt": null,
       "photo": {
-        "src": "/plants/mulberry-reference.png",
-        "alt": "Small mulberry cuttings with fresh leaf growth in nursery bags.",
+        "src": "/plants/mulberry-catalog-v2.png",
+        "alt": "Illustration of a young tice mulberry in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://jaymegarden.com/products/pakistani-mulberry-tree-rooted-cutting-live-fruit-tree-starter-plant-fast-growing-garden-mulberry",
-        "credit": "Jayme Garden",
+        "sourceUrl": "https://www.greendreamsfl.com/online-store/Mulberry-Tice-Morus-spp-4%E2%80%9D-p775415054",
+        "credit": "GreenDreams",
         "license": null,
         "licenseUrl": null
       }
@@ -166,23 +237,37 @@
       "size": "6–10 in",
       "format": "Rooted woody cutting",
       "detailsAssumed": true,
-      "price": 8,
+      "price": 12,
+      "priceFrom": false,
       "priceIsEstimate": false,
-      "description": "A sun-loving deciduous tree that can be trained as a bush. Plant in well-drained soil and protect tender new growth from cold.",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 12,
+          "size": "6–12 in tall"
+        },
+        {
+          "label": "Larger",
+          "price": 25,
+          "size": "18–30 in tall"
+        }
+      ],
+      "description": "Grow tree-ripened figs for fresh snacks, breakfast bowls and homemade preserves. Their soft, sweet fruit also pairs beautifully with cheese or a simple salad, while broad leaves give the garden a distinctive look. Choose a sunny spot with well-drained soil; a fig can be trained as a small tree or a bush as it grows.",
       "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/fruits/figs/",
       "care": {
         "sun": "Full sun",
         "water": "Provide consistent moisture; avoid excessively wet soil.",
         "soil": "Well-drained soil; mulch helps retain moisture."
       },
-      "availability": "unverified",
+      "availability": "restocking",
+      "ownerReportedAt": null,
       "checkedAt": null,
       "photo": {
-        "src": "/plants/fig-reference.jpg",
-        "alt": "Fig cuttings with newly emerging leaves in a propagation tray.",
+        "src": "/plants/fig-catalog-v2.png",
+        "alt": "Illustration of a young fig in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://www.gardeningknowhow.com/edible/fruits/figs/fig-propagation.htm",
-        "credit": "25092526 / Getty Images",
+        "sourceUrl": "https://www.thegreenhousepnw.com/products/olympian-fig",
+        "credit": "The Greenhouse PNW",
         "license": null,
         "licenseUrl": null
       }
@@ -196,25 +281,39 @@
       "size": "4–8 in",
       "format": "Small rooted starter",
       "detailsAssumed": true,
-      "price": 10,
+      "price": 12,
+      "priceFrom": false,
       "priceIsEstimate": false,
-      "description": "A vigorous tropical climbing vine. Provide a trellis, well-drained soil, and steady moisture as it grows.",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 12,
+          "size": "8–16 in vine"
+        },
+        {
+          "label": "Larger",
+          "price": 25,
+          "size": "2–3 ft vine"
+        }
+      ],
+      "description": "Turn a sunny trellis into a leafy feature with intricate flowers and fruit prized for its fragrant, tangy pulp. Spoon ripe pulp into yogurt, blend it into drinks or use it in desserts and homemade jam. Give this vigorous climber sturdy support and regular water, and train its stems along a fence or trellis as it grows.",
       "guideUrl": "https://ask.ifas.ufl.edu/publication/HS1406",
       "care": {
         "sun": "Full sun for best flowering and fruiting.",
         "water": "Keep moisture consistent; avoid drought and waterlogging.",
         "soil": "Well-drained soil; provide a trellis for the climbing vine."
       },
-      "availability": "unverified",
+      "availability": "restocking",
+      "ownerReportedAt": null,
       "checkedAt": null,
       "photo": {
-        "src": "/plants/passion-fruit-reference.jpg",
-        "alt": "A small passion-fruit seedling with a few leaves.",
+        "src": "/plants/passion-fruit-catalog-v2.png",
+        "alt": "Illustration of a young passion fruit in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Starr-040410-0309-Passiflora_edulis-seedling-LaPerouse-Maui_(24405812720).jpg",
-        "credit": "Forest & Kim Starr",
-        "license": "CC BY 3.0 US",
-        "licenseUrl": "https://creativecommons.org/licenses/by/3.0/us/"
+        "sourceUrl": "https://topnotchtropical.com/products/passiflora-edulis-purple-passion-fruit-vine-4",
+        "credit": "Top Notch Tropicals",
+        "license": null,
+        "licenseUrl": null
       }
     },
     {
@@ -226,9 +325,22 @@
       "size": "2–6 in",
       "format": "Sprouted rhizome",
       "detailsAssumed": true,
-      "price": 5,
+      "price": 8,
+      "priceFrom": false,
       "priceIsEstimate": false,
-      "description": "A tropical plant grown from rhizomes, with broad green leaves as it develops. Give it partial shade and rich, moist soil.",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 8,
+          "size": "6–12 in tall"
+        },
+        {
+          "label": "Larger",
+          "price": 15,
+          "size": "12–24 in tall"
+        }
+      ],
+      "description": "Grow the golden spice you can grate fresh into curries, rice, soups or smoothies. Turmeric brings earthy flavor and rich yellow color to cooking, while its broad tropical leaves add interest to a partly shaded garden. Plant in rich, well-drained soil and keep it moist during growth; harvest the rhizomes as the foliage dies back at season’s end.",
       "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/turmeric/",
       "care": {
         "sun": "Partial shade",
@@ -236,13 +348,14 @@
         "soil": "Rich soil with organic matter and good drainage."
       },
       "availability": "unverified",
+      "ownerReportedAt": "2026-09-28",
       "checkedAt": null,
       "photo": {
-        "src": "/plants/turmeric-reference.jpg",
-        "alt": "Tiny turmeric shoots emerging from potting soil.",
+        "src": "/plants/turmeric-catalog-v2.png",
+        "alt": "Illustration of a young turmeric in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://www.babsprojects.com/grow-turmeric-plant-indoors/",
-        "credit": "Babita / Babs Projects",
+        "sourceUrl": "https://whitwamorganics.com/products/turmeric",
+        "credit": "Whitwam Organics",
         "license": null,
         "licenseUrl": null
       }
@@ -256,9 +369,22 @@
       "size": "3–8 in",
       "format": "Sprouted cane cutting",
       "detailsAssumed": true,
-      "price": 5,
+      "price": 8,
+      "priceFrom": false,
       "priceIsEstimate": false,
-      "description": "A tall, clumping grass started from pieces of cane. Choose a sunny spot with good drainage and room away from walkways.",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 8,
+          "size": "12–24 in tall"
+        },
+        {
+          "label": "Larger",
+          "price": 15,
+          "size": "2–3 ft tall"
+        }
+      ],
+      "description": "Grow a sweet taste of the tropics with tall, leafy canes that sway in the breeze. Mature stalks can be pressed for fresh sugarcane juice, enjoyed in cold drinks or cooked down into syrup. The upright foliage adds height to an edible garden; give the clump a sunny spot with room to grow, away from narrow paths.",
       "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/sugarcane/",
       "care": {
         "sun": "Full sun",
@@ -266,43 +392,58 @@
         "soil": "Well-drained soil; allow room away from paths."
       },
       "availability": "unverified",
+      "ownerReportedAt": "2026-09-28",
       "checkedAt": null,
       "photo": {
-        "src": "/plants/sugarcane-reference.png",
-        "alt": "A tiny sugarcane shoot beside its parent cane in a pot.",
+        "src": "/plants/sugarcane-catalog-v2.png",
+        "alt": "Illustration of a young sugarcane in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/edibles/vegetables/sugarcane/",
-        "credit": "David Atlas / UF/IFAS",
+        "sourceUrl": "https://wollongongnursery.com.au/young-heirloom-sugarcane-saccharum-sp-settling-cultivar-1-1",
+        "credit": "Wollongong Nursery",
         "license": null,
         "licenseUrl": null
       }
     },
     {
-      "id": "aloe",
-      "name": "Aloe",
-      "category": "Succulents",
-      "identityVerified": false,
+      "id": "moringa",
+      "name": "Moringa",
+      "category": "Fruit plants",
+      "identityVerified": true,
       "cultivar": null,
-      "size": "3–5 in",
-      "format": "Small rooted pup",
-      "detailsAssumed": true,
-      "price": 5,
+      "size": null,
+      "format": null,
+      "detailsAssumed": false,
+      "price": 8,
+      "priceFrom": false,
       "priceIsEstimate": false,
-      "description": "A succulent with thick, fleshy leaves. Use a well-drained potting mix and let the soil dry between waterings.",
-      "guideUrl": "https://gardeningsolutions.ifas.ufl.edu/plants/ornamentals/aloe-vera/",
+      "sizeOptions": [
+        {
+          "label": "Starter",
+          "price": 8,
+          "size": "12–18 in tall"
+        },
+        {
+          "label": "Larger",
+          "price": 20,
+          "size": "2–3 ft tall"
+        }
+      ],
+      "description": "Grow a leafy ingredient for your kitchen on a fast-growing tree. Young moringa leaves can be cooked into soups, stirred into rice or prepared as greens, making it a useful addition to an edible garden. Regular pruning helps keep new growth within reach; give it a sunny spot and freely draining soil.",
+      "guideUrl": "https://www.echocommunity.org/resources/7d7ba576-9a1b-41af-818b-2221242d199a",
       "care": {
-        "sun": "Bright light; introduce stronger outdoor sun gradually.",
-        "water": "Let the soil dry between waterings. Never leave the pot standing in water.",
-        "soil": "A well-drained potting mix in a container with drainage."
+        "sun": "Sun; protect new cuttings while they establish.",
+        "water": "Avoid prolonged wetness; let the medium drain freely.",
+        "soil": "Well-drained growing medium."
       },
-      "availability": "unverified",
+      "availability": "restocking",
+      "ownerReportedAt": null,
       "checkedAt": null,
       "photo": {
-        "src": "/plants/aloe-reference.jpg",
-        "alt": "Small aloe plants and separated rooted pups.",
+        "src": "/plants/moringa-catalog-v2.png",
+        "alt": "Illustration of a young moringa in a charcoal pot against a cream wall.",
         "kind": "reference",
-        "sourceUrl": "https://www.gardeningknowhow.com/houseplants/aloe-vera/aloe-plant-propagation.htm",
-        "credit": "Sundaemorning / Getty Images",
+        "sourceUrl": "https://shop.farmoncentral.com/products/moringa-plant-moringa-oleifera",
+        "credit": "The Farm on Central",
         "license": null,
         "licenseUrl": null
       }
