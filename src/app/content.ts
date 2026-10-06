@@ -8,12 +8,18 @@ export const siteContent = {
   ],
 };
 
+// CJC-448 local review candidate. Historical copy and media remain preserved below.
+export const minimalHome = {
+  businessEmail: "cj@verotechcare.com",
+  introduction: "I’m CJ. I run Vero Tech Care, helping people and businesses with Tech Support, Digital Setup, and Online Presence. I also produce music and teach Reiki.",
+  spotify: "https://open.spotify.com/artist/1haP9NxZ7mwFawmV94C32E",
+  appleMusic: "https://music.apple.com/us/artist/cj-cinco/1809471639",
+};
+
 export const navItems: { label: string; href: string }[] = [
   { label: "About", href: "#about" },
-  { label: "Tech Help", href: "#tech-help" },
-  { label: "Sound", href: "#sound" },
-  { label: "Healing", href: "#healing" },
-  { label: "Plants", href: "/plants.html" },
+  { label: "Vero Tech Care", href: "#tech-help" },
+  { label: "Contact", href: "#email" },
   { label: "Health Snapshot", href: "/health-snapshot.html" },
 ];
 

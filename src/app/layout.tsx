@@ -19,9 +19,9 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "CJ Cinco | Music, Healing & Tech Help",
+  title: "CJ | Vero Tech Care",
   description:
-    "Explore CJ Cinco's background in music, healing, and technology, discover his work, and connect at energy@cjcinco.com.",
+    "Meet CJ of Vero Tech Care. Tech Support, Digital Setup, and Online Presence, plus music and Reiki.",
 };
 
 export default function RootLayout({

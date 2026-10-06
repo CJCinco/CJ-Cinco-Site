@@ -1,0 +1,10 @@
+/plants /#email 301
+/plants/ /#email 301
+/plants.html /#email 301
+/plants.txt /#email 301
+/plants/* /#email 301
+/health-snapshot /downloads/cj-cinco-health-snapshot.pdf 301
+/health-snapshot/ /downloads/cj-cinco-health-snapshot.pdf 301
+/health-snapshot.html /downloads/cj-cinco-health-snapshot.pdf 301
+/health-snapshot.txt /downloads/cj-cinco-health-snapshot.pdf 301
+/health-snapshot/* /downloads/cj-cinco-health-snapshot.pdf 301
